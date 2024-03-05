@@ -1,23 +1,30 @@
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs"
-import React from "react"
+import React, { useState } from "react"
 import { NavigationContainer } from "@react-navigation/native"
 import SettingScreen from "./screens/settingScreen"
-import HomeScreen from "./screens/homeScreen"
-import { StyleSheet, Text, View } from "react-native"
+import HomeScreen from "./screens/gameScreen"
+import { Text, View, Button } from "react-native"
+import { GamepadIcon, SettingsIcon } from "lucide-react-native"
+import Navbar from "./screens/components/Navbar"
 
 const Tab = createMaterialBottomTabNavigator()
 
 export default function App() {
+  const [openLandingPageOpen, setOpenLandingPageOpen] = useState<boolean>(false)
+
   return (
-      <NavigationContainer>
-        <Tab.Navigator
-          initialRouteName="Feed"
-          activeColor="#e91e63"
-          barStyle={{ backgroundColor: "tomato" }}
-        >
-          <Tab.Screen name="Home" component={HomeScreen} />
-          <Tab.Screen name="Settings" component={SettingScreen} />
-        </Tab.Navigator>
-      </NavigationContainer>
+    <View className="min-w-full min-h-full">
+      {!openLandingPageOpen ? (
+        <View className="w-full h-full flex justify-center items-center">
+          <Text>Landingssida</Text>
+          <Button
+            title="Play Now!"
+            onPress={() => setOpenLandingPageOpen(true)}
+          ></Button>
+        </View>
+      ) : (
+        <Navbar/>
+      )}
+    </View>
   )
 }
