@@ -1,12 +1,25 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { Text, View } from 'react-native';
+import React, { useState } from "react"
+import { Text, View, Button } from "react-native"
+import Navbar from "./screens/components/Navbar"
+
 
 export default function App() {
+  const [openLandingPageOpen, setOpenLandingPageOpen] = useState<boolean>(false)
+
   return (
-    <View className="flex-1 items-center justify-center bg-gray-200">
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
+    <View className="min-w-full min-h-full">
+      {!openLandingPageOpen ? (
+        <View className="w-full h-full flex justify-center items-center ">
+          <Text className=" ">Landingssida</Text>
+
+          <Button
+            title="Play Now!"
+            onPress={() => setOpenLandingPageOpen(true)}
+          ></Button>
+        </View>
+      ) : (
+        <Navbar />
+      )}
     </View>
-  );
+  )
 }
