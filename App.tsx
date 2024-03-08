@@ -1,11 +1,8 @@
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs"
 import React, { useState } from "react"
-import { NavigationContainer } from "@react-navigation/native"
-import SettingScreen from "./screens/settingScreen"
-import HomeScreen from "./screens/gameScreen"
 import { Text, View, Button } from "react-native"
-import { GamepadIcon, SettingsIcon } from "lucide-react-native"
-import Navbar from "./screens/components/Navbar"
+import Navbar from "./components/Navbar"
+import Logo from "./components/Logo"
 
 const Tab = createMaterialBottomTabNavigator()
 
@@ -13,7 +10,10 @@ export default function App() {
   const [openLandingPageOpen, setOpenLandingPageOpen] = useState<boolean>(false)
 
   return (
-    <View className="min-w-full min-h-full">
+    <View className="min-w-full min-h-full relative bg-blue-200">
+      <View className="absolute w-full flex items-center top-10">
+        <Logo />
+      </View>
       {!openLandingPageOpen ? (
         <View className="w-full h-full flex justify-center items-center">
           <Text>Landingssida</Text>
@@ -23,7 +23,7 @@ export default function App() {
           ></Button>
         </View>
       ) : (
-        <Navbar/>
+        <Navbar />
       )}
     </View>
   )
