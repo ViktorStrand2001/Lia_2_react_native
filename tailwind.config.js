@@ -5,10 +5,10 @@ module.exports = {
   theme: {
     colors: {
       ...colors,
+      primarypink: "#FF83EB",
+      bgBlue: "#CAEFFF",
     },
-    fontFamily: {
-      
-    },
+    fontFamily: {},
     extend: {},
   },
   plugins: [],
