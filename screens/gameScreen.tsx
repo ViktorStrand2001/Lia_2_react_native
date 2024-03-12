@@ -49,14 +49,14 @@ const GameScreen = (props: any) => {
   }
 
   return (
-    <View className=" flex justify-center items-center w-full h-full  bg-blue-300">
+    <View className=" flex justify-center items-center w-full h-full  bg-bgBlue">
       {/* Card containing Lorem Ipsum text */}
 
       <View className=" flex justify-center items-center space-y-10">
-        <View className="bg-green-700 pt-16 pb-16 mx-6 mt-5 flex items-center rounded-2xl justify-center relative">
+        <View className="bg-customGreen pt-16 pb-16 mx-6 mt-5 flex items-center rounded-2xl justify-center relative">
           <View className="absolute top-3 left-3">
             <TouchableOpacity
-              onPress={() => props.navigation.navigate("Settings")}
+              onPress={() => props.navigation.navigate("Distribute")}
             >
               <Image
                 source={require("../assets/refresh.png")}
@@ -102,7 +102,7 @@ const GameScreen = (props: any) => {
         {showStartButton && (
           <TouchableOpacity
             onPress={toggleTimer}
-            className="bg-green-600 w-48 h-16 rounded-2xl flex flex-row justify-center items-center "
+            className="bg-customGreen w-48 h-16 rounded-2xl flex flex-row justify-center items-center "
           >
             <Image
               source={require("../assets/Start.png")}

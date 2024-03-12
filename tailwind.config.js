@@ -11,6 +11,7 @@ module.exports = {
       ...colors,
       primarypink: "#FF83EB",
       bgBlue: "#CAEFFF",
+      customGreen: "#9BC54D",
     },
     extend: {},
   },
