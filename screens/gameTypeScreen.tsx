@@ -14,7 +14,7 @@ const GameTypeScreen = (props: any) => {
       <View className="flex justify-center items-center space space-y-3">
         <TouchableOpacity
           onPressOut={() => {
-            props.navigation.navigate("Settings"), setGameType("group_battle")
+            props.navigation.navigate("Game"), setGameType("group_battle")
           }}
         >
           <View className=" w-72 h-72 rounded-lg flex justify-center items-center relative">
@@ -32,7 +32,7 @@ const GameTypeScreen = (props: any) => {
         <View className="h-0.5 w-80 bg-black rounded-lg" />
         <TouchableOpacity
           onPressOut={() => {
-            props.navigation.navigate("Settings"), setGameType("free_for_all")
+            props.navigation.navigate("Game"), setGameType("free_for_all")
           }}
         >
           <View className=" bg-gray-900 w-72 h-72 rounded-lg flex justify-center items-center relative">
