@@ -2,10 +2,10 @@ import "react-native-gesture-handler"
 import { createStackNavigator } from "@react-navigation/stack"
 import React from "react"
 import { NavigationContainer } from "@react-navigation/native"
-import SettingScreen from "../screens/settingScreen"
-import HomeScreen from "../screens/gameScreen"
 import GameTypeScreen from "../screens/gameTypeScreen"
 import { SettingsIcon } from "lucide-react-native"
+import SettingScreen from "../screens/settingscreen"
+import GameScreen from "../screens/gameScreen"
 
 const Navbar = () => {
   const Stack = createStackNavigator()
@@ -31,7 +31,7 @@ const Navbar = () => {
         }}
       >
         <Stack.Screen name=" " component={GameTypeScreen} />
-        <Stack.Screen name="Game" component={HomeScreen} options={settings} />
+        <Stack.Screen name="Game" component={GameScreen} options={settings} />
         <Stack.Screen
           name="Settings"
           component={SettingScreen}

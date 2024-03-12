@@ -3,7 +3,7 @@ import { createStackNavigator } from "@react-navigation/stack"
 import React from "react"
 import { NavigationContainer } from "@react-navigation/native"
 import SettingScreen from "../settingscreen"
-import HomeScreen from "../gamescreen"
+import HomeScreen from "../gameScreen.tsx"
 
 const Stack = createStackNavigator()
 
