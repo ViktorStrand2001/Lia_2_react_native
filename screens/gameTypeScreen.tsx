@@ -3,18 +3,33 @@ import React, { useEffect, useState } from "react"
 import Logo from "../components/Logo"
 
 const GameTypeScreen = (props: any) => {
-    const [gameType, setGameType] = useState<string>("")
-    
+  const [gameType, setGameType] = useState<string>("")
+
+  // sending data to playerScreeen
+ const navigateToPlayerScreen = () => {
+   gameType
+ }
+
+  console.log(gameType)
+
     useEffect(() => {
-      console.log(gameType)
-    }, [console.log(gameType)])
+      if (gameType) {
+        const timer = setTimeout(() => {
+          props.navigation.navigate("SetPlayer", { gameType })
+        }, 500)
+
+        return () => clearTimeout(timer)
+      }
+    }, [gameType, props.navigation])
+
+    console.log(gameType)
 
   return (
     <View className="min-w-full min-h-full bg-bgBlue">
       <View className="flex justify-center items-center space space-y-3">
         <TouchableOpacity
           onPressOut={() => {
-            props.navigation.navigate("Game"), setGameType("group_battle")
+            setGameType("group_battle"), navigateToPlayerScreen()
           }}
         >
           <View className=" w-72 h-72 rounded-lg flex justify-center items-center relative">
@@ -32,7 +47,7 @@ const GameTypeScreen = (props: any) => {
         <View className="h-0.5 w-80 bg-black rounded-lg" />
         <TouchableOpacity
           onPressOut={() => {
-            props.navigation.navigate("Game"), setGameType("free_for_all")
+            setGameType("free_for_all"), navigateToPlayerScreen()
           }}
         >
           <View className=" bg-gray-900 w-72 h-72 rounded-lg flex justify-center items-center relative">

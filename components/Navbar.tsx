@@ -1,6 +1,6 @@
 import "react-native-gesture-handler"
 import { createStackNavigator } from "@react-navigation/stack"
-import React from "react"
+import React, { useEffect } from "react"
 import { NavigationContainer } from "@react-navigation/native"
 import GameTypeScreen from "../screens/gameTypeScreen"
 import { SettingsIcon } from "lucide-react-native"
@@ -16,11 +16,10 @@ const Navbar = () => {
       <SettingsIcon size={24} color="black" style={{ marginRight: 16 }} />
     ),
   }
-
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Player"
+        initialRouteName="GameType"
         screenOptions={{
           headerStyle: {
             backgroundColor: "#CAEFFF",
@@ -31,16 +30,16 @@ const Navbar = () => {
           },
         }}
       >
-        <Stack.Screen name=" " component={GameTypeScreen} />
+        <Stack.Screen name="GameType" component={GameTypeScreen} />
+        <Stack.Screen
+          name="SetPlayer"
+          component={PlayerScreen}
+          options={settings}
+        />
         <Stack.Screen name="Game" component={GameScreen} options={settings} />
         <Stack.Screen
           name="Settings"
           component={SettingScreen}
-          options={settings}
-        />
-        <Stack.Screen
-          name="Player"
-          component={PlayerScreen}
           options={settings}
         />
       </Stack.Navigator>
