@@ -6,6 +6,7 @@ import GameTypeScreen from "../screens/gameTypeScreen"
 import { SettingsIcon } from "lucide-react-native"
 import SettingScreen from "../screens/settingscreen"
 import GameScreen from "../screens/gameScreen"
+import PlayerScreen from "../screens/playerScreen"
 
 const Navbar = () => {
   const Stack = createStackNavigator()
@@ -19,7 +20,7 @@ const Navbar = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName=" "
+        initialRouteName="Player"
         screenOptions={{
           headerStyle: {
             backgroundColor: "#CAEFFF",
@@ -35,6 +36,11 @@ const Navbar = () => {
         <Stack.Screen
           name="Settings"
           component={SettingScreen}
+          options={settings}
+        />
+        <Stack.Screen
+          name="Player"
+          component={PlayerScreen}
           options={settings}
         />
       </Stack.Navigator>
