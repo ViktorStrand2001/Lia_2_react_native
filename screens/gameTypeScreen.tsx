@@ -6,23 +6,23 @@ const GameTypeScreen = (props: any) => {
   const [gameType, setGameType] = useState<string>("")
 
   // sending data to playerScreeen
- const navigateToPlayerScreen = () => {
-   gameType
- }
+  const navigateToPlayerScreen = () => {
+    gameType
+  }
 
   console.log(gameType)
 
-    useEffect(() => {
-      if (gameType) {
-        const timer = setTimeout(() => {
-          props.navigation.navigate("SetPlayer", { gameType })
-        }, 500)
+  useEffect(() => {
+    if (gameType) {
+      const timer = setTimeout(() => {
+        props.navigation.navigate("SetPlayer", { gameType })
+      }, 500)
 
-        return () => clearTimeout(timer)
-      }
-    }, [gameType, props.navigation])
+      return () => clearTimeout(timer)
+    }
+  }, [gameType, props.navigation])
 
-    console.log(gameType)
+  console.log(gameType)
 
   return (
     <View className="min-w-full min-h-full bg-bgBlue">
