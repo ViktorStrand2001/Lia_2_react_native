@@ -58,6 +58,22 @@ const PlayerScreen = () => {
   }
 
   useEffect(() => {
+    // Load players from AsyncStorage when component mounts
+    const loadPlayers = async () => {
+      try {
+        const storedPlayers = await AsyncStorage.getItem("players")
+        if (storedPlayers !== null) {
+          setPlayers(JSON.parse(storedPlayers))
+        }
+      } catch (error) {
+        console.error("Error loading players:", error)
+      }
+    }
+
+    loadPlayers()
+  }, [])
+
+  useEffect(() => {
     // Save players to AsyncStorage whenever players state changes
     const savePlayers = async () => {
       try {

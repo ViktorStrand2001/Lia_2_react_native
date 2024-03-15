@@ -8,18 +8,10 @@ const GameTypeScreen = (props: any) => {
   // sending data to playerScreeen
   const navigateToPlayerScreen = () => {
     props.navigation.navigate("SetPlayer", { gameType })
-
-  
   }
 
   useEffect(() => {
-    if (gameType) {
-      const timer = setTimeout(() => {
-        navigateToPlayerScreen()
-      }, 500)
-
-      return () => clearTimeout(timer)
-    }
+    navigateToPlayerScreen()
   }, [gameType])
 
   console.log(gameType)
