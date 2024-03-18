@@ -11,7 +11,9 @@ const GameTypeScreen = (props: any) => {
   }
 
   useEffect(() => {
-    navigateToPlayerScreen()
+    if (gameType != "") {
+      navigateToPlayerScreen()
+    }
   }, [gameType])
 
   console.log(gameType)

@@ -8,6 +8,7 @@ import SettingScreen from "../screens/settingscreen"
 import GameScreen from "../screens/gameScreen"
 import PlayerScreen from "../screens/playerScreen"
 
+
 const Navbar = () => {
   const Stack = createStackNavigator()
 
