@@ -7,6 +7,7 @@ import { SettingsIcon } from "lucide-react-native"
 import SettingScreen from "../screens/settingscreen"
 import GameScreen from "../screens/gameScreen"
 import PlayerScreen from "../screens/playerScreen"
+import DbScreen from "../screens/dbScreen"
 
 const Navbar = () => {
   const Stack = createStackNavigator()
@@ -42,6 +43,7 @@ const Navbar = () => {
           component={SettingScreen}
           options={settings}
         />
+        <Stack.Screen name="Db" component={DbScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   )

@@ -55,9 +55,7 @@ const GameScreen = (props: any) => {
       <View className=" flex justify-center items-center space-y-10">
         <View className="bg-customGreen pt-16 pb-16 mx-6 mt-5 flex items-center rounded-2xl justify-center relative">
           <View className="absolute top-3 left-3">
-            <TouchableOpacity
-              onPress={() => props.navigation.navigate("Distribute")}
-            >
+            <TouchableOpacity onPress={() => props.navigation.navigate("Db")}>
               <Image
                 source={require("../assets/refresh.png")}
                 className="h-12 w-12 mb-20 mr-20"

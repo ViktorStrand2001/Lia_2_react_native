@@ -25,7 +25,7 @@ type RootStackParamList = {
 }
 type PlayerScreenRouteProp = RouteProp<RootStackParamList, "SetPlayer">
 
-const PlayerScreen = () => {
+const PlayerScreen = (props: any) => {
   const [playerName, setPlayerName] = useState<string>("")
   const [players, setPlayers] = useState<Player[]>([])
   const route = useRoute<PlayerScreenRouteProp>()
@@ -165,7 +165,7 @@ const PlayerScreen = () => {
       </View>
 
       <View className="h-32 justify-center items absolute bottom-16">
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => props.navigation.navigate("Db")}>
           <View className="bg-customGreen px-20 rounded-3xl flex items-center justify-center border">
             <Gamepad2Icon size={60} color={white} />
           </View>
