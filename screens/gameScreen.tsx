@@ -1,11 +1,42 @@
+import { collection, getDocs, query } from "firebase/firestore"
 import React, { useEffect, useState } from "react"
-import { Text, View, Image, Button } from "react-native"
+import { Text, View, Image } from "react-native"
 import { TouchableOpacity } from "react-native-gesture-handler"
+import { FIRESTORE_DB } from "../firebaseConfig"
 
-const GameScreen = (props: any) => {
-  const [timer, setTimer] = useState(120) // Initial timer value in seconds (2 minutes)
-  const [isRunning, setIsRunning] = useState(false)
-  const [showStartButton, setShowStartButton] = useState(true)
+interface Card {
+  Title: string
+  Instruction: string
+  Rules: string
+  YouWillNeed: string
+  Time: number
+}
+
+const GameScreen: React.FC = (props: any) => {
+  const [timer, setTimer] = useState<number>(Number)
+  const [isRunning, setIsRunning] = useState<boolean>(false)
+  const [showStartButton, setShowStartButton] = useState<boolean>(true)
+  const [documentData, setDocumentData] = useState<Card | null>(null)
+
+  const fetchRandomChallenge = async () => {
+    try {
+      const challengesRef = collection(FIRESTORE_DB, "Lia2-challange")
+      const queryRef = query(challengesRef)
+      const querySnapshot = await getDocs(queryRef)
+      const randomIndex = Math.floor(Math.random() * querySnapshot.docs.length)
+      const randomChallengeDoc = querySnapshot.docs[randomIndex]
+      const cardData = randomChallengeDoc.data() as Card
+      setDocumentData(cardData)
+      setTimer(cardData.Time * 60)
+      console.log(documentData)
+    } catch (error) {
+      console.error("Error fetching document:", error)
+    }
+  }
+
+  useEffect(() => {
+    fetchRandomChallenge()
+  }, [])
 
   useEffect(() => {
     let interval: NodeJS.Timeout
@@ -22,12 +53,13 @@ const GameScreen = (props: any) => {
       }, 1000)
     }
 
-    return () => clearInterval(interval) // Clear interval on component unmount or when timer stops
+    return () => clearInterval(interval)
   }, [isRunning])
 
   const toggleTimer = () => {
     setIsRunning((prevIsRunning) => !prevIsRunning)
     setShowStartButton(false)
+    console.log(showStartButton)
   }
 
   const pauseTimer = () => {
@@ -36,7 +68,11 @@ const GameScreen = (props: any) => {
   }
 
   const resetTimer = () => {
-    setTimer(120) // Reset timer to initial value
+    if (documentData) {
+      setTimer(documentData.Time * 60)
+    } else {
+      setTimer(0)
+    }
   }
 
   const formatTime = (timeInSeconds: number) => {
@@ -50,55 +86,50 @@ const GameScreen = (props: any) => {
 
   return (
     <View className=" flex justify-center items-center w-full h-full  bg-bgBlue">
-      {/* Card containing Lorem Ipsum text */}
-
       <View className=" flex justify-center items-center space-y-10">
-        <View className="bg-customGreen pt-16 pb-16 mx-6 mt-5 flex items-center rounded-2xl justify-center relative">
-          <View className="absolute top-3 left-3">
-            <TouchableOpacity
-              onPress={() => props.navigation.navigate("Distribute")}
-            >
-              <Image
-                source={require("../assets/refresh.png")}
-                className="h-12 w-12 mb-20 mr-20"
-              />
-            </TouchableOpacity>
-          </View>
+        <View className="bg-customGreen w-80 h-96 flex  items-center rounded-2xl justify-center">
+          {documentData && (
+            <>
+              <View className="h-full w-full ">
+                <View className="p-2  h-[10%]">
+                  <TouchableOpacity
+                    onPress={() => {
+                      fetchRandomChallenge()
+                      resetTimer()
+                      pauseTimer()
+                    }}
+                  >
+                    <Image
+                      source={require("../assets/refresh.png")}
+                      className="w-10 h-10 "
+                    />
+                  </TouchableOpacity>
+                </View>
+                <View className=" h-[20%] items-center justify-center">
+                  <Text className=" font-bold text-3xl item">
+                    {documentData.Title}
+                  </Text>
+                </View>
+                <View className="px-6">
+                  <View className="h-[40%] ">
+                    <Text className=" font-bold ">Instructions: </Text>
+                    <Text>{documentData.Instruction}</Text>
+                  </View>
 
-          <View className=" flex items-center justify-center">
-            <Text className=" font-bold text-3xl item">Team Balance</Text>
-          </View>
+                  <View className="h-[20%]">
+                    <Text className=" font-bold">You wil need: </Text>
+                    <Text>{documentData.YouWillNeed}</Text>
+                  </View>
 
-          <View className="text-black p-4 rounded-lg space-y-3 px-4">
-            <View className="">
-              <Text className=" font-bold ">Instructions: </Text>
-              <Text>
-                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Magni
-                doloribus facere praesentium adipisci voluptatibus, ducimus,
-                dicta, aut asperiores amet obcaecati non? In iusto quas quos
-                laboriosam iure ducimus magnam numquam.
-              </Text>
-            </View>
-
-            <View>
-              <Text className=" font-bold">You wil need: </Text>
-              <Text>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Nesciunt, iste?
-              </Text>
-            </View>
-
-            <View>
-              <Text className=" font-bold">Rules: </Text>
-              <Text>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Nesciunt, iste?
-              </Text>
-            </View>
-          </View>
+                  <View className="h-[20%]">
+                    <Text className=" font-bold">Rules: </Text>
+                    <Text>{documentData.Rules}</Text>
+                  </View>
+                </View>
+              </View>
+            </>
+          )}
         </View>
-
-        {/* Show Start Button if timer is not running */}
         {showStartButton && (
           <TouchableOpacity
             onPress={toggleTimer}
@@ -110,8 +141,6 @@ const GameScreen = (props: any) => {
             />
           </TouchableOpacity>
         )}
-
-        {/* Show Pause Button if timer is running */}
         {!showStartButton && (
           <View>
             <TouchableOpacity
@@ -129,7 +158,12 @@ const GameScreen = (props: any) => {
       </View>
 
       <View className="mt-6 flex justify-center items-center">
-        <TouchableOpacity onPress={resetTimer} className=" ">
+        <TouchableOpacity
+          onPress={() => {
+            resetTimer()
+            pauseTimer()
+          }}
+        >
           <Text className="text-black mb-">Reset timer</Text>
         </TouchableOpacity>
       </View>
