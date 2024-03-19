@@ -1,11 +1,55 @@
+import { DocumentData, collection, getDocs, query } from "firebase/firestore"
 import React, { useEffect, useState } from "react"
 import { Text, View, Image, Button } from "react-native"
 import { TouchableOpacity } from "react-native-gesture-handler"
+import { FIRESTORE_DB } from "../firebaseConfig"
+
+interface Cards {
+  Title: string
+  Instruction: string
+  Rules: string
+  YouWillNeed: string
+  Time: number // Update the property name to match the database field
+}
 
 const GameScreen = (props: any) => {
   const [timer, setTimer] = useState(120) // Initial timer value in seconds (2 minutes)
   const [isRunning, setIsRunning] = useState(false)
   const [showStartButton, setShowStartButton] = useState(true)
+  const [documentData, setDocumentData] = useState<Cards | null>(null)
+
+  const fetchRandomChallenge = async () => {
+    try {
+      const challengesRef = collection(FIRESTORE_DB, "Lia2-challange")
+      const q = query(challengesRef)
+      const querySnapshot = await getDocs(q)
+      const randomIndex = Math.floor(Math.random() * querySnapshot.docs.length)
+      const randomChallengeDoc = querySnapshot.docs[randomIndex]
+
+      if (randomChallengeDoc.exists()) {
+        const challengeData = randomChallengeDoc.data() as ChallengeData
+        console.log("Fetched challenge data:", challengeData) // Log the fetched data
+        if (challengeData.Time !== undefined && !isNaN(challengeData.Time)) {
+          setDocumentData(challengeData) // Setting other document data
+          setTimer(challengeData.Time) // Setting the timer value
+        } else {
+          console.error(
+            "Error: 'Time' field is undefined or NaN.",
+            challengeData.Time
+          )
+        }
+      } else {
+        console.error("Error: Document does not exist.")
+      }
+    } catch (error) {
+      console.error("Error fetching document:", error)
+      // Handle error, e.g., display an error message to the user
+    }
+  }
+
+  useEffect(() => {
+    fetchRandomChallenge()
+  }, [])
 
   useEffect(() => {
     let interval: NodeJS.Timeout
@@ -49,51 +93,49 @@ const GameScreen = (props: any) => {
   }
 
   return (
-    <View className=" flex justify-center items-center w-full h-full  bg-bgBlue">
+    <View className="flex justify-center items-center w-full h-full bg-bgBlue">
       {/* Card containing Lorem Ipsum text */}
 
-      <View className=" flex justify-center items-center space-y-10">
+      <View className="flex justify-center items-center space-y-10">
         <View className="bg-customGreen pt-16 pb-16 mx-6 mt-5 flex items-center rounded-2xl justify-center relative">
           <View className="absolute top-3 left-3">
-            <TouchableOpacity onPress={() => props.navigation.navigate("Db")}>
+            <TouchableOpacity onPress={fetchRandomChallenge}>
               <Image
                 source={require("../assets/refresh.png")}
                 className="h-12 w-12 mb-20 mr-20"
               />
             </TouchableOpacity>
           </View>
+          {documentData && (
+            <>
+              <View className="flex items-center justify-center">
+                <Text className="font-bold text-3xl item">
+                  {documentData.Title}
+                </Text>
+              </View>
 
-          <View className=" flex items-center justify-center">
-            <Text className=" font-bold text-3xl item">Team Balance</Text>
-          </View>
+              <View className="text-black p-4 rounded-lg space-y-3 px-4">
+                <View className="">
+                  <Text className="font-bold">Instructions: </Text>
+                  <Text>{documentData.Instruction}</Text>
+                </View>
 
-          <View className="text-black p-4 rounded-lg space-y-3 px-4">
-            <View className="">
-              <Text className=" font-bold ">Instructions: </Text>
-              <Text>
-                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Magni
-                doloribus facere praesentium adipisci voluptatibus, ducimus,
-                dicta, aut asperiores amet obcaecati non? In iusto quas quos
-                laboriosam iure ducimus magnam numquam.
-              </Text>
-            </View>
+                <View>
+                  <Text className="font-bold">You will need: </Text>
+                  <Text>{documentData.YouWillNeed}</Text>
+                </View>
 
-            <View>
-              <Text className=" font-bold">You wil need: </Text>
-              <Text>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Nesciunt, iste?
-              </Text>
-            </View>
+                <View>
+                  <Text className="font-bold">Rules: </Text>
+                  <Text>{documentData.Rules}</Text>
+                </View>
 
-            <View>
-              <Text className=" font-bold">Rules: </Text>
-              <Text>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Nesciunt, iste?
-              </Text>
-            </View>
-          </View>
+                <View>
+                  <Text> {documentData.Time}</Text>
+                </View>
+              </View>
+            </>
+          )}
         </View>
 
         {/* Show Start Button if timer is not running */}
@@ -114,7 +156,7 @@ const GameScreen = (props: any) => {
           <View>
             <TouchableOpacity
               onPress={pauseTimer}
-              className="bg-red-600 w-48  h-16 rounded-2xl flex flex-row justify-center items-center "
+              className="bg-red-600 w-48 h-16 rounded-2xl flex flex-row justify-center items-center "
             >
               <Text className="text-white text-3xl">{formatTime(timer)}</Text>
               <Image
@@ -127,7 +169,7 @@ const GameScreen = (props: any) => {
       </View>
 
       <View className="mt-6 flex justify-center items-center">
-        <TouchableOpacity onPress={resetTimer} className=" ">
+        <TouchableOpacity onPress={resetTimer} className="">
           <Text className="text-black mb-">Reset timer</Text>
         </TouchableOpacity>
       </View>

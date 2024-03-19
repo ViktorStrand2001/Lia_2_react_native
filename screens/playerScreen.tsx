@@ -165,7 +165,7 @@ const PlayerScreen = (props: any) => {
       </View>
 
       <View className="h-32 justify-center items absolute bottom-16">
-        <TouchableOpacity onPress={() => props.navigation.navigate("Db")}>
+        <TouchableOpacity onPress={() => props.navigation.navigate("Game")}>
           <View className="bg-customGreen px-20 rounded-3xl flex items-center justify-center border">
             <Gamepad2Icon size={60} color={white} />
           </View>
