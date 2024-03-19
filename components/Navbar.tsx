@@ -20,7 +20,7 @@ const Navbar = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="customCards"
+        initialRouteName="Game"
         screenOptions={{
           headerStyle: {
             backgroundColor: "#CAEFFF",

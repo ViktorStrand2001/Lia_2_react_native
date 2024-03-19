@@ -5,11 +5,11 @@ import { TouchableOpacity } from "react-native-gesture-handler"
 import { FIRESTORE_DB } from "../firebaseConfig"
 
 interface Card {
-  Title: string
-  Instruction: string
-  Rules: string
-  YouWillNeed: string
-  Time: number
+  title: string
+  instructions: string
+  rules: string
+  youWillNeed: string
+  time: number
 }
 
 const GameScreen: React.FC = (props: any) => {
@@ -27,7 +27,7 @@ const GameScreen: React.FC = (props: any) => {
       const randomChallengeDoc = querySnapshot.docs[randomIndex]
       const cardData = randomChallengeDoc.data() as Card
       setDocumentData(cardData)
-      setTimer(cardData.Time * 60)
+      setTimer(cardData.time * 60)
       console.log(documentData)
     } catch (error) {
       console.error("Error fetching document:", error)
@@ -69,7 +69,7 @@ const GameScreen: React.FC = (props: any) => {
 
   const resetTimer = () => {
     if (documentData) {
-      setTimer(documentData.Time * 60)
+      setTimer(documentData.time * 60)
     } else {
       setTimer(0)
     }
@@ -106,24 +106,24 @@ const GameScreen: React.FC = (props: any) => {
                   </TouchableOpacity>
                 </View>
                 <View className=" h-[20%] items-center justify-center">
-                  <Text className=" font-bold text-3xl item">
-                    {documentData.Title}
+                  <Text className=" font-bold text-3xl item text-center px-3">
+                    {documentData.title}
                   </Text>
                 </View>
                 <View className="px-6">
                   <View className="h-[40%] ">
                     <Text className=" font-bold ">Instructions: </Text>
-                    <Text>{documentData.Instruction}</Text>
+                    <Text>{documentData.instructions}</Text>
                   </View>
 
                   <View className="h-[20%]">
                     <Text className=" font-bold">You wil need: </Text>
-                    <Text>{documentData.YouWillNeed}</Text>
+                    <Text>{documentData.youWillNeed}</Text>
                   </View>
 
                   <View className="h-[20%]">
                     <Text className=" font-bold">Rules: </Text>
-                    <Text>{documentData.Rules}</Text>
+                    <Text>{documentData.rules}</Text>
                   </View>
                 </View>
               </View>

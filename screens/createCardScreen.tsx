@@ -23,6 +23,7 @@ const CreateCardScreen = () => {
       const cardRef = collection(FIRESTORE_DB, "Lia2-challange")
       await addDoc(cardRef, formData)
       console.log("Card added successfully!")
+      console.log(addDoc);
       // Reset form after submission
       setFormData({
         title: "",
