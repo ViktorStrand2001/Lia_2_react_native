@@ -1,41 +1,26 @@
-import { collection, getDocs, query } from "firebase/firestore"
-import React, { useEffect, useState } from "react"
-import { Text, View, Image } from "react-native"
-import { TouchableOpacity } from "react-native-gesture-handler"
-import { FIRESTORE_DB } from "../firebaseConfig"
+import React, { useCallback, useEffect, useState } from "react"
+import { View } from "react-native"
+import ChallengeCard from "../components/GameScreenComponents/ChallageCard"
+import GameButton from "../components/GameScreenComponents/GameButton"
+import { Card } from "../utils/types"
+import { fetchRandomChallenge } from "../api/challengerService"
 
-interface Card {
-  title: string
-  instructions: string
-  rules: string
-  youWillNeed: string
-  time: number
-}
-
-const GameScreen: React.FC = (props: any) => {
+const GameScreen: React.FC = () => {
   const [timer, setTimer] = useState<number>(Number)
   const [isRunning, setIsRunning] = useState<boolean>(false)
   const [showStartButton, setShowStartButton] = useState<boolean>(true)
   const [documentData, setDocumentData] = useState<Card | null>(null)
 
-  const fetchRandomChallenge = async () => {
-    try {
-      const challengesRef = collection(FIRESTORE_DB, "Lia2-challange")
-      const queryRef = query(challengesRef)
-      const querySnapshot = await getDocs(queryRef)
-      const randomIndex = Math.floor(Math.random() * querySnapshot.docs.length)
-      const randomChallengeDoc = querySnapshot.docs[randomIndex]
-      const cardData = randomChallengeDoc.data() as Card
+  const fetchChallenge = async () => {
+    const cardData = await fetchRandomChallenge()
+    if (cardData) {
       setDocumentData(cardData)
       setTimer(cardData.time * 60)
-      console.log(documentData)
-    } catch (error) {
-      console.error("Error fetching document:", error)
     }
   }
 
   useEffect(() => {
-    fetchRandomChallenge()
+    fetchChallenge()
   }, [])
 
   useEffect(() => {
@@ -52,28 +37,26 @@ const GameScreen: React.FC = (props: any) => {
         })
       }, 1000)
     }
-
     return () => clearInterval(interval)
   }, [isRunning])
 
-  const toggleTimer = () => {
+  const toggleTimer = useCallback(() => {
     setIsRunning((prevIsRunning) => !prevIsRunning)
     setShowStartButton(false)
-    console.log(showStartButton)
-  }
+  }, [])
 
-  const pauseTimer = () => {
+  const pauseTimer = useCallback(() => {
     setIsRunning(false)
     setShowStartButton(true)
-  }
+  }, [])
 
-  const resetTimer = () => {
+  const resetTimer = useCallback(() => {
     if (documentData) {
       setTimer(documentData.time * 60)
     } else {
       setTimer(0)
     }
-  }
+  }, [documentData])
 
   const formatTime = (timeInSeconds: number) => {
     const minutes = Math.floor(timeInSeconds / 60)
@@ -85,87 +68,48 @@ const GameScreen: React.FC = (props: any) => {
   }
 
   return (
-    <View className=" flex justify-center items-center w-full h-full  bg-bgBlue">
-      <View className=" flex justify-center items-center space-y-10">
-        <View className="bg-customGreen w-80 h-96 flex  items-center rounded-2xl justify-center">
-          {documentData && (
-            <>
-              <View className="h-full w-full ">
-                <View className="p-2  h-[10%]">
-                  <TouchableOpacity
-                    onPress={() => {
-                      fetchRandomChallenge()
-                      resetTimer()
-                      pauseTimer()
-                    }}
-                  >
-                    <Image
-                      source={require("../assets/refresh.png")}
-                      className="w-10 h-10 "
-                    />
-                  </TouchableOpacity>
-                </View>
-                <View className=" h-[20%] items-center justify-center">
-                  <Text className=" font-bold text-3xl item text-center px-3">
-                    {documentData.title}
-                  </Text>
-                </View>
-                <View className="px-6">
-                  <View className="h-[40%] ">
-                    <Text className=" font-bold ">Instructions: </Text>
-                    <Text>{documentData.instructions}</Text>
-                  </View>
-
-                  <View className="h-[20%]">
-                    <Text className=" font-bold">You wil need: </Text>
-                    <Text>{documentData.youWillNeed}</Text>
-                  </View>
-
-                  <View className="h-[20%]">
-                    <Text className=" font-bold">Rules: </Text>
-                    <Text>{documentData.rules}</Text>
-                  </View>
-                </View>
-              </View>
-            </>
-          )}
-        </View>
-        {showStartButton && (
-          <TouchableOpacity
-            onPress={toggleTimer}
-            className="bg-customGreen w-48 h-16 rounded-2xl flex flex-row justify-center items-center "
-          >
-            <Image
-              source={require("../assets/Start.png")}
-              className="h-12 w-12"
-            />
-          </TouchableOpacity>
-        )}
-        {!showStartButton && (
-          <View>
-            <TouchableOpacity
-              onPress={pauseTimer}
-              className="bg-red-600 w-48  h-16 rounded-2xl flex flex-row justify-center items-center "
-            >
-              <Text className="text-white text-3xl">{formatTime(timer)}</Text>
-              <Image
-                source={require("../assets/Pause.png")}
-                className="h-12 w-12"
-              />
-            </TouchableOpacity>
-          </View>
-        )}
-      </View>
-
-      <View className="mt-6 flex justify-center items-center">
-        <TouchableOpacity
-          onPress={() => {
+    <View className="flex justify-center items-center w-full h-full bg-bgBlue">
+      <View className="flex justify-center items-center">
+        <ChallengeCard
+          documentData={documentData}
+          refreshChallenge={() => {
+            fetchChallenge()
             resetTimer()
             pauseTimer()
           }}
-        >
-          <Text className="text-black mb-">Reset timer</Text>
-        </TouchableOpacity>
+        />
+        <View className="mt-6">
+          {showStartButton ? (
+            <GameButton
+              onPress={toggleTimer}
+              buttonStyle={"bg-customGreen"}
+              image={require("../assets/icons/Start.png")}
+              imageStyle={"w-16 h-16"}
+            />
+          ) : (
+            <GameButton
+              onPress={pauseTimer}
+              text={`${formatTime(timer)}`}
+              buttonStyle={"bg-red-600"}
+              image={require("../assets/icons/Pause.png")}
+              imageStyle={"w-16 h-16"}
+            />
+          )}
+        </View>
+      </View>
+      <View className="w-16 h-16">
+        {showStartButton ? null : (
+          <View className="flex justify-center items-center">
+            <GameButton
+              onPress={() => {
+                resetTimer()
+                pauseTimer()
+              }}
+              text="Reset timer"
+              buttonTextStyle="text-base text-red-600"
+            />
+          </View>
+        )}
       </View>
     </View>
   )

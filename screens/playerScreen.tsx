@@ -29,7 +29,6 @@ const PlayerScreen = (props: any) => {
   const route = useRoute<PlayerScreenRouteProp>()
   const [showInput, setShowInput] = useState<boolean>(false)
   const navigation = useNavigation()
-  const typeOfGame = route.params.gameType
 
   const addPlayer = () => {
     if (playerName.trim() !== "") {
@@ -78,8 +77,8 @@ const PlayerScreen = (props: any) => {
     savePlayers()
   }, [players])
 
-  
   const renderTextBastOnGameType = () => {
+    const typeOfGame = route.params.gameType
     if (typeOfGame === "free_for_all") {
       return (
         <Text className="text-2xl font-medium capitalize">

@@ -18,7 +18,7 @@ export default function App() {
           </View>
           <View className="w-full">
             <Image
-              source={require("./assets/card-stack_1.png")}
+              source={require("./assets/images/card-stack_1.png")}
               className="w-full h-[470px]"
             />
           </View>
@@ -36,7 +36,7 @@ export default function App() {
           <View className="h-32 justify-center items">
             <TouchableOpacity onPress={() => setOpenLandingPage(true)}>
               <View className="bg-primarypink h-16 px-16 rounded-2xl flex items-center justify-center border">
-                <Image source={require("./assets/Right-Arrow.png")} />
+                <Image source={require("./assets/icons/Right-Arrow.png")} />
               </View>
             </TouchableOpacity>
           </View>
