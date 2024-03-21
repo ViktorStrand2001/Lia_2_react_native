@@ -8,14 +8,9 @@ import {
 import React, { useEffect, useState } from "react"
 import { Gamepad2Icon, PlusCircleIcon, X } from "lucide-react-native"
 import { black, white } from "tailwindcss/colors"
-import { useRoute, RouteProp, useNavigation } from "@react-navigation/native"
+import { useRoute, RouteProp } from "@react-navigation/native"
 import AsyncStorage from "@react-native-async-storage/async-storage"
-
-interface Player {
-  name: string
-  score: number
-  id: number
-}
+import { Player } from "../utils/types"
 
 type RootStackParamList = {
   GameType: undefined
@@ -28,7 +23,10 @@ const PlayerScreen = (props: any) => {
   const [players, setPlayers] = useState<Player[]>([])
   const route = useRoute<PlayerScreenRouteProp>()
   const [showInput, setShowInput] = useState<boolean>(false)
-  const navigation = useNavigation()
+
+    const navigateToScoreboard = () => {
+      props.navigation.navigate("Scoreboard", { players })
+    }
 
   const addPlayer = () => {
     if (playerName.trim() !== "") {
@@ -57,6 +55,8 @@ const PlayerScreen = (props: any) => {
         if (storedPlayers !== null) {
           setPlayers(JSON.parse(storedPlayers))
         }
+        console.log("players are from", players);
+        
       } catch (error) {
         console.error("Error loading players:", error)
       }
@@ -76,6 +76,10 @@ const PlayerScreen = (props: any) => {
 
     savePlayers()
   }, [players])
+
+  useEffect(() => {
+    navigateToScoreboard()
+  }, [])
 
   const renderTextBastOnGameType = () => {
     const typeOfGame = route.params.gameType
@@ -167,6 +171,11 @@ const PlayerScreen = (props: any) => {
         <TouchableOpacity onPressOut={() => props.navigation.navigate("Game")}>
           <View className="bg-customGreen px-20 rounded-3xl flex items-center justify-center border">
             <Gamepad2Icon size={60} color={white} />
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity onPressOut={() => navigateToScoreboard()}>
+          <View className="px-20 rounded-3xl flex items-center justify-center border">
+            <Text>scoreboard</Text>
           </View>
         </TouchableOpacity>
       </View>

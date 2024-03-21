@@ -8,19 +8,25 @@ import SettingScreen from "../screens/settingscreen"
 import GameScreen from "../screens/gameScreen"
 import PlayerScreen from "../screens/playerScreen"
 import CreateCardScreen from "../screens/createCardScreen"
+import ScoreboardScreen from "../screens/scoreboardScreen"
 
 const Navbar = () => {
   const Stack = createStackNavigator()
 
   const settings = {
-    headerRight: () => (
-      <SettingsIcon size={24} color="black" style={{ marginRight: 16 }} />
+    headerRight: (props: any) => (
+      <SettingsIcon
+        size={24}
+        color="black"
+        style={{ marginRight: 16 }}
+        onPress={() => props.navigation.navigate("SetPlayer")}
+      />
     ),
   }
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="GameType"
+        initialRouteName="Gametype"
         screenOptions={{
           headerStyle: {
             backgroundColor: "#CAEFFF",
@@ -38,6 +44,11 @@ const Navbar = () => {
           options={settings}
         />
         <Stack.Screen name="Game" component={GameScreen} options={settings} />
+        <Stack.Screen
+          name="Scoreboard"
+          component={ScoreboardScreen}
+          options={settings}
+        />
         <Stack.Screen
           name="Settings"
           component={SettingScreen}

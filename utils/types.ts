@@ -5,3 +5,9 @@ export interface Card {
   youWillNeed: string
   time: number
 }
+
+export interface Player {
+  name: string
+  score: number
+  id: number
+}
