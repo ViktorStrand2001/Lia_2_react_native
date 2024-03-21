@@ -3,6 +3,7 @@ import React, { useState } from "react"
 import { Text, View, TouchableOpacity, Image } from "react-native"
 import Logo from "./components/Logo"
 import Navbar from "./components/Navbar"
+import GameButton from "./components/GameScreenComponents/GameButton"
 
 const Tab = createMaterialBottomTabNavigator()
 
@@ -33,12 +34,12 @@ export default function App() {
               ultimate challnger!
             </Text>
           </View>
-          <View className="h-32 justify-center items">
-            <TouchableOpacity onPress={() => setOpenLandingPage(true)}>
-              <View className="bg-primarypink h-16 px-16 rounded-2xl flex items-center justify-center border">
-                <Image source={require("./assets/icons/Right-Arrow.png")} />
-              </View>
-            </TouchableOpacity>
+          <View className=" mt-4 justify-center items">
+            <GameButton
+              onPress={() => setOpenLandingPage(true)}
+              buttonStyle="bg-primarypink"
+              image={require("./assets/icons/Right-Arrow.png")}
+            />
           </View>
         </View>
       ) : (

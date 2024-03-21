@@ -43,7 +43,7 @@ const GameTypeScreen = (props: any) => {
           <View>
             <GameTypeOption
               image={require("../assets/images/free_for_all_1.png")}
-              gameType="free_for_all"
+              gameType="free for all"
               onPress={() => {
                 navigateToPlayerScreen()
                 handleGameTypeSelection("free_for_all")
