@@ -149,7 +149,7 @@ const PlayerScreen = (props: any) => {
             .map((player, index) => (
               <View
                 key={index}
-                className="w-52 h-10 border justify-center rounded-lg  bg-white relative"
+                className="w-52 h-10 border justify-center rounded-lg shadow-md shadow-black bg-white relative"
               >
                 <Text className="pl-4">{player.name}</Text>
                 <View className=" justify-center item-center bg-lime-400 absolute ">
