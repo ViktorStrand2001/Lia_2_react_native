@@ -9,6 +9,7 @@ import React, { useEffect, useState } from "react"
 import GameButton from "../components/GameScreenComponents/GameButton"
 import { useRoute, RouteProp } from "@react-navigation/native"
 import { Player } from "../utils/types"
+import ScoreButton from "../components/ScoreBoardComponents/ScoreButton"
 
 type RootStackParamList = {
   Player: undefined
@@ -21,6 +22,8 @@ const ScoreboardScreen = () => {
   const [scoreboard, setScoreboard] = useState<Player[]>([])
   const [toggle, setToggle] = useState<boolean>(false)
   const players = route.params.players
+  const [selectedPlayerId, setSelectedPlayerId] = useState<number | null>(null)
+  const [showPointDistribution, setShowPointDistribution] = useState(false)
 
   const showPoints = () => {
     setToggle(true)
@@ -42,18 +45,34 @@ const ScoreboardScreen = () => {
 
   console.log(toggle)
 
+  const distributePoint = (points: number) => {
+    if (selectedPlayerId !== null) {
+      const updatedScoreboard = scoreboard.map((player) => {
+        if (player.id === selectedPlayerId) {
+          return {
+            ...player,
+            score: player.score + points,
+          }
+        }
+        return player
+      })
+      setScoreboard(updatedScoreboard)
+      setShowPointDistribution(false) // Dölj poängfördelningsknapparna
+      setSelectedPlayerId(null) // Återställ den valda spelarens id
+    }
+  }
   const diatributePoint = () => {
     return (
       <View className=" flex justify-center items-center w-screen h-screen bg-black opacity-90  absolute z-50">
         <View className=" bg-white  w-72 h-16"></View>
-
         <View style={styles.gridContainer}>
-          {scoreboard.map((player, index) => (
-            <TouchableOpacity key={index} style={styles.gridItem}>
-              <View>
-                <Text>{index + 1}pt</Text>
-              </View>
-            </TouchableOpacity>
+          {scoreboard.map((points, index) => (
+            <ScoreButton
+              onPress={() => distributePoint(points)} // Skicka med poäng och spelarens id
+              text={`${index + 1}`}
+              buttonStyle={" bg-primaryGold"}
+              id={`${index}`}
+            />
           ))}
         </View>
       </View>
@@ -62,7 +81,7 @@ const ScoreboardScreen = () => {
 
   return (
     <View className="bg-bgBlue min-w-screen min-h-screen flex justify-center items-center pb-20">
-      {!toggle && diatributePoint()}
+      {toggle && diatributePoint()}
       <Text className="font-bold text-2xl mb-3 capitalize">
         distribute points
       </Text>
@@ -77,6 +96,7 @@ const ScoreboardScreen = () => {
                   }`}
                 >
                   <Text className="italic text-lg">{player.name}</Text>
+                  <Text>{player.score}</Text>
                 </View>
               </View>
             </TouchableOpacity>
@@ -101,14 +121,6 @@ const styles = StyleSheet.create({
     alignItems: "flex-start", // Align items to the top of the container
     padding: 10,
   },
-  gridItem: {
-    width: "30%", // Adjust this percentage as needed for 3 items per row
-    height: 40,
-      justifyContent: "center",
-    alignItems: "center",
-    marginVertical: 5, // Adjust vertical margin as needed
-    marginHorizontal: 5, // Adjust horizontal margin as needed for spacing between items
-    backgroundColor: "lightblue",
-  },
 })
+
 export default ScoreboardScreen
