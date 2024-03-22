@@ -5,21 +5,18 @@ interface ButtonProps {
   onPress: () => void
   text?: string
   buttonStyle?: string
-  id: string
 }
 
 const ScoreButton: React.FC<ButtonProps> = ({
   onPress,
   text,
   buttonStyle,
-  id,
 }) => {
   return (
     <TouchableOpacity
       style={styles.gridItem}
       onPress={onPress}
       className={`bg-white w-16 h-10  rounded-3xl  ${buttonStyle}`}
-      id={id}
     >
       <Text className=" font-bold italic text-xl ml "> {text}</Text>
     </TouchableOpacity>

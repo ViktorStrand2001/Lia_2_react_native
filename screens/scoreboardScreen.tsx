@@ -20,58 +20,54 @@ type PlayerScreenRouteProp = RouteProp<RootStackParamList, "SetPlayer">
 const ScoreboardScreen = () => {
   const route = useRoute<PlayerScreenRouteProp>()
   const [scoreboard, setScoreboard] = useState<Player[]>([])
-  const [toggle, setToggle] = useState<boolean>(false)
-  const players = route.params.players
   const [selectedPlayerId, setSelectedPlayerId] = useState<number | null>(null)
   const [showPointDistribution, setShowPointDistribution] = useState(false)
-
-  const showPoints = () => {
-    setToggle(true)
-    console.log(toggle)
-  }
-  const showsenpoint = () => {
-    setToggle(false)
-    console.log(toggle)
-  }
+  const [availablePoints, setAvailablePoints] = useState<number[]>([])
+  const players = route.params.players
 
   useEffect(() => {
     if (players) {
       setScoreboard(players)
+      //shows point buttons baste on players
+      setAvailablePoints([...Array(players.length).keys()].map((i) => i + 1))
     }
   }, [players])
 
-  console.log(players)
-  console.dir(scoreboard)
+  const handlePlayerPress = (playerId: number) => {
+    setShowPointDistribution(true)
+    setSelectedPlayerId(playerId)
+  }
 
-  console.log(toggle)
-
-  const distributePoint = (points: number) => {
+  const handleScoreButtonPress = (points: number) => {
     if (selectedPlayerId !== null) {
-      const updatedScoreboard = scoreboard.map((player) => {
-        if (player.id === selectedPlayerId) {
-          return {
-            ...player,
-            score: player.score + points,
-          }
-        }
-        return player
-      })
-      setScoreboard(updatedScoreboard)
-      setShowPointDistribution(false) // Dölj poängfördelningsknapparna
-      setSelectedPlayerId(null) // Återställ den valda spelarens id
+      // add score to player
+      setScoreboard((prevScoreboard) =>
+        prevScoreboard.map((player) =>
+          player.id === selectedPlayerId
+            ? { ...player, score: player.score + points }
+            : player
+        )
+      )
+      // removes used score button
+      setAvailablePoints((prevPoints) =>
+        prevPoints.filter((point) => point !== points)
+      )
+      setShowPointDistribution(false)
+      setSelectedPlayerId(null)
     }
   }
+
   const diatributePoint = () => {
     return (
       <View className=" flex justify-center items-center w-screen h-screen bg-black opacity-90  absolute z-50">
         <View className=" bg-white  w-72 h-16"></View>
         <View style={styles.gridContainer}>
-          {scoreboard.map((points, index) => (
+          {availablePoints.map((point, index) => (
             <ScoreButton
-              onPress={() => distributePoint(points)} // Skicka med poäng och spelarens id
-              text={`${index + 1}`}
-              buttonStyle={" bg-primaryGold"}
-              id={`${index}`}
+              onPress={() => handleScoreButtonPress(point)}
+              text={`${point}`}
+              buttonStyle={"bg-primaryGold"}
+              key={index}
             />
           ))}
         </View>
@@ -81,14 +77,14 @@ const ScoreboardScreen = () => {
 
   return (
     <View className="bg-bgBlue min-w-screen min-h-screen flex justify-center items-center pb-20">
-      {toggle && diatributePoint()}
+      {showPointDistribution && diatributePoint()}
       <Text className="font-bold text-2xl mb-3 capitalize">
         distribute points
       </Text>
       <View className="w-80 h-[450px] border border-black rounded-lg bg-gray-100 ">
         <ScrollView className="mt-4 mb-4 space-y-4">
           {scoreboard.map((player, index) => (
-            <TouchableOpacity onPress={showPoints}>
+            <TouchableOpacity onPress={() => handlePlayerPress(player.id)}>
               <View className="flex justify-center items-center w-full">
                 <View
                   className={` w-72 h-16 flex justify-center items-center ${
