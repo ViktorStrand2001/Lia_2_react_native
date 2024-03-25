@@ -1,5 +1,5 @@
 import React from "react"
-import { Text, TouchableOpacity, Image } from "react-native"
+import { Text, TouchableOpacity, Image, View } from "react-native"
 
 interface ButtonProps {
   onPress: () => void
@@ -8,6 +8,7 @@ interface ButtonProps {
   buttonTextStyle?: string
   image?: string | any
   imageStyle?: string
+  icon?: any
 }
 
 const GameButton: React.FC<ButtonProps> = ({
@@ -17,6 +18,7 @@ const GameButton: React.FC<ButtonProps> = ({
   buttonTextStyle,
   image,
   imageStyle,
+  icon,
 }) => {
   return (
     <TouchableOpacity
@@ -24,6 +26,7 @@ const GameButton: React.FC<ButtonProps> = ({
       className={`w-48  h-16 rounded-2xl flex flex-row justify-center items-center ${buttonStyle}`}
     >
       <Text className={`text-white text-3xl ${buttonTextStyle}`}>{text}</Text>
+      {icon}
       <Image source={image} className={`${imageStyle}`} />
     </TouchableOpacity>
   )

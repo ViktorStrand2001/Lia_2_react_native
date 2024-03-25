@@ -25,7 +25,7 @@ const PlayerScreen = (props: any) => {
   const [showInput, setShowInput] = useState<boolean>(false)
 
     const navigateToScoreboard = () => {
-      props.navigation.navigate("Scoreboard", { players })
+      props.navigation.navigate("Points", { players })
     }
 
   const addPlayer = () => {

@@ -8,6 +8,7 @@ import SettingScreen from "../screens/settingscreen"
 import GameScreen from "../screens/gameScreen"
 import PlayerScreen from "../screens/playerScreen"
 import CreateCardScreen from "../screens/createCardScreen"
+import DiatributePointScreen from "../screens/diatributePointScreen"
 import ScoreboardScreen from "../screens/scoreboardScreen"
 
 const Navbar = () => {
@@ -44,6 +45,11 @@ const Navbar = () => {
           options={settings}
         />
         <Stack.Screen name="Game" component={GameScreen} options={settings} />
+        <Stack.Screen
+          name="Points"
+          component={DiatributePointScreen}
+          options={settings}
+        />
         <Stack.Screen
           name="Scoreboard"
           component={ScoreboardScreen}
