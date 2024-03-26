@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react"
 import { View } from "react-native"
 import ChallengeCard from "../components/GameScreenComponents/ChallageCard"
 import GameButton from "../components/GameScreenComponents/GameButton"
-import { Card, Player } from "../utils/types"
+import { Card } from "../utils/types"
 import { fetchRandomChallenge } from "../api/challengerService"
 import { RouteProp, useRoute } from "@react-navigation/core"
 
@@ -22,11 +22,9 @@ const GameScreen = () => {
   const route = useRoute<PlayerScreenRouteProp>()
 
   const fetchChallenge = async () => {
+    setGameType(route.params.gameType)
     if (gameType !== "") {
-      setGameType(route.params.gameType)
-      console.log("Fetching challenge for game type:", gameType)
       const cardData = await fetchRandomChallenge(gameType)
-
       if (cardData) {
         setDocumentData(cardData)
         setTimer(cardData.Time * 60)
@@ -35,9 +33,7 @@ const GameScreen = () => {
   }
 
   useEffect(() => {
-    if (gameType === "") {
-      fetchChallenge()
-    }
+    fetchChallenge()
   }, [gameType])
 
   useEffect(() => {

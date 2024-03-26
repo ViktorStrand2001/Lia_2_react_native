@@ -25,13 +25,15 @@ const PlayerScreen = (props: any) => {
   const [showInput, setShowInput] = useState<boolean>(false)
   const [gameType, setGameType] = useState<string>("")
 
-  const navigateToScoreboard = () => {
-    props.navigation.navigate("Points", { players })
-  }
   const navigateToGame = () => {
-    setGameType(route.params.gameType)
-    props.navigation.navigate("Game", { gameType })
+    if (gameType != "") {
+      props.navigation.navigate("Game", { gameType })
+    }
   }
+
+  useEffect(() => {
+    setGameType(route.params.gameType)
+  }, [gameType])
 
   const addPlayer = () => {
     if (playerName.trim() !== "") {
@@ -60,7 +62,7 @@ const PlayerScreen = (props: any) => {
         if (storedPlayers !== null) {
           setPlayers(JSON.parse(storedPlayers))
         }
-        console.log("players are from", players)
+        console.log(players)
       } catch (error) {
         console.error("Error loading players:", error)
       }
@@ -81,22 +83,18 @@ const PlayerScreen = (props: any) => {
     savePlayers()
   }, [players])
 
-  useEffect(() => {
-    navigateToScoreboard()
-  }, [])
-
   const renderTextBastOnGameType = () => {
     const typeOfGame = route.params.gameType
-    if (typeOfGame === "free_for_all") {
+    if (typeOfGame === "Group-Battles") {
       return (
         <Text className="text-2xl font-medium capitalize">
-          Type your names!
+          type your team names!
         </Text>
       )
     } else {
       return (
         <Text className="text-2xl font-medium capitalize">
-          Type your team names!
+          Type your names!
         </Text>
       )
     }
@@ -175,11 +173,6 @@ const PlayerScreen = (props: any) => {
         <TouchableOpacity onPressOut={() => navigateToGame()}>
           <View className="bg-customGreen px-20 rounded-3xl flex items-center justify-center border">
             <Gamepad2Icon size={60} color={white} />
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPressOut={() => navigateToScoreboard()}>
-          <View className="px-20 rounded-3xl flex items-center justify-center border">
-            <Text>scoreboard</Text>
           </View>
         </TouchableOpacity>
       </View>
