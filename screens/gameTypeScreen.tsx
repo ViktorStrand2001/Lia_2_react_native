@@ -32,10 +32,10 @@ const GameTypeScreen = (props: any) => {
           <View>
             <GameTypeOption
               image={require("../assets/images/group_battle_1.png")}
-              gameType="group battle"
+              gameType="Group-battle"
               onPress={() => {
                 navigateToPlayerScreen()
-                handleGameTypeSelection("group_battle")
+                handleGameTypeSelection("Group-Battles")
               }}
             />
           </View>
@@ -46,7 +46,7 @@ const GameTypeScreen = (props: any) => {
               gameType="free for all"
               onPress={() => {
                 navigateToPlayerScreen()
-                handleGameTypeSelection("free_for_all")
+                handleGameTypeSelection("Free-for-all")
               }}
             />
           </View>

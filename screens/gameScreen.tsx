@@ -2,26 +2,43 @@ import React, { useCallback, useEffect, useState } from "react"
 import { View } from "react-native"
 import ChallengeCard from "../components/GameScreenComponents/ChallageCard"
 import GameButton from "../components/GameScreenComponents/GameButton"
-import { Card } from "../utils/types"
+import { Card, Player } from "../utils/types"
 import { fetchRandomChallenge } from "../api/challengerService"
+import { RouteProp, useRoute } from "@react-navigation/core"
 
-const GameScreen: React.FC = () => {
+type RootStackParamList = {
+  GameType: undefined
+  SetPlayer: { gameType: string }
+}
+type PlayerScreenRouteProp = RouteProp<RootStackParamList, "SetPlayer">
+
+//
+const GameScreen = () => {
   const [timer, setTimer] = useState<number>(Number)
   const [isRunning, setIsRunning] = useState<boolean>(false)
   const [showStartButton, setShowStartButton] = useState<boolean>(true)
   const [documentData, setDocumentData] = useState<Card | null>(null)
+  const [gameType, setGameType] = useState<string>("")
+  const route = useRoute<PlayerScreenRouteProp>()
 
   const fetchChallenge = async () => {
-    const cardData = await fetchRandomChallenge()
-    if (cardData) {
-      setDocumentData(cardData)
-      setTimer(cardData.time * 60)
+    if (gameType !== "") {
+      setGameType(route.params.gameType)
+      console.log("Fetching challenge for game type:", gameType)
+      const cardData = await fetchRandomChallenge(gameType)
+
+      if (cardData) {
+        setDocumentData(cardData)
+        setTimer(cardData.Time * 60)
+      }
     }
   }
 
   useEffect(() => {
-    fetchChallenge()
-  }, [])
+    if (gameType === "") {
+      fetchChallenge()
+    }
+  }, [gameType])
 
   useEffect(() => {
     let interval: NodeJS.Timeout
@@ -52,7 +69,7 @@ const GameScreen: React.FC = () => {
 
   const resetTimer = useCallback(() => {
     if (documentData) {
-      setTimer(documentData.time * 60)
+      setTimer(documentData.Time * 60)
     } else {
       setTimer(0)
     }

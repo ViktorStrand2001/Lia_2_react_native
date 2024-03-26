@@ -2,9 +2,10 @@ import { collection, getDocs, query } from "firebase/firestore"
 import { FIRESTORE_DB } from "../firebaseConfig"
 import { Card } from "../utils/types"
 
-export const fetchRandomChallenge = async (): Promise<Card | null> => {
+
+export const fetchRandomChallenge = async (gameType:string): Promise<Card | null> => {
   try {
-    const challengesRef = collection(FIRESTORE_DB, "Lia2-challange")
+    const challengesRef = collection(FIRESTORE_DB,  gameType)
     const queryRef = query(challengesRef)
     const querySnapshot = await getDocs(queryRef)
     const randomIndex = Math.floor(Math.random() * querySnapshot.docs.length)

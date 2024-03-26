@@ -29,18 +29,18 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
       <View className="px-3 w-full mt-12">
         <View className=" items-center justify-center ">
           <Text className="font-bold text-2xl item text-center">
-            {documentData.title}
+            {documentData.Title}
           </Text>
         </View>
         <View className="px-3">
             <Text className="font-bold mt-3">Instructions: </Text>
-            <Text>{documentData.instructions}</Text>
+            <Text>{documentData.Instructions}</Text>
 
             <Text className="font-bold mt-3">You will need: </Text>
-            <Text>{documentData.youWillNeed}</Text>
+            <Text>{documentData.YouWillNeed}</Text>
 
             <Text className="font-bold mt-3">Rules: </Text>
-            <Text>{documentData.rules}</Text>
+            <Text>{documentData.Rules}</Text>
         </View>
       </View>
     </View>

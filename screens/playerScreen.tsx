@@ -23,10 +23,15 @@ const PlayerScreen = (props: any) => {
   const [players, setPlayers] = useState<Player[]>([])
   const route = useRoute<PlayerScreenRouteProp>()
   const [showInput, setShowInput] = useState<boolean>(false)
+  const [gameType, setGameType] = useState<string>("")
 
-    const navigateToScoreboard = () => {
-      props.navigation.navigate("Points", { players })
-    }
+  const navigateToScoreboard = () => {
+    props.navigation.navigate("Points", { players })
+  }
+  const navigateToGame = () => {
+    setGameType(route.params.gameType)
+    props.navigation.navigate("Game", { gameType })
+  }
 
   const addPlayer = () => {
     if (playerName.trim() !== "") {
@@ -55,8 +60,7 @@ const PlayerScreen = (props: any) => {
         if (storedPlayers !== null) {
           setPlayers(JSON.parse(storedPlayers))
         }
-        console.log("players are from", players);
-        
+        console.log("players are from", players)
       } catch (error) {
         console.error("Error loading players:", error)
       }
@@ -168,7 +172,7 @@ const PlayerScreen = (props: any) => {
       </View>
 
       <View className="h-32 justify-center items absolute bottom-16">
-        <TouchableOpacity onPressOut={() => props.navigation.navigate("Game")}>
+        <TouchableOpacity onPressOut={() => navigateToGame()}>
           <View className="bg-customGreen px-20 rounded-3xl flex items-center justify-center border">
             <Gamepad2Icon size={60} color={white} />
           </View>
