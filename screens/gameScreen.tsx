@@ -12,7 +12,6 @@ type RootStackParamList = {
 }
 type PlayerScreenRouteProp = RouteProp<RootStackParamList, "SetPlayer">
 
-//
 const GameScreen = () => {
   const [timer, setTimer] = useState<number>(Number)
   const [isRunning, setIsRunning] = useState<boolean>(false)
@@ -40,13 +39,17 @@ const GameScreen = () => {
     let interval: NodeJS.Timeout
     if (isRunning) {
       interval = setInterval(() => {
-        setTimer((prevTimer) => {
-          if (prevTimer <= 0) {
-            clearInterval(interval)
-            setIsRunning(false)
-            return 0
+        setTimer((prevTimer: any) => {
+          if (documentData && documentData.GameType == "timedown") {
+            if (prevTimer <= 0) {
+              clearInterval(interval)
+              setIsRunning(false)
+              return 0
+            }
+            return prevTimer - 1
+          } else {
+            return prevTimer + 1
           }
-          return prevTimer - 1
         })
       }, 1000)
     }
