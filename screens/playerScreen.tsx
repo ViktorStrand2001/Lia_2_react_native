@@ -28,6 +28,7 @@ const PlayerScreen = (props: any) => {
   const navigateToGame = () => {
     if (gameType != "") {
       props.navigation.navigate("Game", { gameType })
+      console.log(gameType);
     }
   }
 

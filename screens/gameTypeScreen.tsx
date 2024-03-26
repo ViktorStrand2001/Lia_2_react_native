@@ -7,7 +7,9 @@ const GameTypeScreen = (props: any) => {
 
   // sending data to playerScreeen
   const navigateToPlayerScreen = () => {
-    props.navigation.navigate("SetPlayer", { gameType })
+    if (gameType != "") {
+      props.navigation.navigate("SetPlayer", { gameType })
+    }
   }
   const navigateToCustomCardScreen = () => {
     props.navigation.navigate("customCards")
@@ -18,12 +20,10 @@ const GameTypeScreen = (props: any) => {
   }
 
   useEffect(() => {
-    if (gameType) {
+    if (gameType != "") {
       navigateToPlayerScreen()
     }
   }, [gameType])
-
-  console.log(gameType)
 
   return (
     <ScrollView>
@@ -47,6 +47,16 @@ const GameTypeScreen = (props: any) => {
               onPress={() => {
                 navigateToPlayerScreen()
                 handleGameTypeSelection("Free-for-all")
+              }}
+            />
+          </View>
+          <View className="h-0.5 w-80 bg-black rounded-lg" />
+          <View>
+            <GameTypeOption
+              gameType="quiz!"
+              onPress={() => {
+                navigateToPlayerScreen()
+                handleGameTypeSelection("Quiz")
               }}
             />
           </View>

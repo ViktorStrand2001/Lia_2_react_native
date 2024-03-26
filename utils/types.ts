@@ -7,6 +7,12 @@ export interface Card {
   GameType: string
 }
 
+export interface Quiz {
+  Context: string
+  Answer: boolean
+  Title: string
+}
+
 export interface Player {
   name: string
   score: number
