@@ -9,6 +9,7 @@ interface ButtonProps {
   image?: string | any
   imageStyle?: string
   icon?: any
+  disabled?: boolean
 }
 
 const GameButton: React.FC<ButtonProps> = ({
@@ -19,10 +20,12 @@ const GameButton: React.FC<ButtonProps> = ({
   image,
   imageStyle,
   icon,
+  disabled
 }) => {
   return (
     <TouchableOpacity
       onPress={onPress}
+      disabled={disabled}
       className={`w-48  h-16 rounded-2xl flex flex-row justify-center items-center ${buttonStyle}`}
     >
       <Text className={`text-white text-3xl ${buttonTextStyle}`}>{text}</Text>

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react"
-import { View } from "react-native"
+import { View, Text, Animated } from "react-native"
 import ChallengeCard from "../components/GameScreenComponents/ChallageCard"
 import GameButton from "../components/GameScreenComponents/GameButton"
 import { Card, Quiz } from "../utils/types"
@@ -7,6 +7,7 @@ import { fetchRandomChallenge } from "../api/challengerService"
 import { fetchRandomQuiz } from "../api/quizService"
 import { RouteProp, useRoute } from "@react-navigation/core"
 import QuizCard from "../components/GameScreenComponents/QuizCard"
+import { CheckIcon, X, XIcon } from "lucide-react-native"
 
 type RootStackParamList = {
   GameType: undefined
@@ -21,7 +22,11 @@ const GameScreen = () => {
   const [challengeData, setChallengeData] = useState<Card | null>(null)
   const [quizData, setquizData] = useState<Quiz | null>(null)
   const [gameType, setGameType] = useState<string>("")
+  const [quizCardAnswer, setQuizCardAnswer] = useState<boolean | undefined>()
+  const [quizScore, setQuizScore] = useState<number>(0)
+  const [quizAnswer, setQuizAnswer] = useState<string>("")
   const route = useRoute<PlayerScreenRouteProp>()
+  const [disabled, setDisabled] = useState<boolean>(false)
 
   const fetchChallenge = async () => {
     setGameType(route.params.gameType)
@@ -40,6 +45,7 @@ const GameScreen = () => {
       const quizDatafetch = await fetchRandomQuiz(gameType)
       if (quizDatafetch) {
         setquizData(quizDatafetch)
+        setQuizCardAnswer(quizDatafetch.Answer)
       }
     }
   }
@@ -53,6 +59,8 @@ const GameScreen = () => {
       fetchQuiz()
     }, [gameType])
   }
+
+  const getRandomUser = () => {}
 
   useEffect(() => {
     let interval: NodeJS.Timeout
@@ -102,10 +110,71 @@ const GameScreen = () => {
     )}`
   }
 
+  const handleAnswerSelection = useCallback(
+    (selectedAnswer: boolean) => {
+      if (quizData) {
+        const isCorrect = selectedAnswer === quizData.Answer
+        if (isCorrect) {
+          setQuizScore((prevQuizScore) => prevQuizScore + 1)
+          setQuizAnswer("Correct")
+          setDisabled(true)
+        } else {
+          setQuizAnswer("Incorrect")
+          setDisabled(true)
+        }
+      }
+      setTimeout(() => {
+        setQuizAnswer("")
+        fetchQuiz()
+      }, 1000)
+      setTimeout(() => {
+        setDisabled(false)
+      }, 2000)
+    },
+    [quizData]
+  )
+
+  const FadeInView = (props: any) => {
+    const [fadeAnim] = useState(new Animated.Value(1)) // Initial value for opacity: 0
+
+    useEffect(() => {
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 1000,
+        useNativeDriver: true,
+      }).start()
+    }, [fadeAnim])
+
+    return (
+      <Animated.View
+        style={{
+          ...props.style,
+          opacity: fadeAnim,
+        }}
+      >
+        {props.children}
+      </Animated.View>
+    )
+  }
+
   return (
     <View className="flex justify-center items-center w-full h-full bg-bgBlue">
       {gameType == "Quiz" ? (
-        <View className="flex justify-center items-center w-screen">
+        <View className="flex justify-center items-center w-screen h-full">
+          {quizAnswer === "Correct" ? (
+            <View className="z-50 absolute top-0">
+              <FadeInView>
+                <CheckIcon size={200} className="text-green-900" />
+              </FadeInView>
+            </View>
+          ) : null}
+          {quizAnswer === "Incorrect" ? (
+            <View className="z-50 absolute top-0">
+              <FadeInView>
+                <XIcon size={200} className="text-red-700" />
+              </FadeInView>
+            </View>
+          ) : null}
           <QuizCard
             quizData={quizData}
             refreshQuiz={() => {
@@ -115,16 +184,22 @@ const GameScreen = () => {
           <View className="mt-6 flex flex-row space-x-6">
             <View>
               <GameButton
-                onPress={() => ""}
-                text={"true"}
+                onPress={() => {
+                  handleAnswerSelection(true)
+                }}
+                disabled={disabled}
+                icon={<CheckIcon size={70} className="text-white" />}
                 buttonTextStyle="capitalize"
                 buttonStyle={"bg-customGreen w-28 h-16"}
               />
             </View>
             <View>
               <GameButton
-                onPress={() => ""}
-                text={"false"}
+                onPress={() => {
+                  handleAnswerSelection(false)
+                }}
+                icon={<XIcon size={70} className="text-white" />}
+                disabled={disabled}
                 buttonTextStyle="capitalize"
                 buttonStyle={"bg-red-600 w-28 h-16"}
               />

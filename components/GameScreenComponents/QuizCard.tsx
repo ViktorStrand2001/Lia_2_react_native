@@ -14,7 +14,7 @@ const QuizCard: React.FC<QuizCardProps> = ({ quizData, refreshQuiz }) => {
   }
 
   return (
-    <View className="bg-customGreen w-80 h-[400px] flex flex-col items-center rounded-2xl relative">
+    <View className="bg-customGreen w-80 pb-12 flex flex-col items-center rounded-2xl relative">
       <View className="top-2 left-2 flex justify-start absolute">
         <TouchableOpacity onPress={refreshQuiz}>
           <Image
@@ -23,7 +23,7 @@ const QuizCard: React.FC<QuizCardProps> = ({ quizData, refreshQuiz }) => {
           />
         </TouchableOpacity>
       </View>
-      <View className="px-3 w-full mt-12">
+      <View className="px-3 w-full mt-12 items-center justify-center flex text-center">
         <View className=" items-center justify-center ">
           <Text className="font-bold text-2xl item text-center">
             {quizData.Title}
