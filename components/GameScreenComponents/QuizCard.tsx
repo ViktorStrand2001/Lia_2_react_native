@@ -8,17 +8,11 @@ interface QuizCardProps {
   refreshQuiz: () => void
 }
 
-const ChallengeCard: React.FC<QuizCardProps> = ({
-  quizData,
-  refreshQuiz,
-}) => {
-  
+const QuizCard: React.FC<QuizCardProps> = ({ quizData, refreshQuiz }) => {
+  console.log("component", quizData)
   if (!quizData) {
     return null
   }
-
-  console.log("component", quizData);
-  
 
   return (
     <View className="bg-customGreen w-80 h-[400px] flex flex-col items-center rounded-2xl relative">
@@ -44,4 +38,4 @@ const ChallengeCard: React.FC<QuizCardProps> = ({
   )
 }
 
-export default ChallengeCard
+export default QuizCard

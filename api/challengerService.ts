@@ -6,7 +6,7 @@ import { Card } from "../utils/types"
 
 export const fetchRandomChallenge = async (gameType:string): Promise<Card | null> => {
   try {
-    const challengesRef = collection(FIRESTORE_DB,  gameType)
+    const challengesRef = collection(FIRESTORE_DB, gameType)
     const queryRef = query(challengesRef)
     const querySnapshot = await getDocs(queryRef)
     const randomIndex = Math.floor(Math.random() * querySnapshot.docs.length)

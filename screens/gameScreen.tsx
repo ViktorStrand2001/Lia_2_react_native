@@ -18,7 +18,7 @@ const GameScreen = () => {
   const [timer, setTimer] = useState<number>(Number)
   const [isRunning, setIsRunning] = useState<boolean>(false)
   const [showStartButton, setShowStartButton] = useState<boolean>(true)
-  const [documentData, setDocumentData] = useState<Card | null>(null)
+  const [challengeData, setChallengeData] = useState<Card | null>(null)
   const [quizData, setquizData] = useState<Quiz | null>(null)
   const [gameType, setGameType] = useState<string>("")
   const route = useRoute<PlayerScreenRouteProp>()
@@ -26,11 +26,11 @@ const GameScreen = () => {
   const fetchChallenge = async () => {
     setGameType(route.params.gameType)
     if (gameType != "") {
-      const cardData = await fetchRandomChallenge(gameType)
-      if (cardData) {
-        setDocumentData(cardData)
-        console.log("fetch",documentData)
-        setTimer(cardData.Time * 60)
+      const challengeCardData = await fetchRandomChallenge(gameType)
+      if (challengeCardData) {
+        setChallengeData(challengeCardData)
+        console.log("fetch", challengeData)
+        setTimer(challengeCardData.Time * 60)
       }
     }
   }
@@ -41,20 +41,20 @@ const GameScreen = () => {
       const quizDatafetch = await fetchRandomQuiz(gameType)
       if (quizDatafetch) {
         setquizData(quizDatafetch)
-        console.log("fetch", quizData)
+        console.log("fetch", quizDatafetch)
       }
     }
   }
 
-  if (gameType == "Free-for-all" || "Group-Battles") {
+  if (gameType === "Free-for-all" || gameType === "Group-Battles") {
     useEffect(() => {
       fetchChallenge()
-      console.log("useeffect: ", documentData)
+      console.log("useeffect: ", challengeData)
     }, [gameType])
   } else {
     useEffect(() => {
       fetchQuiz()
-      console.log("useeffect: ", quizData)
+      console.log("useeffect: ", fetchQuiz())
     }, [gameType])
   }
 
@@ -63,7 +63,7 @@ const GameScreen = () => {
     if (isRunning) {
       interval = setInterval(() => {
         setTimer((prevTimer: any) => {
-          if (documentData && documentData.GameType == "timedown") {
+          if (challengeData && challengeData.GameType == "timedown") {
             if (prevTimer <= 0) {
               clearInterval(interval)
               setIsRunning(false)
@@ -90,12 +90,12 @@ const GameScreen = () => {
   }, [])
 
   const resetTimer = useCallback(() => {
-    if (documentData) {
-      setTimer(documentData.Time * 60)
+    if (challengeData) {
+      setTimer(challengeData.Time * 60)
     } else {
       setTimer(0)
     }
-  }, [documentData])
+  }, [challengeData])
 
   const formatTime = (timeInSeconds: number) => {
     const minutes = Math.floor(timeInSeconds / 60)
@@ -138,7 +138,7 @@ const GameScreen = () => {
       ) : (
         <View className="flex justify-center items-center">
           <ChallengeCard
-            documentData={documentData}
+            documentData={challengeData}
             refreshChallenge={() => {
               fetchChallenge()
               resetTimer()

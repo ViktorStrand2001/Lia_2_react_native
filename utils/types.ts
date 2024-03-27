@@ -9,7 +9,7 @@ export interface Card {
 
 export interface Quiz {
   Context: string
-  Answer: boolean
+  Answer: string
   Title: string
 }
 
