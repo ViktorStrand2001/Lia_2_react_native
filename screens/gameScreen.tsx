@@ -29,7 +29,6 @@ const GameScreen = () => {
       const challengeCardData = await fetchRandomChallenge(gameType)
       if (challengeCardData) {
         setChallengeData(challengeCardData)
-        console.log("fetch", challengeData)
         setTimer(challengeCardData.Time * 60)
       }
     }
@@ -41,7 +40,6 @@ const GameScreen = () => {
       const quizDatafetch = await fetchRandomQuiz(gameType)
       if (quizDatafetch) {
         setquizData(quizDatafetch)
-        console.log("fetch", quizDatafetch)
       }
     }
   }
@@ -49,12 +47,10 @@ const GameScreen = () => {
   if (gameType === "Free-for-all" || gameType === "Group-Battles") {
     useEffect(() => {
       fetchChallenge()
-      console.log("useeffect: ", challengeData)
     }, [gameType])
   } else {
     useEffect(() => {
       fetchQuiz()
-      console.log("useeffect: ", fetchQuiz())
     }, [gameType])
   }
 

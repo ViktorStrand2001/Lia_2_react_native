@@ -9,7 +9,6 @@ interface QuizCardProps {
 }
 
 const QuizCard: React.FC<QuizCardProps> = ({ quizData, refreshQuiz }) => {
-  console.log("component", quizData)
   if (!quizData) {
     return null
   }

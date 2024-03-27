@@ -12,7 +12,6 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
   documentData,
   refreshChallenge,
 }) => {
-  console.log("component:  ", documentData)
   if (!documentData) {
     return null
   }
