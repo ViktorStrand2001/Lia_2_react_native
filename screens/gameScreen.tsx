@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react"
 import { View, Text, Animated } from "react-native"
 import ChallengeCard from "../components/GameScreenComponents/ChallageCard"
 import GameButton from "../components/GameScreenComponents/GameButton"
-import { Card, Quiz } from "../utils/types"
+import { Card, Quiz, Player } from "../utils/types"
 import { fetchRandomChallenge } from "../api/challengerService"
 import { fetchRandomQuiz } from "../api/quizService"
 import { RouteProp, useRoute } from "@react-navigation/core"
@@ -11,11 +11,18 @@ import { CheckIcon, X, XIcon } from "lucide-react-native"
 
 type RootStackParamList = {
   GameType: undefined
-  SetPlayer: { gameType: string }
+  Player: undefined
+  GameTypeData: { gameType: string }
+  PlayerData: { players: Player[] }
 }
-type PlayerScreenRouteProp = RouteProp<RootStackParamList, "SetPlayer">
 
-const GameScreen = () => {
+type PlayerScreenGameTypeRouteProp = RouteProp<
+  RootStackParamList,
+  "GameTypeData"
+>
+type PlayerScreenPlayersRouteProp = RouteProp<RootStackParamList, "PlayerData">
+
+const GameScreen = (props: any) => {
   const [timer, setTimer] = useState<number>(Number)
   const [isRunning, setIsRunning] = useState<boolean>(false)
   const [showStartButton, setShowStartButton] = useState<boolean>(true)
@@ -25,12 +32,22 @@ const GameScreen = () => {
   const [quizCardAnswer, setQuizCardAnswer] = useState<boolean | undefined>()
   const [quizScore, setQuizScore] = useState<number>(0)
   const [quizAnswer, setQuizAnswer] = useState<string>("")
-  const route = useRoute<PlayerScreenRouteProp>()
+  const routeGameType = useRoute<PlayerScreenGameTypeRouteProp>()
+  const routePlayers = useRoute<PlayerScreenPlayersRouteProp>()
   const [disabled, setDisabled] = useState<boolean>(false)
+  const [players, setPlayers] = useState<Player[]>([])
+
+
+  useEffect(() => {
+    setPlayers(routePlayers.params.players)
+    setGameType(routeGameType.params.gameType)
+  }, [players, gameType])
 
   const fetchChallenge = async () => {
-    setGameType(route.params.gameType)
+
     if (gameType != "") {
+      console.log(" this is game type : ", gameType)
+      console.log(" This is Players : ", players)
       const challengeCardData = await fetchRandomChallenge(gameType)
       if (challengeCardData) {
         setChallengeData(challengeCardData)
@@ -39,8 +56,9 @@ const GameScreen = () => {
     }
   }
 
+
   const fetchQuiz = async () => {
-    setGameType(route.params.gameType)
+    setGameType(routeGameType.params.gameType)
     if (gameType != "") {
       const quizDatafetch = await fetchRandomQuiz(gameType)
       if (quizDatafetch) {
@@ -157,6 +175,8 @@ const GameScreen = () => {
     )
   }
 
+
+
   return (
     <View className="flex justify-center items-center w-full h-full bg-bgBlue">
       {gameType == "Quiz" ? (
@@ -249,6 +269,18 @@ const GameScreen = () => {
               </View>
             )}
           </View>
+        </View>
+      )}
+
+      {gameType !== "Quiz" && (
+        <View className=" w-16 h-16 ">
+          <GameButton
+            onPress={() => {
+              props.navigation.navigate("Points", { players })
+            }}
+            text={"Distribute"}
+            buttonStyle={"bg-primaryGold mt-15"}
+          />
         </View>
       )}
     </View>

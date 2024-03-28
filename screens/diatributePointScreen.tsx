@@ -110,6 +110,7 @@ const DiatributePointScreen = (props: any) => {
         <ScrollView className="mt-4 mb-4 space-y-4">
           {scoreboard.map((player, index) => (
             <TouchableOpacity
+            key={index}
               onPress={() => handlePlayerPress(player.id)}
               disabled={player.score > 0}
             >

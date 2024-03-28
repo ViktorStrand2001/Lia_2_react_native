@@ -27,8 +27,8 @@ const PlayerScreen = (props: any) => {
 
   const navigateToGame = () => {
     if (gameType != "") {
-      props.navigation.navigate("Game", { gameType })
-      console.log(gameType);
+      props.navigation.navigate("Game", { gameType, players })
+      console.log(gameType)
     }
   }
 
@@ -62,6 +62,9 @@ const PlayerScreen = (props: any) => {
         const storedPlayers = await AsyncStorage.getItem("players")
         if (storedPlayers !== null) {
           setPlayers(JSON.parse(storedPlayers))
+         
+          
+          
         }
         console.log(players)
       } catch (error) {

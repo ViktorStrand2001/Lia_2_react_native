@@ -19,7 +19,9 @@ const ScoreboardScreen = (props: any) => {
   const route = useRoute<ScoreboardScreenRouteProp>()
   const [leaderboard, setLeaderboard] = useState<Player[]>([])
   useEffect(() => {
-    const sortedLeaderboard = [...route.params.scoreboard].sort((a, b) => b.score - a.score)
+    const sortedLeaderboard = [...route.params.scoreboard].sort(
+      (a, b) => b.score - a.score
+    )
     setLeaderboard(sortedLeaderboard)
   }, [])
   //
@@ -30,7 +32,10 @@ const ScoreboardScreen = (props: any) => {
       <View className="w-80 h-[450px] border border-black rounded-lg bg-gray-100 ">
         <ScrollView className="mt-4 mb-4 space-y-4">
           {leaderboard.map((player, index) => (
-            <View className="flex justify-center items-center w-full">
+            <View
+              className="flex justify-center items-center w-full"
+              key={index}
+            >
               <View
                 className={` w-72 h-16 flex flex-row justify-center items-center relative ${
                   (index === 0 && "bg-primaryGold") ||
