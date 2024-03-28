@@ -5,6 +5,7 @@ import { useRoute, RouteProp } from "@react-navigation/native"
 import { Player } from "../utils/types"
 import { Gamepad2Icon } from "lucide-react-native"
 import { white } from "tailwindcss/colors"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 // behövs för att skicka vidare useState value
 type RootStackParamList = {
@@ -15,11 +16,27 @@ type ScoreboardScreenRouteProp = RouteProp<RootStackParamList, "data">
 //
 
 const ScoreboardScreen = (props: any) => {
+
+   useEffect(() => {
+     const fetchPlayers = async () => {
+       try {
+         const storedPlayers = await AsyncStorage.getItem("players")
+         if (storedPlayers) {
+           setLeaderboard(JSON.parse(storedPlayers))
+         }
+       } catch (error) {
+         console.error("Error fetching players:", error)
+       }
+     }
+
+     fetchPlayers()
+   }, [])
+  
   // behövs för att skicka vidare useState value
   const route = useRoute<ScoreboardScreenRouteProp>()
   const [leaderboard, setLeaderboard] = useState<Player[]>([])
   useEffect(() => {
-    const sortedLeaderboard = [...route.params.scoreboard].sort(
+    const sortedLeaderboard = [...leaderboard].sort(
       (a, b) => b.score - a.score
     )
     setLeaderboard(sortedLeaderboard)

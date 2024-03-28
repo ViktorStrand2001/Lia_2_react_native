@@ -8,19 +8,17 @@ import { fetchRandomQuiz } from "../api/quizService"
 import { RouteProp, useRoute } from "@react-navigation/core"
 import QuizCard from "../components/GameScreenComponents/QuizCard"
 import { CheckIcon, X, XIcon } from "lucide-react-native"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 type RootStackParamList = {
   GameType: undefined
-  Player: undefined
   GameTypeData: { gameType: string }
-  PlayerData: { players: Player[] }
 }
 
 type PlayerScreenGameTypeRouteProp = RouteProp<
   RootStackParamList,
   "GameTypeData"
 >
-type PlayerScreenPlayersRouteProp = RouteProp<RootStackParamList, "PlayerData">
 
 const GameScreen = (props: any) => {
   const [timer, setTimer] = useState<number>(Number)
@@ -33,18 +31,14 @@ const GameScreen = (props: any) => {
   const [quizScore, setQuizScore] = useState<number>(0)
   const [quizAnswer, setQuizAnswer] = useState<string>("")
   const routeGameType = useRoute<PlayerScreenGameTypeRouteProp>()
-  const routePlayers = useRoute<PlayerScreenPlayersRouteProp>()
   const [disabled, setDisabled] = useState<boolean>(false)
   const [players, setPlayers] = useState<Player[]>([])
 
-
   useEffect(() => {
-    setPlayers(routePlayers.params.players)
     setGameType(routeGameType.params.gameType)
   }, [players, gameType])
 
   const fetchChallenge = async () => {
-
     if (gameType != "") {
       console.log(" this is game type : ", gameType)
       console.log(" This is Players : ", players)
@@ -56,6 +50,20 @@ const GameScreen = (props: any) => {
     }
   }
 
+  useEffect(() => {
+    const fetchPlayers = async () => {
+      try {
+        const storedPlayers = await AsyncStorage.getItem("players")
+        if (storedPlayers) {
+          setPlayers(JSON.parse(storedPlayers))
+        }
+      } catch (error) {
+        console.error("Error fetching players:", error)
+      }
+    }
+
+    fetchPlayers()
+  }, [])
 
   const fetchQuiz = async () => {
     setGameType(routeGameType.params.gameType)
@@ -174,8 +182,6 @@ const GameScreen = (props: any) => {
       </Animated.View>
     )
   }
-
-
 
   return (
     <View className="flex justify-center items-center w-full h-full bg-bgBlue">

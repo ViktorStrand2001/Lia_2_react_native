@@ -7,10 +7,10 @@ import {
 } from "react-native"
 import React, { useEffect, useState } from "react"
 import GameButton from "../components/GameScreenComponents/GameButton"
-import { useRoute, RouteProp } from "@react-navigation/native"
 import { Player } from "../utils/types"
 import ScoreButton from "../components/ScoreBoardComponents/ScoreButton"
 import AsyncStorage from "@react-native-async-storage/async-storage"
+import { useRoute, RouteProp } from "@react-navigation/native"
 
 type RootStackParamList = {
   Player: undefined
@@ -26,15 +26,27 @@ const DiatributePointScreen = (props: any) => {
   const [availablePoints, setAvailablePoints] = useState<number[]>([])
   const players = route.params.players
 
-  console.log("here is route ===== " + route)
-
   const navigateToScorebard = () => {
     props.navigation.navigate("Scoreboard", { scoreboard })
   }
+
+  useEffect(() => {
+    const fetchPlayers = async () => {
+      try {
+        const storedPlayers = await AsyncStorage.getItem("players")
+        if (storedPlayers) {
+          setScoreboard(JSON.parse(storedPlayers))
+        }
+      } catch (error) {
+        console.error("Error fetching players:", error)
+      }
+    }
+
+    fetchPlayers()
+  }, [])
+
   useEffect(() => {
     if (players) {
-      setScoreboard(players)
-      //shows point buttons baste on players
       setAvailablePoints([...Array(players.length).keys()].map((i) => i + 1))
     }
   }, [players])
@@ -110,7 +122,7 @@ const DiatributePointScreen = (props: any) => {
         <ScrollView className="mt-4 mb-4 space-y-4">
           {scoreboard.map((player, index) => (
             <TouchableOpacity
-            key={index}
+              key={index}
               onPress={() => handlePlayerPress(player.id)}
               disabled={player.score > 0}
             >
