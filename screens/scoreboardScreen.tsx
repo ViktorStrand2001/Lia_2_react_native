@@ -16,6 +16,8 @@ type ScoreboardScreenRouteProp = RouteProp<RootStackParamList, "data">
 //
 
 const ScoreboardScreen = (props: any) => {
+  const route = useRoute<ScoreboardScreenRouteProp>()
+  const [leaderboard, setLeaderboard] = useState<Player[]>([])
 
    useEffect(() => {
      const fetchPlayers = async () => {
@@ -32,9 +34,19 @@ const ScoreboardScreen = (props: any) => {
      fetchPlayers()
    }, [])
   
+  useEffect(() => {
+    const savePlayerStats = async () => {
+      try {
+        await AsyncStorage.setItem("players", JSON.stringify(leaderboard))
+      } catch (error) {
+        console.error("Error saving players:", error)
+      }
+    }
+    console.log(leaderboard)
+    savePlayerStats()
+  }, [leaderboard])
+  
   // behövs för att skicka vidare useState value
-  const route = useRoute<ScoreboardScreenRouteProp>()
-  const [leaderboard, setLeaderboard] = useState<Player[]>([])
   useEffect(() => {
     const sortedLeaderboard = [...leaderboard].sort(
       (a, b) => b.score - a.score
@@ -42,6 +54,13 @@ const ScoreboardScreen = (props: any) => {
     setLeaderboard(sortedLeaderboard)
   }, [])
   //
+
+  const navigateToGame = () => {
+  setLeaderboard(prevScoreboard =>
+    prevScoreboard.map(player => ({ ...player, points: 0 }))
+  );
+  props.navigation.navigate("Game");
+};
 
   return (
     <View className="bg-bgBlue min-w-screen min-h-screen flex justify-center items-center pb-20">
@@ -77,7 +96,7 @@ const ScoreboardScreen = (props: any) => {
         </ScrollView>
       </View>
       <GameButton
-        onPress={() => props.navigation.navigate("Game")}
+        onPress={() => navigateToGame()}
         buttonStyle="bg-customGreen mt-6"
         icon={<Gamepad2Icon size={60} color={white} />}
       />

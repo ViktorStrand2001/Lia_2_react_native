@@ -24,9 +24,11 @@ const DiatributePointScreen = (props: any) => {
   const [selectedPlayerId, setSelectedPlayerId] = useState<number | null>(null)
   const [showPointDistribution, setShowPointDistribution] = useState(false)
   const [availablePoints, setAvailablePoints] = useState<number[]>([])
-  const players = route.params.players
 
-  const navigateToScorebard = () => {
+  const players = route.params.players
+  const isPointsSet = scoreboard.some((player) => player.points === 0)
+
+  const navigateToScoreboard = () => {
     props.navigation.navigate("Scoreboard", { scoreboard })
   }
 
@@ -54,7 +56,6 @@ const DiatributePointScreen = (props: any) => {
   useEffect(() => {
     const savePlayerStats = async () => {
       try {
-        // Save the updated scoreboard state instead of the original players array
         await AsyncStorage.setItem("players", JSON.stringify(scoreboard))
       } catch (error) {
         console.error("Error saving players:", error)
@@ -69,19 +70,25 @@ const DiatributePointScreen = (props: any) => {
     setSelectedPlayerId(playerId)
   }
 
-  const handleScoreButtonPress = (points: number) => {
+  const handleScoreButtonPress = (pointGiven: number) => {
     if (selectedPlayerId !== null) {
-      // add score to player
       setScoreboard((prevScoreboard) =>
         prevScoreboard.map((player) =>
           player.id === selectedPlayerId
-            ? { ...player, score: player.score + points }
+            ? { ...player, points: player.points + pointGiven }
+            : player
+        )
+      )
+      setScoreboard((prevScoreboard) =>
+        prevScoreboard.map((player) =>
+          player.id === selectedPlayerId
+            ? { ...player, score: player.points + player.score }
             : player
         )
       )
       // removes used score button
       setAvailablePoints((prevPoints) =>
-        prevPoints.filter((point) => point !== points)
+        prevPoints.filter((point) => point !== pointGiven)
       )
       setShowPointDistribution(false)
       setSelectedPlayerId(null)
@@ -124,7 +131,7 @@ const DiatributePointScreen = (props: any) => {
             <TouchableOpacity
               key={index}
               onPress={() => handlePlayerPress(player.id)}
-              disabled={player.score > 0}
+              disabled={player.points > 0}
             >
               <View className="flex justify-center items-center w-full">
                 <View
@@ -136,10 +143,10 @@ const DiatributePointScreen = (props: any) => {
                   <View className="absolute right-7">
                     <Text
                       className={`text-lg  ${
-                        player.score == 0 ? "hidden" : "block"
+                        player.points == 0 ? "hidden" : "block"
                       }`}
                     >
-                      + {player.score} pt
+                      + {player.points} pt
                     </Text>
                   </View>
                 </View>
@@ -149,8 +156,9 @@ const DiatributePointScreen = (props: any) => {
         </ScrollView>
       </View>
       <GameButton
-        onPress={() => navigateToScorebard()}
-        buttonStyle="bg-gray-200 mt-6"
+        onPress={() => navigateToScoreboard()}
+        buttonStyle={` mt-6 ${isPointsSet ? "bg-gray-300" : "bg-customGreen"}`}
+        disabled={isPointsSet}
         image={require("../assets/icons/Leaderboard.png")}
         imageStyle="w-20 h-20"
       />

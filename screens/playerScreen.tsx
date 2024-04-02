@@ -42,6 +42,7 @@ const PlayerScreen = (props: any) => {
         name: playerName,
         score: 0,
         id: players.length + 1,
+        points: 0,
       }
 
       setPlayers([...players, newPlayer])
