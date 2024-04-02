@@ -95,6 +95,17 @@ const DiatributePointScreen = (props: any) => {
     }
   }
 
+  const resetPoints = () => {
+    // Reset points for all players
+    const resetScoreboard = scoreboard.map((player) => ({
+      ...player,
+      score: player.score - player.points,
+      points: 0,
+    }))
+    setScoreboard(resetScoreboard)
+    setAvailablePoints([...Array(players.length).keys()].map((i) => i + 1))
+  }
+
   const diatributePoint = () => {
     const selectedPlayer = scoreboard.find(
       (player) => player.id === selectedPlayerId
@@ -122,11 +133,20 @@ const DiatributePointScreen = (props: any) => {
   return (
     <View className="bg-bgBlue min-w-screen min-h-screen flex justify-center items-center pb-20">
       {showPointDistribution && diatributePoint()}
-      <Text className="font-bold text-2xl mb-3 capitalize">
-        distribute points
-      </Text>
+
       <View className="w-80 h-[450px] border border-black rounded-lg bg-gray-100 ">
         <ScrollView className="mt-4 mb-4 space-y-4">
+          <View className=" flex flex-row">
+            <GameButton
+              onPress={() => resetPoints()}
+              buttonStyle={"  w-16 h-7  "}
+              image={require("../assets/icons/refresh.png")}
+              imageStyle=" w-8 h-8"
+            />
+            <Text className="font-bold text-2xl mb-3 capitalize">
+              distribute points
+            </Text>
+          </View>
           {scoreboard.map((player, index) => (
             <TouchableOpacity
               key={index}
@@ -155,6 +175,7 @@ const DiatributePointScreen = (props: any) => {
           ))}
         </ScrollView>
       </View>
+
       <GameButton
         onPress={() => navigateToScoreboard()}
         buttonStyle={` mt-6 ${isPointsSet ? "bg-gray-300" : "bg-customGreen"}`}
