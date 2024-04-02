@@ -53,7 +53,9 @@ const GameTypeScreen = (props: any) => {
           <View className="h-0.5 w-80 bg-black rounded-lg" />
           <View>
             <GameTypeOption
+              textStyle="text-6xl"
               gameType="quiz!"
+              image={require("../assets/images/quiz.png")}
               onPress={() => {
                 navigateToPlayerScreen()
                 handleGameTypeSelection("Quiz")
