@@ -10,6 +10,7 @@ import PlayerScreen from "../screens/playerScreen"
 import CreateCardScreen from "../screens/createCardScreen"
 import DiatributePointScreen from "../screens/diatributePointScreen"
 import ScoreboardScreen from "../screens/scoreboardScreen"
+import CreateQuizCardScreen from "../screens/createQuizCardScreen"
 
 const Navbar = () => {
   const Stack = createStackNavigator()
@@ -63,6 +64,12 @@ const Navbar = () => {
         <Stack.Screen
           name="customCards"
           component={CreateCardScreen}
+          options={settings}
+        />
+
+<Stack.Screen
+          name="customQuiz"
+          component={CreateQuizCardScreen}
           options={settings}
         />
       </Stack.Navigator>

@@ -15,6 +15,10 @@ const GameTypeScreen = (props: any) => {
     props.navigation.navigate("customCards")
   }
 
+  const navigateToCustomQuizCardScreen = () => {
+    props.navigation.navigate("customQuiz")
+  }
+
   const handleGameTypeSelection = (type: string) => {
     setGameType(type)
   }
@@ -68,6 +72,16 @@ const GameTypeScreen = (props: any) => {
               gameType="Custom Card"
               onPress={() => {
                 navigateToCustomCardScreen()
+              }}
+            />
+          </View>
+
+          <View className="h-0.5 w-80 bg-black rounded-lg" />
+          <View>
+            <GameTypeOption
+              gameType="customQuiz"
+              onPress={() => {
+                navigateToCustomQuizCardScreen()
               }}
             />
           </View>
