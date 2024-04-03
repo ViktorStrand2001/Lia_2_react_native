@@ -9,7 +9,7 @@ import {
 import { FIRESTORE_DB } from "../firebaseConfig"
 import { addDoc, collection } from "firebase/firestore"
 
-const CreateCardScreen = () => {
+const CreatQuizCardScreen = () => {
   const [formData, setFormData] = useState({
     Title: "",
     Context: "",
@@ -76,4 +76,4 @@ const CreateCardScreen = () => {
   )
 }
 
-export default CreateCardScreen
+export default CreatQuizCardScreen
