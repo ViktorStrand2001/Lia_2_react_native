@@ -6,11 +6,12 @@ import {
   ScrollView,
 } from "react-native"
 import React, { useEffect, useState } from "react"
-import { Gamepad2Icon, PlusCircleIcon, X } from "lucide-react-native"
+import { CheckIcon, Gamepad2Icon, PlusCircleIcon, X } from "lucide-react-native"
 import { black, white } from "tailwindcss/colors"
 import { useRoute, RouteProp } from "@react-navigation/native"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { Player } from "../utils/types"
+import { Center, FormControl, Select } from "native-base"
 
 type RootStackParamList = {
   GameType: undefined
@@ -24,9 +25,10 @@ const PlayerScreen = (props: any) => {
   const route = useRoute<PlayerScreenRouteProp>()
   const [showInput, setShowInput] = useState<boolean>(false)
   const [gameType, setGameType] = useState<string>("")
+  const [rounds, setRounds] = useState<Number>(0)
 
   const navigateToGame = () => {
-    if (gameType != "") {
+    if (gameType != "" || rounds != 0) {
       props.navigation.navigate("Game", { gameType, players })
       console.log(gameType)
     }
@@ -63,9 +65,6 @@ const PlayerScreen = (props: any) => {
         const storedPlayers = await AsyncStorage.getItem("players")
         if (storedPlayers !== null) {
           setPlayers(JSON.parse(storedPlayers))
-         
-          
-          
         }
         console.log(players)
       } catch (error) {
@@ -77,16 +76,19 @@ const PlayerScreen = (props: any) => {
   }, [])
 
   useEffect(() => {
-    const savePlayers = async () => {
+    const saveGamesettings = async () => {
       try {
         await AsyncStorage.setItem("players", JSON.stringify(players))
+        await AsyncStorage.setItem("rounds", JSON.stringify(rounds))
+        console.log(" this is rounds ", rounds);
+        
       } catch (error) {
         console.error("Error saving players:", error)
       }
     }
 
-    savePlayers()
-  }, [players])
+    saveGamesettings()
+  }, [players, rounds])
 
   const renderTextBastOnGameType = () => {
     const typeOfGame = route.params.gameType
@@ -172,6 +174,30 @@ const PlayerScreen = (props: any) => {
               </View>
             ))}
         </ScrollView>
+      </View>
+
+      <View className="flex flex-row justify-center items-center">
+        <Text>Game last for </Text>
+        <Center color={"red.400"}>
+          <FormControl isRequired>
+            <Select
+              minWidth="130"
+              accessibilityLabel=" Rounds"
+              placeholder="Rounds"
+              _selectedItem={{
+                bg: "black",
+                endIcon: <CheckIcon size={5} />,
+              }}
+              mt="1"
+              borderColor={"black"}
+              placeholderTextColor="gray.500"
+              onValueChange={(value) => setRounds(parseInt(value))}
+            >
+              <Select.Item label="5 Rounds" value="5" />
+              <Select.Item label="10 Rounds" value="10" />
+            </Select>
+          </FormControl>
+        </Center>
       </View>
 
       <View className="h-32 justify-center items absolute bottom-16">

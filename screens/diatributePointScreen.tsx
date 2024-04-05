@@ -36,6 +36,7 @@ const DiatributePointScreen = (props: any) => {
     const fetchPlayers = async () => {
       try {
         const storedPlayers = await AsyncStorage.getItem("players")
+
         if (storedPlayers) {
           setScoreboard(JSON.parse(storedPlayers))
         }
@@ -49,9 +50,7 @@ const DiatributePointScreen = (props: any) => {
 
   useEffect(() => {
     if (players) {
-    
       setAvailablePoints([...Array(players.length).keys()].map((i) => i + 1))
-      
     }
   }, [players])
 
@@ -103,12 +102,6 @@ const DiatributePointScreen = (props: any) => {
       ...player,
       score: player.score - player.points,
       points: 0,
-
-
-    
-
-      
- 
     }))
     setScoreboard(resetScoreboard)
     setAvailablePoints([...Array(players.length).keys()].map((i) => i + 1))

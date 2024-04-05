@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react"
-import { View, Text, Animated } from "react-native"
+import { View, Text, Animated} from "react-native"
 import ChallengeCard from "../components/GameScreenComponents/ChallageCard"
 import GameButton from "../components/GameScreenComponents/GameButton"
 import { Card, Quiz, Player } from "../utils/types"
@@ -7,7 +7,14 @@ import { fetchRandomChallenge } from "../api/challengerService"
 import { fetchRandomQuiz } from "../api/quizService"
 import { RouteProp, useRoute } from "@react-navigation/core"
 import QuizCard from "../components/GameScreenComponents/QuizCard"
-import { CheckIcon, X, XIcon } from "lucide-react-native"
+import {
+  ArrowRight,
+  CheckIcon,
+  User,
+  Users,
+  X,
+  XIcon,
+} from "lucide-react-native"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 
 type RootStackParamList = {
@@ -33,6 +40,10 @@ const GameScreen = (props: any) => {
   const routeGameType = useRoute<PlayerScreenGameTypeRouteProp>()
   const [disabled, setDisabled] = useState<boolean>(false)
   const [players, setPlayers] = useState<Player[]>([])
+  const [rounds, setRounds] = useState<number | undefined>(0)
+  const [currentPlayerIndex, setCurrentPlayerIndex] = useState<number>(0)
+  const [showDistributeButton, setShowDistributeButton] =
+    useState<boolean>(false)
 
   useEffect(() => {
     setGameType(routeGameType.params.gameType)
@@ -41,21 +52,25 @@ const GameScreen = (props: any) => {
   const fetchChallenge = async () => {
     if (gameType != "") {
       console.log(" this is game type : ", gameType)
-      console.log(" This is Players : ", players)
+
       const challengeCardData = await fetchRandomChallenge(gameType)
       if (challengeCardData) {
         setChallengeData(challengeCardData)
-        setTimer(challengeCardData.Time * 60)
+        setTimer(challengeCardData.Time * 1)
       }
     }
   }
-
   useEffect(() => {
     const fetchPlayers = async () => {
       try {
         const storedPlayers = await AsyncStorage.getItem("players")
-        if (storedPlayers) {
+        const storedRounds = await AsyncStorage.getItem("rounds")
+        if (storedPlayers && storedRounds !== null) {
+          // Check if storedRounds is not null
           setPlayers(JSON.parse(storedPlayers))
+          setRounds(parseInt(storedRounds) || undefined) // Convert storedRounds to number, handle null case
+          console.log(" players", players)
+          console.log("selected rounds ", rounds)
         }
       } catch (error) {
         console.error("Error fetching players:", error)
@@ -85,8 +100,6 @@ const GameScreen = (props: any) => {
       fetchQuiz()
     }, [gameType])
   }
-
-  const getRandomUser = () => {}
 
   useEffect(() => {
     let interval: NodeJS.Timeout
@@ -121,7 +134,7 @@ const GameScreen = (props: any) => {
 
   const resetTimer = useCallback(() => {
     if (challengeData) {
-      setTimer(challengeData.Time * 60)
+      setTimer(challengeData.Time * 1)
     } else {
       setTimer(0)
     }
@@ -134,6 +147,12 @@ const GameScreen = (props: any) => {
       2,
       "0"
     )}`
+  }
+
+  const playerTurn = () => {
+    if (players) {
+      ;[...Array(players.length)]
+    }
   }
 
   const handleAnswerSelection = useCallback(
@@ -159,6 +178,12 @@ const GameScreen = (props: any) => {
     },
     [quizData]
   )
+
+  const handleNextPlayerTurn = useCallback(() => {
+    setCurrentPlayerIndex((prevIndex) => (prevIndex + 1) % players.length)
+
+    console.log("current player ", currentPlayerIndex)
+  }, [currentPlayerIndex, players])
 
   const FadeInView = (props: any) => {
     const [fadeAnim] = useState(new Animated.Value(1)) // Initial value for opacity: 0
@@ -234,6 +259,9 @@ const GameScreen = (props: any) => {
         </View>
       ) : (
         <View className="flex justify-center items-center">
+          <Text style={{ fontSize: 20, marginBottom: 10 }}>
+            {players[currentPlayerIndex]?.name}'s Turn
+          </Text>
           <ChallengeCard
             documentData={challengeData}
             refreshChallenge={() => {
@@ -243,6 +271,7 @@ const GameScreen = (props: any) => {
             }}
           />
           <View className="mt-6">
+            {/* Conditionally render Start/Pause button or Next User button based on showStartButton state */}
             {showStartButton ? (
               <GameButton
                 onPress={toggleTimer}
@@ -251,16 +280,40 @@ const GameScreen = (props: any) => {
                 imageStyle={"w-16 h-16"}
               />
             ) : (
-              <GameButton
-                onPress={pauseTimer}
-                text={`${formatTime(timer)}`}
-                buttonStyle={"bg-red-600"}
-                image={require("../assets/icons/Pause.png")}
-                imageStyle={"w-16 h-16"}
-              />
+              timer > 0 && ( // Check if timer is greater than 0
+                <GameButton
+                  onPress={pauseTimer}
+                  text={`${formatTime(timer)}`}
+                  buttonStyle={"bg-red-600"}
+                  image={require("../assets/icons/Pause.png")}
+                  imageStyle={"w-16 h-16"}
+                />
+              )
             )}
           </View>
 
+          {/* Conditionally render Next User button when timer reaches 0 */}
+          {timer === 0 && (
+            <GameButton
+              onPress={() => {
+                setShowStartButton(true)
+                resetTimer()
+                pauseTimer()
+                handleNextPlayerTurn()
+              }}
+              text={""}
+              buttonStyle={"bg-customGreen"}
+              icon={
+                <View className=" flex flex-row justify-center items-center ">
+                  <User size={50} className=" text-white" />
+                  <ArrowRight size={35} className=" text-white" />
+                  <Users size={50} className=" text-white" />
+                </View>
+              }
+            />
+          )}
+
+          {/* Reset timer button */}
           <View className="w-16 h-16">
             {showStartButton ? null : (
               <View className="flex justify-center items-center">
