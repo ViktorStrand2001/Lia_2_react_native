@@ -41,14 +41,13 @@ const GameScreen = (props: any) => {
   const routeGameType = useRoute<PlayerScreenGameTypeRouteProp>()
   const [disabled, setDisabled] = useState<boolean>(false)
   const [players, setPlayers] = useState<Player[]>([])
-  const [rounds, setRounds] = useState<number | undefined>(0)
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState<number>(0)
-  const [turn, setTurn] = useState<number>(0)
+const [turn, setTurn] = useState<number>(0)
   const isAllTurnsPlayed = players.every((player) => player.turn === 0)
 
   useEffect(() => {
     setGameType(routeGameType.params.gameType)
-  }, [players, gameType])
+  }, [])
 
   const fetchChallenge = async () => {
     if (gameType != "") {
@@ -66,14 +65,8 @@ const GameScreen = (props: any) => {
     const fetchPlayers = async () => {
       try {
         const storedPlayers = await AsyncStorage.getItem("players")
-        const storedRounds = await AsyncStorage.getItem("rounds")
-        if (storedPlayers && storedRounds !== null) {
-          do {
-            setPlayers(JSON.parse(storedPlayers))
-            setRounds(parseInt(storedRounds) || undefined) // Convert storedRounds to number, handle null case
-            console.log(" players", players)
-            console.log("selected rounds ", rounds)
-          } while ((players && rounds == null) || 0 || "")
+        if (storedPlayers) {
+          setPlayers(JSON.parse(storedPlayers))
         }
       } catch (error) {
         console.error("Error fetching players:", error)
@@ -135,17 +128,10 @@ const GameScreen = (props: any) => {
             ? { ...player, turn: player.turn - 1 }
             : player
         )
-      
-        
-      
-        
       )
     }
-
- 
-    
     setShowStartButton(false)
-  }, [])
+  }, [currentPlayerIndex, players])
 
   const pauseTimer = useCallback(() => {
     setIsRunning(false)
@@ -193,12 +179,6 @@ const GameScreen = (props: any) => {
     [quizData]
   )
 
-  const handleNextPlayerTurn = useCallback(() => {
-    setCurrentPlayerIndex((prevIndex) => prevIndex + 1)
-
-    console.log("current player ", currentPlayerIndex)
-  }, [currentPlayerIndex, players, turn])
-
   useEffect(() => {
     const savePlayerStats = async () => {
       try {
@@ -207,12 +187,11 @@ const GameScreen = (props: any) => {
         console.error("Error saving players:", error)
       }
     }
-    console.log(players)
     savePlayerStats()
   }, [players])
 
   const FadeInView = (props: any) => {
-    const [fadeAnim] = useState(new Animated.Value(1)) // Initial value for opacity: 0
+    const [fadeAnim] = useState(new Animated.Value(1))
 
     useEffect(() => {
       Animated.timing(fadeAnim, {
@@ -345,7 +324,9 @@ const GameScreen = (props: any) => {
                       setShowStartButton(true)
                       resetTimer()
                       pauseTimer()
-                      handleNextPlayerTurn()
+                      setCurrentPlayerIndex(
+                        (prevIndex) => (prevIndex + 1) % players.length
+                      )
                     }}
                     text={""}
                     buttonStyle={"bg-customGreen"}
