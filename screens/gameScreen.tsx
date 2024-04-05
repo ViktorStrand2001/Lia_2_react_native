@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react"
-import { View, Text, Animated} from "react-native"
+import { View, Text, Animated } from "react-native"
 import ChallengeCard from "../components/GameScreenComponents/ChallageCard"
 import GameButton from "../components/GameScreenComponents/GameButton"
 import { Card, Quiz, Player } from "../utils/types"
@@ -10,6 +10,7 @@ import QuizCard from "../components/GameScreenComponents/QuizCard"
 import {
   ArrowRight,
   CheckIcon,
+  StarIcon,
   User,
   Users,
   X,
@@ -42,8 +43,8 @@ const GameScreen = (props: any) => {
   const [players, setPlayers] = useState<Player[]>([])
   const [rounds, setRounds] = useState<number | undefined>(0)
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState<number>(0)
-  const [showDistributeButton, setShowDistributeButton] =
-    useState<boolean>(false)
+  const [turn, setTurn] = useState<number>(0)
+  const isAllTurnsPlayed = players.every((player) => player.turn === 0)
 
   useEffect(() => {
     setGameType(routeGameType.params.gameType)
@@ -59,6 +60,7 @@ const GameScreen = (props: any) => {
         setTimer(challengeCardData.Time * 1)
       }
     }
+    console.log("playerstats ", players)
   }
   useEffect(() => {
     const fetchPlayers = async () => {
@@ -66,11 +68,12 @@ const GameScreen = (props: any) => {
         const storedPlayers = await AsyncStorage.getItem("players")
         const storedRounds = await AsyncStorage.getItem("rounds")
         if (storedPlayers && storedRounds !== null) {
-          // Check if storedRounds is not null
-          setPlayers(JSON.parse(storedPlayers))
-          setRounds(parseInt(storedRounds) || undefined) // Convert storedRounds to number, handle null case
-          console.log(" players", players)
-          console.log("selected rounds ", rounds)
+          do {
+            setPlayers(JSON.parse(storedPlayers))
+            setRounds(parseInt(storedRounds) || undefined) // Convert storedRounds to number, handle null case
+            console.log(" players", players)
+            console.log("selected rounds ", rounds)
+          } while ((players && rounds == null) || 0 || "")
         }
       } catch (error) {
         console.error("Error fetching players:", error)
@@ -124,6 +127,23 @@ const GameScreen = (props: any) => {
 
   const toggleTimer = useCallback(() => {
     setIsRunning((prevIsRunning) => !prevIsRunning)
+
+    if (players[currentPlayerIndex]?.turn !== 0) {
+      setPlayers((prevScoreboard) =>
+        prevScoreboard.map((player) =>
+          player.id === currentPlayerIndex
+            ? { ...player, turn: player.turn - 1 }
+            : player
+        )
+      
+        
+      
+        
+      )
+    }
+
+ 
+    
     setShowStartButton(false)
   }, [])
 
@@ -147,12 +167,6 @@ const GameScreen = (props: any) => {
       2,
       "0"
     )}`
-  }
-
-  const playerTurn = () => {
-    if (players) {
-      ;[...Array(players.length)]
-    }
   }
 
   const handleAnswerSelection = useCallback(
@@ -180,10 +194,22 @@ const GameScreen = (props: any) => {
   )
 
   const handleNextPlayerTurn = useCallback(() => {
-    setCurrentPlayerIndex((prevIndex) => (prevIndex + 1) % players.length)
+    setCurrentPlayerIndex((prevIndex) => prevIndex + 1)
 
     console.log("current player ", currentPlayerIndex)
-  }, [currentPlayerIndex, players])
+  }, [currentPlayerIndex, players, turn])
+
+  useEffect(() => {
+    const savePlayerStats = async () => {
+      try {
+        await AsyncStorage.setItem("players", JSON.stringify(players))
+      } catch (error) {
+        console.error("Error saving players:", error)
+      }
+    }
+    console.log(players)
+    savePlayerStats()
+  }, [players])
 
   const FadeInView = (props: any) => {
     const [fadeAnim] = useState(new Animated.Value(1)) // Initial value for opacity: 0
@@ -294,23 +320,46 @@ const GameScreen = (props: any) => {
 
           {/* Conditionally render Next User button when timer reaches 0 */}
           {timer === 0 && (
-            <GameButton
-              onPress={() => {
-                setShowStartButton(true)
-                resetTimer()
-                pauseTimer()
-                handleNextPlayerTurn()
-              }}
-              text={""}
-              buttonStyle={"bg-customGreen"}
-              icon={
-                <View className=" flex flex-row justify-center items-center ">
-                  <User size={50} className=" text-white" />
-                  <ArrowRight size={35} className=" text-white" />
-                  <Users size={50} className=" text-white" />
+            <>
+              {isAllTurnsPlayed ? (
+                <View>
+                  {gameType !== "Quiz" && (
+                    <GameButton
+                      onPress={() => {
+                        props.navigation.navigate("Points", { players })
+                      }}
+                      text={""}
+                      buttonStyle={"bg-customGreen"}
+                      icon={
+                        <View className=" flex flex-row justify-center items-center ">
+                          <StarIcon size={40} className=" text-white" />
+                        </View>
+                      }
+                    />
+                  )}
                 </View>
-              }
-            />
+              ) : (
+                <View>
+                  <GameButton
+                    onPress={() => {
+                      setShowStartButton(true)
+                      resetTimer()
+                      pauseTimer()
+                      handleNextPlayerTurn()
+                    }}
+                    text={""}
+                    buttonStyle={"bg-customGreen"}
+                    icon={
+                      <View className=" flex flex-row justify-center items-center ">
+                        <User size={50} className=" text-white" />
+                        <ArrowRight size={35} className=" text-white" />
+                        <Users size={50} className=" text-white" />
+                      </View>
+                    }
+                  />
+                </View>
+              )}
+            </>
           )}
 
           {/* Reset timer button */}
@@ -328,18 +377,6 @@ const GameScreen = (props: any) => {
               </View>
             )}
           </View>
-        </View>
-      )}
-
-      {gameType !== "Quiz" && (
-        <View className=" w-16 h-16 ">
-          <GameButton
-            onPress={() => {
-              props.navigation.navigate("Points", { players })
-            }}
-            text={"Distribute"}
-            buttonStyle={"bg-primaryGold mt-15"}
-          />
         </View>
       )}
     </View>

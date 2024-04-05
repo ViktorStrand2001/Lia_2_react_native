@@ -43,8 +43,9 @@ const PlayerScreen = (props: any) => {
       const newPlayer: Player = {
         name: playerName,
         score: 0,
-        id: players.length + 1,
+        id: players.length,
         points: 0,
+        turn: 1,
       }
 
       setPlayers([...players, newPlayer])
@@ -80,8 +81,7 @@ const PlayerScreen = (props: any) => {
       try {
         await AsyncStorage.setItem("players", JSON.stringify(players))
         await AsyncStorage.setItem("rounds", JSON.stringify(rounds))
-        console.log(" this is rounds ", rounds);
-        
+        console.log(" this is rounds ", rounds)
       } catch (error) {
         console.error("Error saving players:", error)
       }
