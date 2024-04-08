@@ -29,7 +29,7 @@ const PlayerScreen = (props: any) => {
 
   const navigateToGame = () => {
     if (gameType != "" || rounds != 0) {
-      props.navigation.navigate("Game", { gameType, players })
+      props.navigation.navigate("Game", { gameType, players, rounds })
       console.log(gameType)
     }
   }

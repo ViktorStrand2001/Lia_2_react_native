@@ -1,22 +1,12 @@
 import { View, Text, ScrollView } from "react-native"
 import React, { useEffect, useState } from "react"
 import GameButton from "../components/GameScreenComponents/GameButton"
-import { useRoute, RouteProp } from "@react-navigation/native"
 import { Player } from "../utils/types"
 import { Gamepad2Icon } from "lucide-react-native"
 import { white } from "tailwindcss/colors"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 
-// behövs för att skicka vidare useState value
-type RootStackParamList = {
-  Player: undefined
-  data: { scoreboard: Player[] }
-}
-type ScoreboardScreenRouteProp = RouteProp<RootStackParamList, "data">
-//
-
 const ScoreboardScreen = (props: any) => {
-  const route = useRoute<ScoreboardScreenRouteProp>()
   const [leaderboard, setLeaderboard] = useState<Player[]>([])
 
    useEffect(() => {
@@ -32,7 +22,7 @@ const ScoreboardScreen = (props: any) => {
      }
 
      fetchPlayers()
-   }, [])
+   }, [props.navigation])
   
   useEffect(() => {
     const savePlayerStats = async () => {
@@ -42,7 +32,7 @@ const ScoreboardScreen = (props: any) => {
         console.error("Error saving players:", error)
       }
     }
-    console.log(leaderboard)
+    console.log("svae: ",leaderboard)
     savePlayerStats()
   }, [leaderboard])
   
@@ -56,10 +46,7 @@ const ScoreboardScreen = (props: any) => {
   //
 
   const navigateToGame = () => {
-  setLeaderboard(prevScoreboard =>
-    prevScoreboard.map(player => ({ ...player, points: 0 }))
-  );
-  props.navigation.navigate("Game");
+  props.navigation.navigate("SetPlayer");
 };
 
   return (

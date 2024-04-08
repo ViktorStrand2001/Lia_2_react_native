@@ -17,6 +17,7 @@ import {
   XIcon,
 } from "lucide-react-native"
 import AsyncStorage from "@react-native-async-storage/async-storage"
+import { useFocusEffect } from "@react-navigation/native"
 
 type RootStackParamList = {
   GameType: undefined
@@ -42,7 +43,6 @@ const GameScreen = (props: any) => {
   const [disabled, setDisabled] = useState<boolean>(false)
   const [players, setPlayers] = useState<Player[]>([])
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState<number>(0)
-  const [turn, setTurn] = useState<number>(0)
   const isAllTurnsPlayed = players.every((player) => player.turn === 0)
 
   useEffect(() => {
@@ -61,20 +61,39 @@ const GameScreen = (props: any) => {
     }
     console.log("playerstats ", players)
   }
-  useEffect(() => {
-    const fetchPlayers = async () => {
-      try {
-        const storedPlayers = await AsyncStorage.getItem("players")
-        if (storedPlayers) {
-          setPlayers(JSON.parse(storedPlayers))
-        }
-      } catch (error) {
-        console.error("Error fetching players:", error)
-      }
-    }
 
-    fetchPlayers()
+  useFocusEffect(
+    useCallback(() => {
+    if (gameType === "Free-for-all" || gameType === "Group-Battles") {
+        fetchChallenge()
+    } else {
+        fetchQuiz()
+    }
+    }, [gameType])
+  )
+
+  useEffect(() => {
+    setGameType(routeGameType.params.gameType)
   }, [])
+
+  // Use useFocusEffect to fetch players when the screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      const fetchPlayers = async () => {
+        try {
+          const storedPlayers = await AsyncStorage.getItem("players")
+          const rounds = await AsyncStorage.getItem("rounds")
+          if (storedPlayers) {
+            setPlayers(JSON.parse(storedPlayers))
+          }
+        } catch (error) {
+          console.error("Error fetching players:", error)
+        }
+      }
+
+      fetchPlayers()
+    }, [])
+  )
 
   const fetchQuiz = async () => {
     setGameType(routeGameType.params.gameType)
@@ -85,16 +104,6 @@ const GameScreen = (props: any) => {
         setQuizCardAnswer(quizDatafetch.Answer)
       }
     }
-  }
-
-  if (gameType === "Free-for-all" || gameType === "Group-Battles") {
-    useEffect(() => {
-      fetchChallenge()
-    }, [gameType])
-  } else {
-    useEffect(() => {
-      fetchQuiz()
-    }, [gameType])
   }
 
   useEffect(() => {
@@ -310,16 +319,16 @@ const GameScreen = (props: any) => {
           </View>
 
           {/* Conditionally render Next User button when timer reaches 0 */}
-          {timer === 0 && challengeData?.GameType == "timedown" && (
+          {timer <= 0 && challengeData?.GameType == "timedown" && (
             <>
               {isAllTurnsPlayed ? (
-                <View>
+                <>
                   {gameType !== "Quiz" && (
                     <GameButton
                       onPress={() => {
-                        props.navigation.navigate("Points", { players })
+                        props.navigation.navigate("Points", { players }),
+                          pauseTimer()
                       }}
-                      text={""}
                       buttonStyle={"bg-customGreen"}
                       icon={
                         <View className=" flex flex-row justify-center items-center ">
@@ -328,9 +337,9 @@ const GameScreen = (props: any) => {
                       }
                     />
                   )}
-                </View>
+                </>
               ) : (
-                <View>
+                <>
                   <GameButton
                     onPress={() => {
                       setShowStartButton(true)
@@ -340,7 +349,6 @@ const GameScreen = (props: any) => {
                         (prevIndex) => (prevIndex + 1) % players.length
                       )
                     }}
-                    text={""}
                     buttonStyle={"bg-customGreen"}
                     icon={
                       <View className=" flex flex-row justify-center items-center ">
@@ -350,7 +358,7 @@ const GameScreen = (props: any) => {
                       </View>
                     }
                   />
-                </View>
+                </>
               )}
             </>
           )}

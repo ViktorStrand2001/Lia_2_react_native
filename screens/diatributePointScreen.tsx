@@ -11,6 +11,8 @@ import { Player } from "../utils/types"
 import ScoreButton from "../components/ScoreBoardComponents/ScoreButton"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { useRoute, RouteProp } from "@react-navigation/native"
+import { Gamepad2Icon } from "lucide-react-native"
+import { white } from "tailwindcss/colors"
 
 type RootStackParamList = {
   Player: undefined
@@ -24,20 +26,31 @@ const DiatributePointScreen = (props: any) => {
   const [selectedPlayerId, setSelectedPlayerId] = useState<number | null>(null)
   const [showPointDistribution, setShowPointDistribution] = useState(false)
   const [availablePoints, setAvailablePoints] = useState<number[]>([])
+  const [rounds, setRounds] = useState<number>()
 
   const players = route.params.players
   const isPointsSet = scoreboard.some((player) => player.points === 0)
 
-  const navigateToScoreboard = () => {
-    props.navigation.navigate("Scoreboard", { scoreboard })
+  const navigateToScoreboard = async () => {
+    const rounds = await AsyncStorage.getItem("rounds")
+    if (rounds) {
+      const updatedRounds = parseInt(rounds) - 1
+      await AsyncStorage.setItem("rounds", updatedRounds.toString())
+    }
+    setScoreboard((prevScoreboard) =>
+      prevScoreboard.map((player) => ({ ...player, turn: 1 }))
+    )
+    props.navigation.navigate("Scoreboard")
   }
 
   useEffect(() => {
     const fetchPlayers = async () => {
       try {
         const storedPlayers = await AsyncStorage.getItem("players")
+        const storedRound = await AsyncStorage.getItem("rounds")
 
-        if (storedPlayers) {
+        if (storedPlayers && storedRound) {
+          setRounds(parseInt(storedRound))
           setScoreboard(JSON.parse(storedPlayers))
         }
       } catch (error) {
@@ -105,6 +118,18 @@ const DiatributePointScreen = (props: any) => {
     }))
     setScoreboard(resetScoreboard)
     setAvailablePoints([...Array(players.length).keys()].map((i) => i + 1))
+  }
+
+  const navigateToGame = async () => {
+    const rounds = await AsyncStorage.getItem("rounds")
+    if (rounds) {
+      const updatedRounds = parseInt(rounds) - 1
+      await AsyncStorage.setItem("rounds", updatedRounds.toString())
+    }
+    setScoreboard((prevScoreboard) =>
+      prevScoreboard.map((player) => ({ ...player, turn: 1, points: 0 }))
+    )
+    props.navigation.navigate("Game")
   }
 
   const diatributePoint = () => {
@@ -176,14 +201,28 @@ const DiatributePointScreen = (props: any) => {
           ))}
         </ScrollView>
       </View>
-
-      <GameButton
-        onPress={() => navigateToScoreboard()}
-        buttonStyle={` mt-6 ${isPointsSet ? "bg-gray-300" : "bg-customGreen"}`}
-        disabled={isPointsSet}
-        image={require("../assets/icons/Leaderboard.png")}
-        imageStyle="w-20 h-20"
-      />
+      {rounds == 0 ? (
+        <GameButton
+          onPress={() => {
+            navigateToScoreboard()
+          }}
+          buttonStyle={` mt-6 ${
+            isPointsSet ? "bg-gray-300" : "bg-customGreen"
+          }`}
+          disabled={isPointsSet}
+          image={require("../assets/icons/Leaderboard.png")}
+          imageStyle="w-20 h-20"
+        />
+      ) : (
+        <GameButton
+          onPress={() => navigateToGame()}
+          buttonStyle={` mt-6 ${
+            isPointsSet ? "bg-gray-300" : "bg-customGreen"
+          }`}
+          disabled={isPointsSet}
+          icon={<Gamepad2Icon size={60} color={white} />}
+        />
+      )}
     </View>
   )
 }
