@@ -42,7 +42,7 @@ const GameScreen = (props: any) => {
   const [disabled, setDisabled] = useState<boolean>(false)
   const [players, setPlayers] = useState<Player[]>([])
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState<number>(0)
-const [turn, setTurn] = useState<number>(0)
+  const [turn, setTurn] = useState<number>(0)
   const isAllTurnsPlayed = players.every((player) => player.turn === 0)
 
   useEffect(() => {
@@ -285,20 +285,32 @@ const [turn, setTurn] = useState<number>(0)
                 imageStyle={"w-16 h-16"}
               />
             ) : (
-              timer > 0 && ( // Check if timer is greater than 0
-                <GameButton
-                  onPress={pauseTimer}
-                  text={`${formatTime(timer)}`}
-                  buttonStyle={"bg-red-600"}
-                  image={require("../assets/icons/Pause.png")}
-                  imageStyle={"w-16 h-16"}
-                />
-              )
+              <>
+                {challengeData?.GameType == "timeup"
+                  ? timer >= 0 && (
+                      <GameButton
+                        onPress={pauseTimer}
+                        text={`${formatTime(timer)}`}
+                        buttonStyle={"bg-red-600"}
+                        image={require("../assets/icons/Pause.png")}
+                        imageStyle={"w-16 h-16"}
+                      />
+                    )
+                  : timer > 0 && (
+                      <GameButton
+                        onPress={pauseTimer}
+                        text={`${formatTime(timer)}`}
+                        buttonStyle={"bg-red-600"}
+                        image={require("../assets/icons/Pause.png")}
+                        imageStyle={"w-16 h-16"}
+                      />
+                    )}
+              </>
             )}
           </View>
 
           {/* Conditionally render Next User button when timer reaches 0 */}
-          {timer === 0 && (
+          {timer === 0 && challengeData?.GameType == "timedown" && (
             <>
               {isAllTurnsPlayed ? (
                 <View>
