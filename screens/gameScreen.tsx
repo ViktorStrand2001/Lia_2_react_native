@@ -269,12 +269,52 @@ const GameScreen = (props: any) => {
           <View className="mt-6">
             {/* Conditionally render Start/Pause button or Next User button based on showStartButton state */}
             {showStartButton ? (
-              <GameButton
-                onPress={toggleTimer}
-                buttonStyle={"bg-customGreen"}
-                image={require("../assets/icons/Start.png")}
-                imageStyle={"w-16 h-16"}
-              />
+              <>
+                {challengeData?.GameType == "timeup" && timer >= 1 ? (
+                  <>
+                    {isAllTurnsPlayed ? (
+                      <GameButton
+                        onPress={() => {
+                          props.navigation.navigate("Points", { players }),
+                            pauseTimer()
+                        }}
+                        buttonStyle={"bg-customGreen"}
+                        icon={
+                          <View className=" flex flex-row justify-center items-center ">
+                            <StarIcon size={40} className=" text-white" />
+                          </View>
+                        }
+                      />
+                    ) : (
+                      <GameButton
+                        onPress={() => {
+                          setShowStartButton(true)
+                          resetTimer()
+                          pauseTimer()
+                          setCurrentPlayerIndex(
+                            (prevIndex) => (prevIndex + 1) % players.length
+                          )
+                        }}
+                        buttonStyle={"bg-customGreen"}
+                        icon={
+                          <View className=" flex flex-row justify-center items-center ">
+                            <User size={50} className=" text-white" />
+                            <ArrowRight size={35} className=" text-white" />
+                            <Users size={50} className=" text-white" />
+                          </View>
+                        }
+                      />
+                    )}
+                  </>
+                ) : (
+                  <GameButton
+                    onPress={toggleTimer}
+                    buttonStyle={"bg-customGreen"}
+                    image={require("../assets/icons/Start.png")}
+                    imageStyle={"w-16 h-16"}
+                  />
+                )}
+              </>
             ) : (
               <>
                 {challengeData?.GameType == "timeup"
@@ -304,42 +344,42 @@ const GameScreen = (props: any) => {
           {timer <= 0 && challengeData?.GameType == "timedown" && (
             <>
               {isAllTurnsPlayed ? (
-                <>
-                  {gameType !== "Quiz" && (
-                    <GameButton
-                      onPress={() => {
-                        props.navigation.navigate("Points", { players }),
-                          pauseTimer()
-                      }}
-                      buttonStyle={"bg-customGreen"}
-                      icon={
-                        <View className=" flex flex-row justify-center items-center ">
-                          <StarIcon size={40} className=" text-white" />
-                        </View>
-                      }
-                    />
-                  )}
-                </>
-              ) : (
-                <>
-                  <GameButton
-                    onPress={() => {
-                      setShowStartButton(true)
-                      resetTimer()
+            <>
+              {gameType !== "Quiz" && (
+                <GameButton
+                  onPress={() => {
+                    props.navigation.navigate("Points", { players }),
                       pauseTimer()
-                      setCurrentPlayerIndex(
-                        (prevIndex) => (prevIndex + 1) % players.length
-                      )
-                    }}
-                    buttonStyle={"bg-customGreen"}
-                    icon={
-                      <View className=" flex flex-row justify-center items-center ">
-                        <User size={50} className=" text-white" />
-                        <ArrowRight size={35} className=" text-white" />
-                        <Users size={50} className=" text-white" />
-                      </View>
-                    }
-                  />
+                  }}
+                  buttonStyle={"bg-customGreen"}
+                  icon={
+                    <View className=" flex flex-row justify-center items-center ">
+                      <StarIcon size={40} className=" text-white" />
+                    </View>
+                  }
+                />
+              )}
+            </>
+          ) : (
+            <>
+              <GameButton
+                onPress={() => {
+                  setShowStartButton(true)
+                  resetTimer()
+                  pauseTimer()
+                  setCurrentPlayerIndex(
+                    (prevIndex) => (prevIndex + 1) % players.length
+                  )
+                }}
+                buttonStyle={"bg-customGreen"}
+                icon={
+                  <View className=" flex flex-row justify-center items-center ">
+                    <User size={50} className=" text-white" />
+                    <ArrowRight size={35} className=" text-white" />
+                    <Users size={50} className=" text-white" />
+                  </View>
+                }
+              />
                 </>
               )}
             </>
