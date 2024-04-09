@@ -90,7 +90,7 @@ const GameScreen = (props: any) => {
   }
 
   useEffect(() => {
-    let interval: string | number | NodeJS.Timeout | undefined
+    let interval: string | number | NodeJS.Timeout
     if (isRunning) {
       interval = setInterval(() => {
         setTimer((prevTimer) => {
@@ -129,11 +129,13 @@ const GameScreen = (props: any) => {
   const pauseTimer = useCallback(() => {
     setIsRunning(false)
     setShowStartButton(true)
+  }, [currentPlayerIndex, currentTimer])
 
+  const setPlayerTime = useCallback(() => {
     setPlayers((prevScoreboard) =>
       prevScoreboard.map((player) =>
         player.id === currentPlayerIndex
-          ? { ...player, timer: player.timer + currentTimer } // Add the current timer value to the player's timer
+          ? { ...player, timer: player.timer + currentTimer + 1 } // Add the current timer value to the player's timer
           : player
       )
     )
@@ -141,10 +143,20 @@ const GameScreen = (props: any) => {
 
   const resetTimer = useCallback(() => {
     if (challengeData) {
-      setTimer(challengeData.Time * 1)
+      setTimer(challengeData.Time * 60)
     } else {
       setTimer(0)
     }
+  }, [challengeData])
+
+  const resetplayerTime = useCallback(() => {
+    setPlayers((prevScoreboard) =>
+      prevScoreboard.map((player) =>
+        player.id === currentPlayerIndex
+          ? { ...player, timer: 0, turn: 1 } // Add the current timer value to the player's timer
+          : player
+      )
+    )
   }, [challengeData])
 
   const formatTime = (timeInSeconds: number) => {
@@ -280,7 +292,8 @@ const GameScreen = (props: any) => {
             {/* Conditionally render Start/Pause button or Next User button based on showStartButton state */}
             {showStartButton ? (
               <>
-                {challengeData?.GameType == "timeup" && timer >= 1 ? (
+                {challengeData?.GameType == "timeup" &&
+                players[currentPlayerIndex]?.turn === 0 ? (
                   <>
                     {isAllTurnsPlayed ? (
                       <GameButton
@@ -330,7 +343,9 @@ const GameScreen = (props: any) => {
                 {challengeData?.GameType == "timeup"
                   ? timer >= 0 && (
                       <GameButton
-                        onPress={pauseTimer}
+                        onPress={() => {
+                          pauseTimer(), setPlayerTime()
+                        }}
                         text={`${formatTime(timer)}`}
                         buttonStyle={"bg-red-600"}
                         image={require("../assets/icons/Pause.png")}
@@ -397,12 +412,13 @@ const GameScreen = (props: any) => {
 
           {/* Reset timer button */}
           <View className="w-16 h-16">
-            {showStartButton ? null : (
+            {players[currentPlayerIndex]?.turn == 0 && (
               <View className="flex justify-center items-center">
                 <GameButton
                   onPress={() => {
                     resetTimer()
-                    pauseTimer()
+                      pauseTimer()
+                      resetplayerTime()
                   }}
                   text="Reset timer"
                   buttonTextStyle="text-base text-red-600"
