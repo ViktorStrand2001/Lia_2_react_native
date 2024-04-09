@@ -8,35 +8,24 @@ import {
 import React, { useEffect, useState } from "react"
 import { CheckIcon, Gamepad2Icon, PlusCircleIcon, X } from "lucide-react-native"
 import { black, white } from "tailwindcss/colors"
-import { useRoute, RouteProp } from "@react-navigation/native"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { Player } from "../utils/types"
 import { Center, FormControl, Select } from "native-base"
 
-type RootStackParamList = {
-  GameType: undefined
-  SetPlayer: { gameType: string }
-}
-type PlayerScreenRouteProp = RouteProp<RootStackParamList, "SetPlayer">
-
 const PlayerScreen = (props: any) => {
   const [playerName, setPlayerName] = useState<string>("")
   const [players, setPlayers] = useState<Player[]>([])
-  const route = useRoute<PlayerScreenRouteProp>()
+
   const [showInput, setShowInput] = useState<boolean>(false)
   const [gameType, setGameType] = useState<string>("")
   const [rounds, setRounds] = useState<Number>(0)
 
   const navigateToGame = () => {
     if (gameType != "" || rounds != 0) {
-      props.navigation.navigate("Game", { gameType, players, rounds })
+      props.navigation.navigate("Game")
       console.log(gameType)
     }
   }
-
-  useEffect(() => {
-    setGameType(route.params.gameType)
-  }, [gameType])
 
   const addPlayer = () => {
     if (playerName.trim() !== "") {
@@ -63,9 +52,11 @@ const PlayerScreen = (props: any) => {
   useEffect(() => {
     const loadPlayers = async () => {
       try {
+        const storedGameType = await AsyncStorage.getItem("Gametype")
         const storedPlayers = await AsyncStorage.getItem("players")
-        if (storedPlayers !== null) {
+        if (storedPlayers !== null && storedGameType !== null) {
           setPlayers(JSON.parse(storedPlayers))
+          setGameType(JSON.parse(storedGameType))
         }
         console.log(players)
       } catch (error) {
@@ -81,6 +72,7 @@ const PlayerScreen = (props: any) => {
       try {
         await AsyncStorage.setItem("players", JSON.stringify(players))
         await AsyncStorage.setItem("rounds", JSON.stringify(rounds))
+
         console.log(" this is rounds ", rounds)
       } catch (error) {
         console.error("Error saving players:", error)
@@ -91,8 +83,7 @@ const PlayerScreen = (props: any) => {
   }, [players, rounds])
 
   const renderTextBastOnGameType = () => {
-    const typeOfGame = route.params.gameType
-    if (typeOfGame === "Group-Battles") {
+    if (gameType === "Group-Battles") {
       return (
         <Text className="text-2xl font-medium capitalize">
           type your team names!

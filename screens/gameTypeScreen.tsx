@@ -1,6 +1,7 @@
 import { View, ScrollView } from "react-native"
 import React, { useEffect, useState } from "react"
 import GameTypeOption from "../components/GameTypeComponets/GameTypeOption"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 const GameTypeScreen = (props: any) => {
   const [gameType, setGameType] = useState<string>("")
@@ -8,7 +9,7 @@ const GameTypeScreen = (props: any) => {
   // sending data to playerScreeen
   const navigateToPlayerScreen = () => {
     if (gameType != "") {
-      props.navigation.navigate("SetPlayer", { gameType })
+      props.navigation.navigate("SetPlayer")
     }
   }
   const navigateToCustomCardScreen = () => {
@@ -27,6 +28,20 @@ const GameTypeScreen = (props: any) => {
     if (gameType != "") {
       navigateToPlayerScreen()
     }
+  }, [gameType])
+
+  useEffect(() => {
+    const saveGamesettings = async () => {
+      try {
+        await AsyncStorage.setItem("Gametype", JSON.stringify(gameType))
+
+        console.log(" asynstorage ", gameType)
+      } catch (error) {
+        console.error("Error saving players:", error)
+      }
+    }
+
+    saveGamesettings()
   }, [gameType])
 
   return (

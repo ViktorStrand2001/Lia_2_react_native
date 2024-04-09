@@ -19,16 +19,6 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { useFocusEffect } from "@react-navigation/native"
 
-type RootStackParamList = {
-  GameType: undefined
-  GameTypeData: { gameType: string }
-}
-
-type PlayerScreenGameTypeRouteProp = RouteProp<
-  RootStackParamList,
-  "GameTypeData"
->
-
 const GameScreen = (props: any) => {
   const [timer, setTimer] = useState<number>(Number)
   const [isRunning, setIsRunning] = useState<boolean>(false)
@@ -39,15 +29,10 @@ const GameScreen = (props: any) => {
   const [quizCardAnswer, setQuizCardAnswer] = useState<boolean | undefined>()
   const [quizScore, setQuizScore] = useState<number>(0)
   const [quizAnswer, setQuizAnswer] = useState<string>("")
-  const routeGameType = useRoute<PlayerScreenGameTypeRouteProp>()
   const [disabled, setDisabled] = useState<boolean>(false)
   const [players, setPlayers] = useState<Player[]>([])
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState<number>(0)
   const isAllTurnsPlayed = players.every((player) => player.turn === 0)
-
-  useEffect(() => {
-    setGameType(routeGameType.params.gameType)
-  }, [])
 
   const fetchChallenge = async () => {
     if (gameType != "") {
@@ -64,17 +49,13 @@ const GameScreen = (props: any) => {
 
   useFocusEffect(
     useCallback(() => {
-    if (gameType === "Free-for-all" || gameType === "Group-Battles") {
+      if (gameType === "Free-for-all" || gameType === "Group-Battles") {
         fetchChallenge()
-    } else {
+      } else {
         fetchQuiz()
-    }
+      }
     }, [gameType])
   )
-
-  useEffect(() => {
-    setGameType(routeGameType.params.gameType)
-  }, [])
 
   // Use useFocusEffect to fetch players when the screen comes into focus
   useFocusEffect(
@@ -82,9 +63,11 @@ const GameScreen = (props: any) => {
       const fetchPlayers = async () => {
         try {
           const storedPlayers = await AsyncStorage.getItem("players")
-          const rounds = await AsyncStorage.getItem("rounds")
-          if (storedPlayers) {
+          const storedGameType = await AsyncStorage.getItem("Gametype")
+
+          if (storedPlayers && storedGameType) {
             setPlayers(JSON.parse(storedPlayers))
+            setGameType(JSON.parse(storedGameType))
           }
         } catch (error) {
           console.error("Error fetching players:", error)
@@ -96,7 +79,6 @@ const GameScreen = (props: any) => {
   )
 
   const fetchQuiz = async () => {
-    setGameType(routeGameType.params.gameType)
     if (gameType != "") {
       const quizDatafetch = await fetchRandomQuiz(gameType)
       if (quizDatafetch) {
