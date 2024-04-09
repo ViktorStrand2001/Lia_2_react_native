@@ -32,6 +32,7 @@ const GameScreen = (props: any) => {
   const [disabled, setDisabled] = useState<boolean>(false)
   const [players, setPlayers] = useState<Player[]>([])
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState<number>(0)
+  const [currentTimer, setCurrentTimer] = useState(0)
   const isAllTurnsPlayed = players.every((player) => player.turn === 0)
 
   const fetchChallenge = async () => {
@@ -89,11 +90,12 @@ const GameScreen = (props: any) => {
   }
 
   useEffect(() => {
-    let interval: NodeJS.Timeout
+    let interval: string | number | NodeJS.Timeout | undefined
     if (isRunning) {
       interval = setInterval(() => {
-        setTimer((prevTimer: any) => {
-          if (challengeData && challengeData.GameType == "timedown") {
+        setTimer((prevTimer) => {
+          setCurrentTimer(prevTimer) // Update the currentTimer state with the current timer value
+          if (challengeData && challengeData.GameType === "timedown") {
             if (prevTimer <= 0) {
               clearInterval(interval)
               setIsRunning(false)
@@ -127,7 +129,15 @@ const GameScreen = (props: any) => {
   const pauseTimer = useCallback(() => {
     setIsRunning(false)
     setShowStartButton(true)
-  }, [])
+
+    setPlayers((prevScoreboard) =>
+      prevScoreboard.map((player) =>
+        player.id === currentPlayerIndex
+          ? { ...player, timer: player.timer + currentTimer } // Add the current timer value to the player's timer
+          : player
+      )
+    )
+  }, [currentPlayerIndex, currentTimer])
 
   const resetTimer = useCallback(() => {
     if (challengeData) {
@@ -344,42 +354,42 @@ const GameScreen = (props: any) => {
           {timer <= 0 && challengeData?.GameType == "timedown" && (
             <>
               {isAllTurnsPlayed ? (
-            <>
-              {gameType !== "Quiz" && (
-                <GameButton
-                  onPress={() => {
-                    props.navigation.navigate("Points", { players }),
+                <>
+                  {gameType !== "Quiz" && (
+                    <GameButton
+                      onPress={() => {
+                        props.navigation.navigate("Points", { players }),
+                          pauseTimer()
+                      }}
+                      buttonStyle={"bg-customGreen"}
+                      icon={
+                        <View className=" flex flex-row justify-center items-center ">
+                          <StarIcon size={40} className=" text-white" />
+                        </View>
+                      }
+                    />
+                  )}
+                </>
+              ) : (
+                <>
+                  <GameButton
+                    onPress={() => {
+                      setShowStartButton(true)
+                      resetTimer()
                       pauseTimer()
-                  }}
-                  buttonStyle={"bg-customGreen"}
-                  icon={
-                    <View className=" flex flex-row justify-center items-center ">
-                      <StarIcon size={40} className=" text-white" />
-                    </View>
-                  }
-                />
-              )}
-            </>
-          ) : (
-            <>
-              <GameButton
-                onPress={() => {
-                  setShowStartButton(true)
-                  resetTimer()
-                  pauseTimer()
-                  setCurrentPlayerIndex(
-                    (prevIndex) => (prevIndex + 1) % players.length
-                  )
-                }}
-                buttonStyle={"bg-customGreen"}
-                icon={
-                  <View className=" flex flex-row justify-center items-center ">
-                    <User size={50} className=" text-white" />
-                    <ArrowRight size={35} className=" text-white" />
-                    <Users size={50} className=" text-white" />
-                  </View>
-                }
-              />
+                      setCurrentPlayerIndex(
+                        (prevIndex) => (prevIndex + 1) % players.length
+                      )
+                    }}
+                    buttonStyle={"bg-customGreen"}
+                    icon={
+                      <View className=" flex flex-row justify-center items-center ">
+                        <User size={50} className=" text-white" />
+                        <ArrowRight size={35} className=" text-white" />
+                        <Users size={50} className=" text-white" />
+                      </View>
+                    }
+                  />
                 </>
               )}
             </>

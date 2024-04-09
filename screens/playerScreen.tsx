@@ -35,6 +35,7 @@ const PlayerScreen = (props: any) => {
         id: players.length,
         points: 0,
         turn: 1,
+        timer: 0,
       }
 
       setPlayers([...players, newPlayer])

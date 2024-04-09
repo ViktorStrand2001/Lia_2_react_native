@@ -18,5 +18,6 @@ export interface Player {
   score: number
   id: number
   points: number
-  turn : number
+  turn: number
+  timer: number 
 }

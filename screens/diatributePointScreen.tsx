@@ -49,6 +49,7 @@ const DiatributePointScreen = (props: any) => {
         const storedPlayers = await AsyncStorage.getItem("players")
         const storedRound = await AsyncStorage.getItem("rounds")
 
+
         if (storedPlayers && storedRound) {
           setRounds(parseInt(storedRound))
           setScoreboard(JSON.parse(storedPlayers))
