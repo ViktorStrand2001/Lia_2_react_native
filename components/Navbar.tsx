@@ -8,9 +8,10 @@ import SettingScreen from "../screens/settingscreen"
 import GameScreen from "../screens/gameScreen"
 import PlayerScreen from "../screens/playerScreen"
 import CreateCardScreen from "../screens/createCardScreen"
-import DiatributePointScreen from "../screens/diatributePointScreen"
+
 import ScoreboardScreen from "../screens/scoreboardScreen"
 import CreateQuizCardScreen from "../screens/createQuizCardScreen"
+import DistributePointScreen from "../screens/distributePointScreen"
 
 const Navbar = () => {
   const Stack = createStackNavigator()
@@ -48,7 +49,7 @@ const Navbar = () => {
         <Stack.Screen name="Game" component={GameScreen} options={settings} />
         <Stack.Screen
           name="Points"
-          component={DiatributePointScreen}
+          component={DistributePointScreen}
           options={settings}
         />
         <Stack.Screen

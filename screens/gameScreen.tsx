@@ -45,7 +45,6 @@ const GameScreen = (props: any) => {
         setTimer(challengeCardData.Time * 1)
       }
     }
-    console.log("playerstats ", players)
   }
 
   useFocusEffect(
@@ -76,6 +75,7 @@ const GameScreen = (props: any) => {
       }
 
       fetchPlayers()
+      console.log("players: ", players)
     }, [])
   )
 
@@ -143,7 +143,7 @@ const GameScreen = (props: any) => {
 
   const resetTimer = useCallback(() => {
     if (challengeData) {
-      setTimer(challengeData.Time * 60)
+      setTimer(challengeData.Time * 1)
     } else {
       setTimer(0)
     }
@@ -417,8 +417,8 @@ const GameScreen = (props: any) => {
                 <GameButton
                   onPress={() => {
                     resetTimer()
-                      pauseTimer()
-                      resetplayerTime()
+                    pauseTimer()
+                    resetplayerTime()
                   }}
                   text="Reset timer"
                   buttonTextStyle="text-base text-red-600"

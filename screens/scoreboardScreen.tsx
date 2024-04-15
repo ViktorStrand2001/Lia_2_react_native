@@ -9,21 +9,21 @@ import AsyncStorage from "@react-native-async-storage/async-storage"
 const ScoreboardScreen = (props: any) => {
   const [leaderboard, setLeaderboard] = useState<Player[]>([])
 
-   useEffect(() => {
-     const fetchPlayers = async () => {
-       try {
-         const storedPlayers = await AsyncStorage.getItem("players")
-         if (storedPlayers) {
-           setLeaderboard(JSON.parse(storedPlayers))
-         }
-       } catch (error) {
-         console.error("Error fetching players:", error)
-       }
-     }
+  useEffect(() => {
+    const fetchPlayers = async () => {
+      try {
+        const storedPlayers = await AsyncStorage.getItem("players")
+        if (storedPlayers) {
+          setLeaderboard(JSON.parse(storedPlayers))
+        }
+      } catch (error) {
+        console.error("Error fetching players:", error)
+      }
+    }
 
-     fetchPlayers()
-   }, [props.navigation])
-  
+    fetchPlayers()
+  }, [props.navigation])
+
   useEffect(() => {
     const savePlayerStats = async () => {
       try {
@@ -32,22 +32,20 @@ const ScoreboardScreen = (props: any) => {
         console.error("Error saving players:", error)
       }
     }
-    console.log("svae: ",leaderboard)
+    console.log("svae: ", leaderboard)
     savePlayerStats()
   }, [leaderboard])
-  
+
   // behövs för att skicka vidare useState value
   useEffect(() => {
-    const sortedLeaderboard = [...leaderboard].sort(
-      (a, b) => b.score - a.score
-    )
+    const sortedLeaderboard = [...leaderboard].sort((a, b) => b.score - a.score)
     setLeaderboard(sortedLeaderboard)
   }, [])
   //
 
   const navigateToGame = () => {
-  props.navigation.navigate("SetPlayer");
-};
+    props.navigation.navigate("SetPlayer")
+  }
 
   return (
     <View className="bg-bgBlue min-w-screen min-h-screen flex justify-center items-center pb-20">
