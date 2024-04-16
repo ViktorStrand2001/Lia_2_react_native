@@ -19,5 +19,7 @@ export interface Player {
   id: number
   points: number
   turn: number
-  timer: number 
+  timer: number
+  right: number
+  wrong: number
 }

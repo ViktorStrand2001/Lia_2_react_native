@@ -45,6 +45,8 @@ const GameTypeScreen = (props: any) => {
     saveGamesettings()
   }, [gameType])
 
+  console.log("Gametype :", gameType)
+
   return (
     <ScrollView>
       <View className="min-w-full min-h-full bg-bgBlue">

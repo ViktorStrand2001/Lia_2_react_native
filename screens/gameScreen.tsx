@@ -10,6 +10,7 @@ import QuizCard from "../components/GameScreenComponents/QuizCard"
 import {
   ArrowRight,
   CheckIcon,
+  Navigation,
   StarIcon,
   User,
   Users,
@@ -33,6 +34,7 @@ const GameScreen = (props: any) => {
   const [players, setPlayers] = useState<Player[]>([])
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState<number>(0)
   const [currentTimer, setCurrentTimer] = useState(0)
+  const [rounds, setRounds] = useState<number>(0)
   const isAllTurnsPlayed = players.every((player) => player.turn === 0)
 
   const fetchChallenge = async () => {
@@ -64,10 +66,12 @@ const GameScreen = (props: any) => {
         try {
           const storedPlayers = await AsyncStorage.getItem("players")
           const storedGameType = await AsyncStorage.getItem("Gametype")
+          const storedRounds = await AsyncStorage.getItem("rounds")
 
-          if (storedPlayers && storedGameType) {
+          if (storedPlayers && storedGameType && storedRounds) {
             setPlayers(JSON.parse(storedPlayers))
             setGameType(JSON.parse(storedGameType))
+            setRounds(parseInt(storedRounds))
           }
         } catch (error) {
           console.error("Error fetching players:", error)
@@ -229,6 +233,7 @@ const GameScreen = (props: any) => {
     <View className="flex justify-center items-center w-full h-full bg-bgBlue">
       {gameType == "Quiz" ? (
         <View className="flex justify-center items-center w-screen h-full">
+          <Text>{rounds}</Text>
           {quizAnswer === "Correct" ? (
             <View className="z-50 absolute top-0">
               <FadeInView>
@@ -272,6 +277,17 @@ const GameScreen = (props: any) => {
                 buttonStyle={"bg-red-600 w-28 h-16"}
               />
             </View>
+          </View>
+          <View>
+            <GameButton
+              onPress={() => {
+                props.navigation.navigate("Scoreboard")
+              }}
+              icon={<XIcon size={70} className="text-white" />}
+              disabled={disabled}
+              buttonTextStyle="capitalize"
+              buttonStyle={"bg-red-600 w-28 h-16"}
+            />
           </View>
         </View>
       ) : (

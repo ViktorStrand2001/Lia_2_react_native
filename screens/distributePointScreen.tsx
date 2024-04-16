@@ -160,7 +160,8 @@ const DistributePointScreen = (props: any) => {
   }
   console.log(" scoreboard ", scoreboard)
 
-  const distributePoint = () => {
+
+ const distributePoint = () => {
     if (!showPointDistribution) return null
 
     return (
