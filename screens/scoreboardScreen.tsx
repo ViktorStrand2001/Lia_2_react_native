@@ -44,6 +44,14 @@ const ScoreboardScreen = (props: any) => {
   //
 
   const navigateToGame = () => {
+    const updatedScoreboard = leaderboard.map((player, index) => ({
+      ...player,
+      points: 0,
+      score: 0,
+      timer: 0,
+      turn: 1,
+    }))
+    setLeaderboard(updatedScoreboard)
     props.navigation.navigate("SetPlayer")
   }
 

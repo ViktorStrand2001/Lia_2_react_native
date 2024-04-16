@@ -31,8 +31,7 @@ const GameTypeScreen = (props: any) => {
     }
   }, [gameType])
 
-  useFocusEffect(
-  useCallback(() => {
+  useEffect(() => {
     const saveGamesettings = async () => {
       try {
         await AsyncStorage.setItem("Gametype", JSON.stringify(gameType))
@@ -45,8 +44,6 @@ const GameTypeScreen = (props: any) => {
 
     saveGamesettings()
   }, [gameType])
-
-  )
 
   return (
     <ScrollView>

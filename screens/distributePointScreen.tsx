@@ -30,7 +30,6 @@ const DistributePointScreen = (props: any) => {
   const [showPointDistribution, setShowPointDistribution] = useState(false)
   const [availablePoints, setAvailablePoints] = useState<number[]>([])
   const [rounds, setRounds] = useState<number>()
-
   const players = route.params.players
   const isPointsSet = scoreboard.some((player) => player.points === 0)
   const isPlayerTimed = scoreboard.some((player) => player.timer > 0)
@@ -41,7 +40,8 @@ const DistributePointScreen = (props: any) => {
       const updatedRounds = parseInt(storedRounds) - 1
       await AsyncStorage.setItem("rounds", updatedRounds.toString())
     }
-    props.navigation.navigate("Scoreboard")
+
+     props.navigation.navigate("Scoreboard")
   }
 
   useEffect(() => {
@@ -93,7 +93,7 @@ const DistributePointScreen = (props: any) => {
       const updatedScoreboard = sortedPlayers.map((player, index) => ({
         ...player,
         points: player.points + pointsToDistribute - index,
-        score: player.points + pointsToDistribute - index, // Update the score based on points earned during the round
+        score: player.score + player.points // Update the score based on points earned during the round
       }))
 
       // Update the scoreboard

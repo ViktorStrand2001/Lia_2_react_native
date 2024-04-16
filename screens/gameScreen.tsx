@@ -117,9 +117,7 @@ const GameScreen = (props: any) => {
     if (players[currentPlayerIndex]?.turn !== 0) {
       setPlayers((prevScoreboard) =>
         prevScoreboard.map((player) =>
-          player.id === currentPlayerIndex
-            ? { ...player, turn: player.turn - 1 }
-            : player
+          player.id === currentPlayerIndex ? { ...player, turn: 0 } : player
         )
       )
     }
@@ -225,6 +223,7 @@ const GameScreen = (props: any) => {
       </Animated.View>
     )
   }
+  console.log(" current  index :", currentPlayerIndex)
 
   return (
     <View className="flex justify-center items-center w-full h-full bg-bgBlue">
@@ -293,13 +292,14 @@ const GameScreen = (props: any) => {
             {showStartButton ? (
               <>
                 {challengeData?.GameType == "timeup" &&
-                players[currentPlayerIndex]?.turn === 0 ? (
+                players[currentPlayerIndex]?.turn <= 0 ? (
                   <>
                     {isAllTurnsPlayed ? (
                       <GameButton
                         onPress={() => {
                           props.navigation.navigate("Points", { players }),
                             pauseTimer()
+                          setCurrentPlayerIndex(0)
                         }}
                         buttonStyle={"bg-customGreen"}
                         icon={
@@ -314,9 +314,7 @@ const GameScreen = (props: any) => {
                           setShowStartButton(true)
                           resetTimer()
                           pauseTimer()
-                          setCurrentPlayerIndex(
-                            (prevIndex) => (prevIndex + 1) % players.length
-                          )
+                          setCurrentPlayerIndex((prevIndex) => prevIndex + 1)
                         }}
                         buttonStyle={"bg-customGreen"}
                         icon={
@@ -375,6 +373,7 @@ const GameScreen = (props: any) => {
                       onPress={() => {
                         props.navigation.navigate("Points", { players }),
                           pauseTimer()
+                        setCurrentPlayerIndex(0)
                       }}
                       buttonStyle={"bg-customGreen"}
                       icon={
