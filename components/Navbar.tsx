@@ -1,19 +1,23 @@
-import "react-native-gesture-handler"
-import { createStackNavigator } from "@react-navigation/stack"
 import React from "react"
+import { createStackNavigator } from "@react-navigation/stack"
 import { NavigationContainer } from "@react-navigation/native"
 import GameTypeScreen from "../screens/gameTypeScreen"
-import { SettingsIcon } from "lucide-react-native"
-import SettingScreen from "../screens/settingscreen"
+import {
+  Gamepad2Icon,
+  SettingsIcon,
+  StarIcon,
+  TrophyIcon,
+  Users2Icon,
+} from "lucide-react-native"
 import GameScreen from "../screens/gameScreen"
 import PlayerScreen from "../screens/playerScreen"
 import CreateCardScreen from "../screens/createCardScreen"
-
 import ScoreboardScreen from "../screens/scoreboardScreen"
 import CreateQuizCardScreen from "../screens/createQuizCardScreen"
 import DistributePointScreen from "../screens/distributePointScreen"
+import { black } from "tailwindcss/colors"
 
-const Navbar = () => {
+const Navbar: React.FC = () => {
   const Stack = createStackNavigator()
 
   const settings = {
@@ -26,10 +30,11 @@ const Navbar = () => {
       />
     ),
   }
+
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Gametype"
+        initialRouteName="GameType"
         screenOptions={{
           headerStyle: {
             backgroundColor: "#CAEFFF",
@@ -38,40 +43,59 @@ const Navbar = () => {
           headerTitleStyle: {
             fontWeight: "bold",
           },
+          headerTitleAlign: "center",
+          ...settings,
         }}
       >
-        <Stack.Screen name="GameType" component={GameTypeScreen} />
+        <Stack.Screen
+          name="GameType"
+          component={GameTypeScreen}
+          options={{
+            headerTitle: () => <Gamepad2Icon size={60} color={black} />,
+          }}
+        />
         <Stack.Screen
           name="SetPlayer"
           component={PlayerScreen}
-          options={settings}
+          options={{
+            headerTitle: () => <Users2Icon size={60} color={black} />,
+          }}
         />
-        <Stack.Screen name="Game" component={GameScreen} options={settings} />
+        <Stack.Screen
+          name="Game"
+          component={GameScreen}
+          options={{
+            headerTitle: () => <Gamepad2Icon size={60} color={black} />,
+          }}
+        />
         <Stack.Screen
           name="Points"
           component={DistributePointScreen}
-          options={settings}
+          options={{
+            headerTitle: () => <StarIcon size={60} color={black} />,
+          }}
         />
         <Stack.Screen
           name="Scoreboard"
           component={ScoreboardScreen}
-          options={settings}
-        />
-        <Stack.Screen
-          name="Settings"
-          component={SettingScreen}
-          options={settings}
+          options={{
+            headerTitle: () => <TrophyIcon size={60} color={black} />,
+          }}
         />
         <Stack.Screen
           name="customCards"
           component={CreateCardScreen}
-          options={settings}
+          options={{
+            headerTitle: () => <Gamepad2Icon size={60} color={black} />,
+          }}
         />
 
-<Stack.Screen
+        <Stack.Screen
           name="customQuiz"
           component={CreateQuizCardScreen}
-          options={settings}
+          options={{
+            headerTitle: () => <Gamepad2Icon size={60} color={black} />,
+          }}
         />
       </Stack.Navigator>
     </NavigationContainer>
