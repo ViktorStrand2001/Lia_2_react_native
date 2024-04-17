@@ -59,6 +59,8 @@ const ScoreboardScreen = (props: any) => {
       score: 0,
       timer: 0,
       turn: 1,
+      right: 0,
+      wrong: 0,
     }))
     setLeaderboard(updatedScoreboard)
     props.navigation.navigate("SetPlayer")

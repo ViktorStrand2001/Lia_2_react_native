@@ -35,6 +35,7 @@ const GameScreen = (props: any) => {
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState<number>(0)
   const [currentTimer, setCurrentTimer] = useState(0)
   const [rounds, setRounds] = useState<number>(0)
+  const [currentround, setCurrentRound] = useState<number>(1)
   const isAllTurnsPlayed = players.every((player) => player.turn === 0)
 
   const fetchChallenge = async () => {
@@ -175,11 +176,26 @@ const GameScreen = (props: any) => {
       if (quizData) {
         const isCorrect = selectedAnswer === quizData.Answer
         if (isCorrect) {
-          setQuizScore((prevQuizScore) => prevQuizScore + 1)
+          setPlayers((prevScoreboard) =>
+            prevScoreboard.map((player) =>
+              player.id === currentPlayerIndex
+                ? { ...player, right: player.right + 1 }
+                : player
+            )
+          )
           setQuizAnswer("Correct")
           setDisabled(true)
         } else {
+          setPlayers((prevScoreboard) =>
+            prevScoreboard.map((player) =>
+              player.id === currentPlayerIndex
+                ? { ...player, wrong: player.wrong + 1 }
+                : player
+            )
+          )
+
           setQuizAnswer("Incorrect")
+
           setDisabled(true)
         }
       }
@@ -205,90 +221,66 @@ const GameScreen = (props: any) => {
     savePlayerStats()
   }, [players])
 
-  const FadeInView = (props: any) => {
-    const [fadeAnim] = useState(new Animated.Value(1))
-
-    useEffect(() => {
-      Animated.timing(fadeAnim, {
-        toValue: 0,
-        duration: 1000,
-        useNativeDriver: true,
-      }).start()
-    }, [fadeAnim])
-
-    return (
-      <Animated.View
-        style={{
-          ...props.style,
-          opacity: fadeAnim,
-        }}
-      >
-        {props.children}
-      </Animated.View>
-    )
-  }
   console.log(" current  index :", currentPlayerIndex)
+  console.log(" players", players)
 
   return (
     <View className="flex justify-center items-center w-full h-full bg-bgBlue">
       {gameType == "Quiz" ? (
         <View className="flex justify-center items-center w-screen h-full">
-          <Text>{rounds}</Text>
-          {quizAnswer === "Correct" ? (
-            <View className="z-50 absolute top-0">
-              <FadeInView>
-                <CheckIcon size={200} className="text-green-900" />
-              </FadeInView>
-            </View>
-          ) : null}
-          {quizAnswer === "Incorrect" ? (
-            <View className="z-50 absolute top-0">
-              <FadeInView>
-                <XIcon size={200} className="text-red-700" />
-              </FadeInView>
-            </View>
-          ) : null}
+          {currentround <= rounds ? (
+            <Text className=" text-base mb-2 font-semibold">
+              Question {currentround}/{rounds}
+            </Text>
+          ) : (
+            <Text className=" text-base mb-2 font-semibold">Finished</Text>
+          )}
+
           <QuizCard
             quizData={quizData}
             refreshQuiz={() => {
               fetchQuiz()
             }}
           />
-          <View className="mt-6 flex flex-row space-x-6">
-            <View>
+          {currentround <= rounds ? (
+            <View className="mt-6 flex flex-row space-x-6">
+              <View>
+                <GameButton
+                  onPress={() => {
+                    handleAnswerSelection(true)
+                    setCurrentRound((prev) => prev + 1)
+                  }}
+                  disabled={disabled}
+                  icon={<CheckIcon size={70} className="text-white" />}
+                  buttonTextStyle="capitalize"
+                  buttonStyle={"bg-customGreen w-28 h-16"}
+                />
+              </View>
+              <View>
+                <GameButton
+                  onPress={() => {
+                    handleAnswerSelection(false)
+                    setCurrentRound((prev) => prev + 1)
+                  }}
+                  icon={<XIcon size={70} className="text-white" />}
+                  disabled={disabled}
+                  buttonTextStyle="capitalize"
+                  buttonStyle={"bg-red-600 w-28 h-16"}
+                />
+              </View>
+            </View>
+          ) : (
+            <View className=" mt-6">
               <GameButton
                 onPress={() => {
-                  handleAnswerSelection(true)
+                  props.navigation.navigate("scoreboard")
                 }}
-                disabled={disabled}
-                icon={<CheckIcon size={70} className="text-white" />}
-                buttonTextStyle="capitalize"
-                buttonStyle={"bg-customGreen w-28 h-16"}
+                buttonStyle="bg-customGreen"
+                image={require("../assets/icons/Leaderboard.png")}
+                imageStyle="w-20 h-20"
               />
             </View>
-            <View>
-              <GameButton
-                onPress={() => {
-                  handleAnswerSelection(false)
-                }}
-                icon={<XIcon size={70} className="text-white" />}
-                disabled={disabled}
-                buttonTextStyle="capitalize"
-                buttonStyle={"bg-red-600 w-28 h-16"}
-              />
-            </View>
-          </View>
-          <View>
-            <GameButton
-              onPress={() => {
-                props.navigation.navigate("Scoreboard")
-              }}
-              icon={<XIcon size={70} className="text-white" />}
-              disabled={disabled}
-              buttonTextStyle="capitalize"
-              buttonStyle={"bg-red-600 w-28 h-16"}
-            />
-          </View>
+          )}
         </View>
       ) : (
         <View className="flex justify-center items-center">
