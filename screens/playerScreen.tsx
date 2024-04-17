@@ -11,14 +11,14 @@ import { black, white } from "tailwindcss/colors"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { Player } from "../utils/types"
 import { Center, FormControl, Select } from "native-base"
+import GameButton from "../components/GameScreenComponents/GameButton"
 
 const PlayerScreen = (props: any) => {
   const [playerName, setPlayerName] = useState<string>("")
   const [players, setPlayers] = useState<Player[]>([])
-
   const [showInput, setShowInput] = useState<boolean>(false)
   const [gameType, setGameType] = useState<string>("")
-  const [rounds, setRounds] = useState<Number>(0)
+  const [rounds, setRounds] = useState<number>(0)
 
   const navigateToGame = () => {
     if (gameType != "" || rounds != 0) {
@@ -36,9 +36,8 @@ const PlayerScreen = (props: any) => {
         points: 0,
         turn: 1,
         timer: 0,
-        right:0,
-        wrong:0,
-      
+        right: 0,
+        wrong: 0,
       }
 
       setPlayers([...players, newPlayer])
@@ -101,6 +100,7 @@ const PlayerScreen = (props: any) => {
       )
     }
   }
+  console.log("plaers lenght ", players.length)
 
   return (
     <View className="flex min-w-full min-h-full bg-bgBlue items-center relative">
@@ -196,14 +196,18 @@ const PlayerScreen = (props: any) => {
       </View>
 
       <View className="h-32 justify-center items absolute bottom-16">
-        <TouchableOpacity onPressOut={() => navigateToGame()}>
-          <View className="bg-customGreen px-20 rounded-3xl flex items-center justify-center border">
-            <Gamepad2Icon size={60} color={white} />
-          </View>
-        </TouchableOpacity>
+        <GameButton
+          onPress={() => navigateToGame()}
+          buttonStyle={`  ${
+            players.length > 0 && rounds > 0 ? "bg-customGreen" : "bg-gray-300"
+          }`}
+          disabled={!(players.length > 0 && rounds > 0)}
+          icon={<Gamepad2Icon size={60} color={white} />}
+        />
       </View>
     </View>
   )
 }
 
 export default PlayerScreen
+
