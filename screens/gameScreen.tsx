@@ -273,7 +273,7 @@ const GameScreen = (props: any) => {
             <View className=" mt-6">
               <GameButton
                 onPress={() => {
-                  props.navigation.navigate("scoreboard")
+                  props.navigation.navigate("Scoreboard")
                 }}
                 buttonStyle="bg-customGreen"
                 image={require("../assets/icons/Leaderboard.png")}
