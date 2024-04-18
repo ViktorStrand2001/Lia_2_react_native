@@ -102,7 +102,7 @@ const Navbar: React.FC = (props: any) => {
           }}
         />
       </Stack.Navigator>
-      <CustomSideNavbar navigation={props.navigation} />
+      {!toggle && <CustomSideNavbar/>}
     </NavigationContainer>
   )
 }
