@@ -101,10 +101,8 @@ const Navbar: React.FC = (props: any) => {
             headerTitle: () => <Gamepad2Icon size={60} color={black} />,
           }}
         />
-        <Stack.Screen
-          component={<CustomSideNavbar navigation={props.navigation} />}
-        />
       </Stack.Navigator>
+      <CustomSideNavbar navigation={props.navigation} />
     </NavigationContainer>
   )
 }
