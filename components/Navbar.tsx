@@ -130,6 +130,7 @@ const Navbar: React.FC = () => {
               width: "100%",
               height: "100%",
             }}
+            className={`${isOpen ? "z-10" : "-z-10"} `}
           >
             <CustomSideNavbar onPress={toggleMenu} />
           </Animated.View>
