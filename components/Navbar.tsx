@@ -1,57 +1,55 @@
 import React, { useState } from "react"
 import { createStackNavigator } from "@react-navigation/stack"
 import { NavigationContainer } from "@react-navigation/native"
-import GameTypeScreen from "../screens/gameTypeScreen"
 import {
   Gamepad2Icon,
   SettingsIcon,
   StarIcon,
   TrophyIcon,
   Users2Icon,
-  UsersRoundIcon,
 } from "lucide-react-native"
+import { black } from "tailwindcss/colors"
+import {
+  TouchableOpacity,
+  View,
+  TouchableWithoutFeedback,
+  Animated,
+  Easing,
+} from "react-native"
+import CustomSideNavbar from "./NavbarComponents/CustomSideNavbar"
+import GameTypeScreen from "../screens/gameTypeScreen"
 import GameScreen from "../screens/gameScreen"
 import PlayerScreen from "../screens/playerScreen"
 import CreateCardScreen from "../screens/createCardScreen"
 import ScoreboardScreen from "../screens/scoreboardScreen"
 import CreateQuizCardScreen from "../screens/createQuizCardScreen"
 import DistributePointScreen from "../screens/distributePointScreen"
-import { black } from "tailwindcss/colors"
-import {
-  TouchableOpacity,
-  View,
-  Text,
-  TouchableWithoutFeedback,
-} from "react-native"
-import Logo from "./Logo"
-import CustomSideNavbar from "./NavbarComponents/CustomSideNavbar"
 
-const Navbar: React.FC = (props: any) => {
+const Navbar: React.FC = () => {
   const Stack = createStackNavigator()
-  const [toggle, setToggle] = useState<boolean>(true)
+  const [isOpen, setIsOpen] = useState<boolean>(false)
+  const slideAnim = useState(new Animated.Value(-300))[0] // Initial position off-screen
 
-  const settings = {
-    headerRight: () => (
-      <>
-        <TouchableOpacity onPress={() => setToggle(!toggle)}>
-          <SettingsIcon size={30} color="black" className="mr-5" />
-        </TouchableOpacity>
-      </>
-    ),
+  const toggleMenu = () => {
+    Animated.timing(slideAnim, {
+      toValue: isOpen ? -300 : 0, // Slide out or slide in based on current state
+      duration: 300,
+      easing: Easing.ease,
+      useNativeDriver: true,
+    }).start()
+    setIsOpen(!isOpen)
   }
 
   const closeMenu = () => {
-    if (toggle) {
-      setToggle(false)
+    if (isOpen) {
+      toggleMenu()
     }
   }
-
-  console.log("toggle :", toggle)
 
   return (
     <NavigationContainer>
       <TouchableWithoutFeedback onPress={closeMenu}>
-        <View className=" flex-1">
+        <View style={{ flex: 1 }}>
           <Stack.Navigator
             initialRouteName="GameType"
             screenOptions={{
@@ -63,7 +61,15 @@ const Navbar: React.FC = (props: any) => {
                 fontWeight: "bold",
               },
               headerTitleAlign: "center",
-              ...settings,
+              headerRight: () => (
+                <TouchableOpacity onPress={toggleMenu}>
+                  <SettingsIcon
+                    size={30}
+                    color="black"
+                    style={{ marginRight: 15 }}
+                  />
+                </TouchableOpacity>
+              ),
             }}
           >
             <Stack.Screen
@@ -117,7 +123,16 @@ const Navbar: React.FC = (props: any) => {
               }}
             />
           </Stack.Navigator>
-          {toggle && <CustomSideNavbar onPress={() => setToggle(!toggle)} />}
+          <Animated.View
+            style={{
+              position: "absolute",
+              transform: [{ translateX: slideAnim }],
+              width: "100%",
+              height: "100%",
+            }}
+          >
+            <CustomSideNavbar onPress={toggleMenu} />
+          </Animated.View>
         </View>
       </TouchableWithoutFeedback>
     </NavigationContainer>
