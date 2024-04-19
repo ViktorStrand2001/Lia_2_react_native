@@ -5,6 +5,7 @@ import {
   ScrollView,
   TouchableOpacity,
   StyleSheet,
+  Animated,
 } from "react-native"
 import GameButton from "../components/GameScreenComponents/GameButton"
 import { Player } from "../utils/types"
@@ -236,13 +237,46 @@ const DistributePointScreen = (props: any) => {
     )
   }
 
+ const bounceValue = new Animated.Value(0)
+
+ const bounceAnimation = () => {
+   Animated.loop(
+     Animated.sequence([
+       Animated.timing(bounceValue, {
+         toValue: 5,
+         duration: 500,
+         delay: 200,
+
+         useNativeDriver: true,
+       }),
+       Animated.timing(bounceValue, {
+         toValue: -0,
+         duration: 500,
+         
+         useNativeDriver: true,
+       }),
+     ])
+   ).start()
+ }
+
+ useEffect(() => {
+   const playersWithZeroScore = scoreboard.filter(
+     (player) => player.points === 0
+   )
+   if (playersWithZeroScore.length > 0) {
+     bounceAnimation()
+   } else {
+     bounceValue.setValue(0)
+   }
+ }, [scoreboard])
+
   return (
     <View className="bg-bgBlue min-w-screen min-h-screen flex justify-center items-center pb-20">
       {distributePoint()}
       {autoDistributePoints()}
       {!isPlayerTimed && (
-        <View className="w-80 h-[450px] border border-black rounded-lg bg-gray-100 ">
-          <ScrollView className="mt-4 mb-4 space-y-4">
+        <View className="w-80 h-[450px]  rounded-lg  ">
+          <ScrollView className="mt-4 mb-4 ">
             <View className=" flex flex-row">
               <GameButton
                 onPress={() => resetPoints()}
@@ -260,8 +294,15 @@ const DistributePointScreen = (props: any) => {
                 onPress={() => handlePlayerPress(player.id)}
                 disabled={player.points > 0}
               >
-                <View className="flex justify-center items-center w-full">
-                  <View
+                <View className="flex justify-center items-center w-full py-3">
+                  <Animated.View
+                    style={[
+                      {
+                        transform: [
+                          { translateY: player.points === 0 ? bounceValue : 0 },
+                        ],
+                      },
+                    ]}
                     className={` w-72 h-16 flex flex-row justify-center items-center relative ${
                       index % 2 === 0 ? "bg-primarypink" : "bg-primaryBlue"
                     }`}
@@ -276,7 +317,7 @@ const DistributePointScreen = (props: any) => {
                         + {player.points} pt
                       </Text>
                     </View>
-                  </View>
+                  </Animated.View>
                 </View>
               </TouchableOpacity>
             ))}
