@@ -17,7 +17,12 @@ import ScoreboardScreen from "../screens/scoreboardScreen"
 import CreateQuizCardScreen from "../screens/createQuizCardScreen"
 import DistributePointScreen from "../screens/distributePointScreen"
 import { black } from "tailwindcss/colors"
-import { TouchableOpacity, View, Text } from "react-native"
+import {
+  TouchableOpacity,
+  View,
+  Text,
+  TouchableWithoutFeedback,
+} from "react-native"
 import Logo from "./Logo"
 import CustomSideNavbar from "./NavbarComponents/CustomSideNavbar"
 
@@ -35,74 +40,86 @@ const Navbar: React.FC = (props: any) => {
     ),
   }
 
+  const closeMenu = () => {
+    if (toggle) {
+      setToggle(false)
+    }
+  }
+
+  console.log("toggle :", toggle)
+
   return (
     <NavigationContainer>
-      <Stack.Navigator
-        initialRouteName="GameType"
-        screenOptions={{
-          headerStyle: {
-            backgroundColor: "#CAEFFF",
-          },
-          headerTintColor: "#000",
-          headerTitleStyle: {
-            fontWeight: "bold",
-          },
-          headerTitleAlign: "center",
-          ...settings,
-        }}
-      >
-        <Stack.Screen
-          name="GameType"
-          component={GameTypeScreen}
-          options={{
-            headerTitle: () => <Gamepad2Icon size={60} color={black} />,
-          }}
-        />
-        <Stack.Screen
-          name="SetPlayer"
-          component={PlayerScreen}
-          options={{
-            headerTitle: () => <Users2Icon size={60} color={black} />,
-          }}
-        />
-        <Stack.Screen
-          name="Game"
-          component={GameScreen}
-          options={{
-            headerTitle: () => <Gamepad2Icon size={60} color={black} />,
-          }}
-        />
-        <Stack.Screen
-          name="Points"
-          component={DistributePointScreen}
-          options={{
-            headerTitle: () => <StarIcon size={60} color={black} />,
-          }}
-        />
-        <Stack.Screen
-          name="Scoreboard"
-          component={ScoreboardScreen}
-          options={{
-            headerTitle: () => <TrophyIcon size={60} color={black} />,
-          }}
-        />
-        <Stack.Screen
-          name="customCards"
-          component={CreateCardScreen}
-          options={{
-            headerTitle: () => <Gamepad2Icon size={60} color={black} />,
-          }}
-        />
+      <TouchableWithoutFeedback onPress={closeMenu}>
+        <View className=" flex-1">
+          <Stack.Navigator
+            initialRouteName="GameType"
+            screenOptions={{
+              headerStyle: {
+                backgroundColor: "#CAEFFF",
+              },
+              headerTintColor: "#000",
+              headerTitleStyle: {
+                fontWeight: "bold",
+              },
+              headerTitleAlign: "center",
+              ...settings,
+            }}
+          >
+            <Stack.Screen
+              name="GameType"
+              component={GameTypeScreen}
+              options={{
+                headerTitle: () => <Gamepad2Icon size={60} color={black} />,
+              }}
+            />
+            <Stack.Screen
+              name="SetPlayer"
+              component={PlayerScreen}
+              options={{
+                headerTitle: () => <Users2Icon size={60} color={black} />,
+              }}
+            />
+            <Stack.Screen
+              name="Game"
+              component={GameScreen}
+              options={{
+                headerTitle: () => <Gamepad2Icon size={60} color={black} />,
+              }}
+            />
+            <Stack.Screen
+              name="Points"
+              component={DistributePointScreen}
+              options={{
+                headerTitle: () => <StarIcon size={60} color={black} />,
+              }}
+            />
+            <Stack.Screen
+              name="Scoreboard"
+              component={ScoreboardScreen}
+              options={{
+                headerTitle: () => <TrophyIcon size={60} color={black} />,
+              }}
+            />
+            <Stack.Screen
+              name="customCards"
+              component={CreateCardScreen}
+              options={{
+                headerTitle: () => <Gamepad2Icon size={60} color={black} />,
+              }}
+            />
 
-        <Stack.Screen
-          name="customQuiz"
-          component={CreateQuizCardScreen}
-          options={{
-            headerTitle: () => <Gamepad2Icon size={60} color={black} />,
-          }}
-        />
-      </Stack.Navigator>
-      {!toggle && <CustomSideNavbar/>}
+            <Stack.Screen
+              name="customQuiz"
+              component={CreateQuizCardScreen}
+              options={{
+                headerTitle: () => <Gamepad2Icon size={60} color={black} />,
+              }}
+            />
+          </Stack.Navigator>
+          {toggle && <CustomSideNavbar onPress={() => setToggle(!toggle)} />}
+        </View>
+      </TouchableWithoutFeedback>
     </NavigationContainer>
   )
 }

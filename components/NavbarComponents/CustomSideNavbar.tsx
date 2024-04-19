@@ -3,6 +3,7 @@ import { View, TouchableOpacity, Text } from "react-native"
 import Logo from "../Logo"
 import { StackNavigationProp } from "@react-navigation/stack"
 import { useNavigation } from "@react-navigation/native"
+import React from "react"
 
 type RootStackParamList = {
   SetPlayer: undefined
@@ -11,9 +12,13 @@ type RootStackParamList = {
   // Add other screen names here
 }
 
+interface onPress {
+  onPress: () => void
+}
+
 type ScreenNavigationProp = StackNavigationProp<RootStackParamList>
 
-const CustomSideNavbar = () => {
+const CustomSideNavbar: React.FC<onPress> = ({ onPress }) => {
   const navigation = useNavigation<ScreenNavigationProp>()
 
   const navigateToScreen = (screenName: keyof RootStackParamList) => {
@@ -27,7 +32,10 @@ const CustomSideNavbar = () => {
       <View className="flex items-start w-full mt-8 ml-6 space-y-3">
         <TouchableOpacity
           className="flex flex-row items-center justify-center space-x-2"
-          onPress={() => navigateToScreen("Scoreboard")}
+          onPress={() => {
+            onPress()
+            navigateToScreen("Scoreboard")
+          }}
         >
           <TrophyIcon size={40} className="text-black" />
           <Text className="text-black flex justify-center items-center text-lg">
@@ -36,7 +44,10 @@ const CustomSideNavbar = () => {
         </TouchableOpacity>
         <TouchableOpacity
           className="flex flex-row items-center justify-center space-x-2"
-          onPress={() => navigateToScreen("GameType")}
+          onPress={() => {
+            onPress()
+            navigateToScreen("GameType")
+          }}
         >
           <Gamepad2Icon size={40} className="text-black" />
           <Text className="text-black flex justify-center items-center text-lg">
@@ -45,7 +56,10 @@ const CustomSideNavbar = () => {
         </TouchableOpacity>
         <TouchableOpacity
           className="flex flex-row items-center justify-center space-x-2"
-          onPress={() => navigateToScreen("SetPlayer")}
+          onPress={() => {
+            onPress()
+            navigateToScreen("SetPlayer")
+          }}
         >
           <UsersRoundIcon size={40} className="text-black" />
           <Text className="text-black flex justify-center items-center text-lg">
