@@ -223,6 +223,7 @@ const GameScreen = (props: any) => {
 
   console.log(" current  index :", currentPlayerIndex)
   console.log(" players", players)
+  console.log(" rounds :", rounds)
 
   return (
     <View className="flex justify-center items-center w-full h-full bg-bgBlue">

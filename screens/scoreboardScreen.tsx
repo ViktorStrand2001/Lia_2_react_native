@@ -63,7 +63,7 @@ const ScoreboardScreen = (props: any) => {
       wrong: 0,
     }))
     setLeaderboard(updatedScoreboard)
-    props.navigation.navigate("SetPlayer")
+    props.navigation.navigate("GameType")
   }
 
   const QuizResult = () => {

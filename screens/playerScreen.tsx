@@ -59,24 +59,31 @@ const PlayerScreen = (props: any) => {
     setPlayers(updatedPlayers)
   }
 
-  useEffect(() => {
-    const loadPlayers = async () => {
-      try {
-        const storedPlayers = await AsyncStorage.getItem("players")
-        const storedRounds = await AsyncStorage.getItem("rounds")
-        if (storedPlayers !== null) {
-          setPlayers(JSON.parse(storedPlayers))
+  useFocusEffect(
+    useCallback(() => {
+      const loadPlayers = async () => {
+        try {
+          const storedPlayers = await AsyncStorage.getItem("players")
+          const storedRounds = await AsyncStorage.getItem("rounds")
+          const storedGameType = await AsyncStorage.getItem("Gametype")
+          if (storedPlayers !== null) {
+            setPlayers(JSON.parse(storedPlayers))
+          }
+          if (storedRounds !== null) {
+            setRounds(parseInt(storedRounds))
+          }
+          if (storedGameType !== null) {
+            setGameType(JSON.parse(storedGameType))
+          }
+
+          console.log("Loaded player data:", players)
+        } catch (error) {
+          console.error("Error loading player data:", error)
         }
-        if (storedRounds !== null) {
-          setRounds(parseInt(storedRounds))
-        }
-        console.log("Loaded player data:", players)
-      } catch (error) {
-        console.error("Error loading player data:", error)
       }
-    }
-    loadPlayers()
-  }, [])
+      loadPlayers()
+    }, [])
+  )
 
   useEffect(() => {
     const saveGameSettings = async () => {
@@ -114,6 +121,7 @@ const PlayerScreen = (props: any) => {
     }
   }
   console.log("plaers lenght ", players.length)
+  console.log(" gametype: ", gameType)
 
   return (
     <View className="flex w-full h-full bg-bgBlue items-center relative">
