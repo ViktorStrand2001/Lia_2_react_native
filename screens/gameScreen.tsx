@@ -1,20 +1,17 @@
 import React, { useCallback, useEffect, useState } from "react"
-import { View, Text, Animated } from "react-native"
+import { View, Text, ActivityIndicator } from "react-native"
 import ChallengeCard from "../components/GameScreenComponents/ChallageCard"
 import GameButton from "../components/GameScreenComponents/GameButton"
 import { Card, Quiz, Player } from "../utils/types"
 import { fetchRandomChallenge } from "../api/challengerService"
 import { fetchRandomQuiz } from "../api/quizService"
-import { RouteProp, useRoute } from "@react-navigation/core"
 import QuizCard from "../components/GameScreenComponents/QuizCard"
 import {
   ArrowRight,
   CheckIcon,
-  Navigation,
   StarIcon,
   User,
   Users,
-  X,
   XIcon,
 } from "lucide-react-native"
 import AsyncStorage from "@react-native-async-storage/async-storage"
@@ -28,7 +25,6 @@ const GameScreen = (props: any) => {
   const [quizData, setquizData] = useState<Quiz | null>(null)
   const [gameType, setGameType] = useState<string>("")
   const [quizCardAnswer, setQuizCardAnswer] = useState<boolean | undefined>()
-  const [quizScore, setQuizScore] = useState<number>(0)
   const [quizAnswer, setQuizAnswer] = useState<string>("")
   const [disabled, setDisabled] = useState<boolean>(false)
   const [players, setPlayers] = useState<Player[]>([])
@@ -36,6 +32,9 @@ const GameScreen = (props: any) => {
   const [currentTimer, setCurrentTimer] = useState(0)
   const [rounds, setRounds] = useState<number>(0)
   const [currentround, setCurrentRound] = useState<number>(1)
+  const [isLoadingPlayers, setIsLoadingPlayers] = useState<boolean>(true)
+  const [isLoadingGameType, setIsLoadingGameType] = useState<boolean>(true)
+  const [isLoadingRounds, setIsLoadingRounds] = useState<boolean>(true)
   const isAllTurnsPlayed = players.every((player) => player.turn === 0)
 
   const fetchChallenge = async () => {
@@ -45,7 +44,7 @@ const GameScreen = (props: any) => {
       const challengeCardData = await fetchRandomChallenge(gameType)
       if (challengeCardData) {
         setChallengeData(challengeCardData)
-        setTimer(challengeCardData.Time * 1)
+        setTimer(challengeCardData.Time * 60) // change to 1 for faster count
       }
     }
   }
@@ -60,7 +59,6 @@ const GameScreen = (props: any) => {
     }, [gameType])
   )
 
-  // Use useFocusEffect to fetch players when the screen comes into focus
   useFocusEffect(
     useCallback(() => {
       const fetchPlayers = async () => {
@@ -76,6 +74,10 @@ const GameScreen = (props: any) => {
           }
         } catch (error) {
           console.error("Error fetching players:", error)
+        } finally {
+          setIsLoadingPlayers(false)
+          setIsLoadingGameType(false)
+          setIsLoadingRounds(false)
         }
       }
 
@@ -99,7 +101,7 @@ const GameScreen = (props: any) => {
     if (isRunning) {
       interval = setInterval(() => {
         setTimer((prevTimer) => {
-          setCurrentTimer(prevTimer) // Update the currentTimer state with the current timer value
+          setCurrentTimer(prevTimer)
           if (challengeData && challengeData.GameType === "timedown") {
             if (prevTimer <= 0) {
               clearInterval(interval)
@@ -138,7 +140,7 @@ const GameScreen = (props: any) => {
     setPlayers((prevScoreboard) =>
       prevScoreboard.map((player) =>
         player.id === currentPlayerIndex
-          ? { ...player, timer: player.timer + currentTimer + 1 } // Add the current timer value to the player's timer
+          ? { ...player, timer: player.timer + currentTimer} // currenttimmer +1
           : player
       )
     )
@@ -146,7 +148,7 @@ const GameScreen = (props: any) => {
 
   const resetTimer = useCallback(() => {
     if (challengeData) {
-      setTimer(challengeData.Time * 1)
+      setTimer(challengeData.Time * 60)
     } else {
       setTimer(0)
     }
@@ -156,7 +158,7 @@ const GameScreen = (props: any) => {
     setPlayers((prevScoreboard) =>
       prevScoreboard.map((player) =>
         player.id === currentPlayerIndex
-          ? { ...player, timer: 0, turn: 1 } // Add the current timer value to the player's timer
+          ? { ...player, timer: 0, turn: 1 }
           : player
       )
     )
@@ -224,6 +226,15 @@ const GameScreen = (props: any) => {
   console.log(" current  index :", currentPlayerIndex)
   console.log(" players", players)
   console.log(" rounds :", rounds)
+
+  if (isLoadingPlayers || isLoadingGameType || isLoadingRounds) {
+    return (
+      <View className="flex-1 justify-center items-center bg-bgBlue">
+        <ActivityIndicator size="large" color="black" />
+        <Text>Loading...</Text>
+      </View>
+    )
+  }
 
   return (
     <View className="flex justify-center items-center w-full h-full bg-bgBlue">
