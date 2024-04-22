@@ -5,7 +5,7 @@ import {
   View,
   ScrollView,
 } from "react-native"
-import React, { useEffect, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import {
   CheckIcon,
   Gamepad2Icon,
@@ -18,6 +18,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage"
 import { Player } from "../utils/types"
 import { Center, FormControl, Select } from "native-base"
 import GameButton from "../components/GameScreenComponents/GameButton"
+import { useFocusEffect } from "@react-navigation/native"
 
 const PlayerScreen = (props: any) => {
   const [playerName, setPlayerName] = useState<string>("")
@@ -59,37 +60,40 @@ const PlayerScreen = (props: any) => {
   }
 
   useEffect(() => {
-    const loadPlayers = async () => {
-      try {
-        const storedGameType = await AsyncStorage.getItem("Gametype")
-        const storedPlayers = await AsyncStorage.getItem("players")
-        if (storedPlayers !== null && storedGameType !== null) {
-          setPlayers(JSON.parse(storedPlayers))
-          setGameType(JSON.parse(storedGameType))
-        }
-        console.log(players)
-      } catch (error) {
-        console.error("Error loading players:", error)
-      }
-    }
-
-    loadPlayers()
-  }, [])
-
-  useEffect(() => {
-    const saveGamesettings = async () => {
+    const saveGameSettings = async () => {
       try {
         await AsyncStorage.setItem("players", JSON.stringify(players))
         await AsyncStorage.setItem("rounds", JSON.stringify(rounds))
-
-        console.log(" this is rounds ", rounds)
+        console.log("Saved player data:", players)
       } catch (error) {
-        console.error("Error saving players:", error)
+        console.error("Error saving player data:", error)
       }
     }
 
-    saveGamesettings()
+    saveGameSettings()
   }, [players, rounds])
+
+  useFocusEffect(
+    useCallback(() => {
+      const loadPlayers = async () => {
+        try {
+          const storedPlayers = await AsyncStorage.getItem("players")
+          const storedRounds = await AsyncStorage.getItem("rounds")
+          if (storedPlayers !== null) {
+            setPlayers(JSON.parse(storedPlayers))
+          }
+          if (storedRounds !== null) {
+            setRounds(parseInt(storedRounds))
+          }
+          console.log("Loaded player data:", players)
+        } catch (error) {
+          console.error("Error loading player data:", error)
+        }
+      }
+      loadPlayers()
+    }, [rounds])
+  )
+
 
   const renderTextBastOnGameType = () => {
     if (gameType === "Group-Battles") {
@@ -165,9 +169,7 @@ const PlayerScreen = (props: any) => {
                 >
                   <Text className="pl-4 text-xl">{player.name}</Text>
                   <View className=" justify-center item-center right-3 absolute ">
-                    <TouchableOpacity
-                      onPress={() => removePlayer(player.id)}
-                    >
+                    <TouchableOpacity onPress={() => removePlayer(player.id)}>
                       <View>
                         <X size={40} className="text-red-700" />
                       </View>

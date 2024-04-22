@@ -1,8 +1,7 @@
 import { View, ScrollView } from "react-native"
-import React, { useCallback, useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import GameTypeOption from "../components/GameTypeComponets/GameTypeOption"
 import AsyncStorage from "@react-native-async-storage/async-storage"
-import { useFocusEffect } from "@react-navigation/native"
 
 const GameTypeScreen = (props: any) => {
   const [gameType, setGameType] = useState<string>("")
