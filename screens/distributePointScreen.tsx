@@ -12,10 +12,8 @@ import { Player } from "../utils/types"
 import ScoreButton from "../components/ScoreBoardComponents/ScoreButton"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { useRoute, RouteProp } from "@react-navigation/native"
-import { Gamepad2Icon } from "lucide-react-native"
-import { white } from "tailwindcss/colors"
-import ScoreboardScreen from "./scoreboardScreen"
-import { useFocus } from "native-base/lib/typescript/components/primitives"
+import { Gamepad2Icon, StarIcon, Timer, TimerIcon, User2Icon } from "lucide-react-native"
+import { black, white } from "tailwindcss/colors"
 
 type RootStackParamList = {
   Player: undefined
@@ -42,7 +40,7 @@ const DistributePointScreen = (props: any) => {
       await AsyncStorage.setItem("rounds", updatedRounds.toString())
     }
 
-     props.navigation.navigate("Scoreboard")
+    props.navigation.navigate("Scoreboard")
   }
 
   useEffect(() => {
@@ -94,7 +92,7 @@ const DistributePointScreen = (props: any) => {
       const updatedScoreboard = sortedPlayers.map((player, index) => ({
         ...player,
         points: player.points + pointsToDistribute - index,
-        score: player.score + player.points // Update the score based on points earned during the round
+        score: player.score + player.points, // Update the score based on points earned during the round
       }))
 
       // Update the scoreboard
@@ -152,7 +150,7 @@ const DistributePointScreen = (props: any) => {
       score: player.score + player.points, // Update the score based on points earned during the round
       points: 0, // Reset points for the next round
       turn: 1,
-      timer:0
+      timer: 0,
     }))
 
     setScoreboard(updatedScoreboard)
@@ -161,8 +159,7 @@ const DistributePointScreen = (props: any) => {
   }
   console.log(" scoreboard ", scoreboard)
 
-
- const distributePoint = () => {
+  const distributePoint = () => {
     if (!showPointDistribution) return null
 
     return (
@@ -208,8 +205,15 @@ const DistributePointScreen = (props: any) => {
     if (!isPlayerTimed || showPointDistribution) return null
 
     return (
-      <View>
-        <View className="w-80 h-[450px] border border-black rounded-lg bg-gray-100 ">
+      <>
+        <View className="w-full flex justify-center items-center">
+          <View className="w-72 flex flex-row justify-evenly space-x-10">
+            <User2Icon color={black} />
+            <TimerIcon color={black} />
+            <StarIcon color={black} />
+          </View>
+        </View>
+        <View className="w-80 h-[450px]">
           <ScrollView className="mt-4 mb-4 space-y-4">
             {sortedPlayers.map((player, index) => (
               <View
@@ -217,13 +221,13 @@ const DistributePointScreen = (props: any) => {
                 key={index}
               >
                 <View
-                  className={`w-72 h-16 flex flex-row items-center relative ${
+                  className={`w-72 h-16 flex flex-row items-center relative shadow ${
                     index % 2 === 0 ? "bg-primarypink" : "bg-primaryBlue"
                   }`}
                 >
-                  <Text className="italic text-lg">{player.name}</Text>
-                  <View className="absolute left-36">
-                    <Text className={`text-lg`}>{player.timer}</Text>
+                  <Text className="italic text-lg pl-6">{player.name}</Text>
+                  <View className="w-full flex justify-center items-center absolute">
+                    <Text className={`text-lg`}>{player.timer} sec</Text>
                   </View>
                   <View className="absolute right-7">
                     <Text className={`text-lg`}>{`${player.points} pt`}</Text>
@@ -233,42 +237,39 @@ const DistributePointScreen = (props: any) => {
             ))}
           </ScrollView>
         </View>
-      </View>
+      </>
     )
   }
 
- const bounceValue = new Animated.Value(0)
+  const bounceValue = new Animated.Value(0.9)
 
- const bounceAnimation = () => {
-   Animated.loop(
-     Animated.sequence([
-       Animated.timing(bounceValue, {
-         toValue: 5,
-         duration: 500,
-         delay: 200,
+  const bounceAnimation = () => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(bounceValue, {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(bounceValue, {
+          toValue: 0.9,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start()
+  }
 
-         useNativeDriver: true,
-       }),
-       Animated.timing(bounceValue, {
-         toValue: -0,
-         duration: 500,
-         
-         useNativeDriver: true,
-       }),
-     ])
-   ).start()
- }
-
- useEffect(() => {
-   const playersWithZeroScore = scoreboard.filter(
-     (player) => player.points === 0
-   )
-   if (playersWithZeroScore.length > 0) {
-     bounceAnimation()
-   } else {
-     bounceValue.setValue(0)
-   }
- }, [scoreboard])
+  useEffect(() => {
+    const playersWithZeroScore = scoreboard.filter(
+      (player) => player.points === 0
+    )
+    if (playersWithZeroScore.length > 0) {
+      bounceAnimation()
+    } else {
+      bounceValue.setValue(0)
+    }
+  }, [scoreboard])
 
   return (
     <View className="bg-bgBlue min-w-screen min-h-screen flex justify-center items-center pb-20">
@@ -294,12 +295,12 @@ const DistributePointScreen = (props: any) => {
                 onPress={() => handlePlayerPress(player.id)}
                 disabled={player.points > 0}
               >
-                <View className="flex justify-center items-center w-full py-3">
+                <View className="flex justify-center items-center w-full py-3 z-50 ">
                   <Animated.View
                     style={[
                       {
                         transform: [
-                          { translateY: player.points === 0 ? bounceValue : 0 },
+                          { scale: player.points === 0 ? bounceValue : 1 },
                         ],
                       },
                     ]}
