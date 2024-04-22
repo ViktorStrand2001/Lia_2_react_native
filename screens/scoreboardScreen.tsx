@@ -105,7 +105,7 @@ const ScoreboardScreen = (props: any) => {
       ) : (
         <>
           <Text className="font-bold text-2xl mb-3 capitalize">Scoreboard</Text>
-          <View className="w-80 h-[450px] border border-black rounded-lg bg-gray-100 ">
+          <View className="w-80 h-[450px] ">
             <ScrollView className="mt-4 mb-4 space-y-4">
               {leaderboard.map((player, index) => (
                 <View

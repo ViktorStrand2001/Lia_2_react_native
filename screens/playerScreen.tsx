@@ -60,6 +60,25 @@ const PlayerScreen = (props: any) => {
   }
 
   useEffect(() => {
+    const loadPlayers = async () => {
+      try {
+        const storedPlayers = await AsyncStorage.getItem("players")
+        const storedRounds = await AsyncStorage.getItem("rounds")
+        if (storedPlayers !== null) {
+          setPlayers(JSON.parse(storedPlayers))
+        }
+        if (storedRounds !== null) {
+          setRounds(parseInt(storedRounds))
+        }
+        console.log("Loaded player data:", players)
+      } catch (error) {
+        console.error("Error loading player data:", error)
+      }
+    }
+    loadPlayers()
+  }, [])
+
+  useEffect(() => {
     const saveGameSettings = async () => {
       try {
         await AsyncStorage.setItem("players", JSON.stringify(players))
@@ -72,28 +91,6 @@ const PlayerScreen = (props: any) => {
 
     saveGameSettings()
   }, [players, rounds])
-
-  useFocusEffect(
-    useCallback(() => {
-      const loadPlayers = async () => {
-        try {
-          const storedPlayers = await AsyncStorage.getItem("players")
-          const storedRounds = await AsyncStorage.getItem("rounds")
-          if (storedPlayers !== null) {
-            setPlayers(JSON.parse(storedPlayers))
-          }
-          if (storedRounds !== null) {
-            setRounds(parseInt(storedRounds))
-          }
-          console.log("Loaded player data:", players)
-        } catch (error) {
-          console.error("Error loading player data:", error)
-        }
-      }
-      loadPlayers()
-    }, [rounds])
-  )
-
 
   const renderTextBastOnGameType = () => {
     if (gameType === "Group-Battles") {
