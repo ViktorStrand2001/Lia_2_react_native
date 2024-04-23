@@ -240,6 +240,18 @@ const GameScreen = (props: any) => {
   console.log(" current  index :", currentPlayerIndex)
   console.log(" players", players)
 
+  // new
+  useEffect(() => {
+    const currentPlayer = players[currentPlayerIndex]
+    if (currentPlayer?.turn === 0) {
+      // If the current player's turn is 0, find the next player whose turn is 1
+      const nextPlayerIndex = players.findIndex((player) => player.turn === 1)
+      if (nextPlayerIndex !== -1) {
+        setCurrentPlayerIndex(nextPlayerIndex)
+      }
+    }
+  }, [players, currentPlayerIndex]) // Run this effect whenever players or currentPlayerIndex changes
+
   if (
     isLoadingPlayers ||
     isLoadingGameType ||
@@ -352,7 +364,7 @@ const GameScreen = (props: any) => {
                           setShowStartButton(true)
                           resetTimer()
                           pauseTimer()
-                          setCurrentPlayerIndex((prevIndex) => {
+                          /* setCurrentPlayerIndex((prevIndex) => {
                             if (players[currentPlayerIndex]?.turn === 0) {
                               // Kontrollera om turn är 0
                               // Om det är så, öka index med 1 men se till att det inte överskrider längden på players-arrayen
@@ -360,6 +372,20 @@ const GameScreen = (props: any) => {
                             } else {
                               // Om turn inte är 0, behåll samma index
                               return prevIndex
+                            }
+                          })*/
+                          setCurrentPlayerIndex((prevIndex) => {
+                            const nextIndex = (prevIndex + 1) % players.length // Calculate the index of the next player
+                            const currentPlayer = players[prevIndex]
+
+                            // Check if the current player's turn is 0 and the next player's turn is 1
+                            if (
+                              currentPlayer.turn === 0 &&
+                              players[nextIndex]?.turn === 1
+                            ) {
+                              return nextIndex // Move to the next player
+                            } else {
+                              return prevIndex // Otherwise, stay with the current player
                             }
                           })
                         }}
