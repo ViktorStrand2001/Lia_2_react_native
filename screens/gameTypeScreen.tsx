@@ -9,21 +9,6 @@ const GameTypeScreen = (props: any) => {
   const [gameType, setGameType] = useState<string>("")
   const [players, setPlayers] = useState<Player[]>([])
 
-  const navigateToPlayerScreen = () => {
-    if (gameType != "") {
-      const updatedScoreboard = players.map((player) => ({
-        ...player,
-        points: 0,
-        score: 0,
-        timer: 0,
-        turn: 1,
-        right: 0,
-        wrong: 0,
-      }))
-      setPlayers(updatedScoreboard)
-      props.navigation.navigate("SetPlayer")
-    }
-  }
   const navigateToCustomCardScreen = () => {
     props.navigation.navigate("customCards")
   }
@@ -50,7 +35,6 @@ const GameTypeScreen = (props: any) => {
           if (storedPlayers !== null) {
             setPlayers(JSON.parse(storedPlayers))
           }
-          console.log("Loaded player data:", players)
         } catch (error) {
           console.error("Error loading player data:", error)
         }
@@ -58,6 +42,25 @@ const GameTypeScreen = (props: any) => {
       loadPlayers()
     }, [])
   )
+
+  /* TODO - 
+  Not working as it should?
+  */
+  const navigateToPlayerScreen = () => {
+    const updatedScoreboard = players.map((player) => ({
+      ...player,
+      points: 0,
+      score: 0,
+      timer: 0,
+      turn: 1,
+      right: 0,
+      wrong: 0,
+    }))
+    setPlayers(updatedScoreboard)
+    if (gameType != "") {
+      props.navigation.navigate("SetPlayer")
+    }
+  }
 
   useEffect(() => {
     const saveGamesettings = async () => {
@@ -74,10 +77,9 @@ const GameTypeScreen = (props: any) => {
     saveGamesettings()
   }, [gameType, players])
 
-  console.log("----------- GameTypeScreen ------------");
+  console.log("----------- GameTypeScreen ------------")
   console.log("Gametype: ", gameType)
   console.log("players: ", players)
-  
 
   return (
     <ScrollView>

@@ -12,7 +12,13 @@ import { Player } from "../utils/types"
 import ScoreButton from "../components/ScoreBoardComponents/ScoreButton"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { useRoute, RouteProp } from "@react-navigation/native"
-import { Gamepad2Icon, StarIcon, Timer, TimerIcon, User2Icon } from "lucide-react-native"
+import {
+  Gamepad2Icon,
+  StarIcon,
+  Timer,
+  TimerIcon,
+  User2Icon,
+} from "lucide-react-native"
 import { black, white } from "tailwindcss/colors"
 
 type RootStackParamList = {
@@ -158,7 +164,7 @@ const DistributePointScreen = (props: any) => {
     props.navigation.navigate("Game")
   }
 
-  console.log("----------- PointScreen -----------");
+  console.log("----------- PointScreen -----------")
   console.log("players: ", scoreboard)
   console.log("rounds: ", rounds)
   console.log("scoreboard: ", scoreboard)
@@ -166,6 +172,9 @@ const DistributePointScreen = (props: any) => {
   const distributePoint = () => {
     if (!showPointDistribution) return null
 
+    /* TODO - 
+    fix color on points buttons
+    */
     return (
       <View className=" flex justify-center items-center w-screen h-screen bg-black opacity-90  absolute z-50">
         <View className=" bg-white  w-72 h-16 flex justify-center items-center">
@@ -202,9 +211,6 @@ const DistributePointScreen = (props: any) => {
     turn: 1,
     timer: 0,
   }))
-  console.log("totla point", totalPointsEarned)
-  console.log(" updated stats", updatedScoreboard)
-
   const autoDistributePoints = () => {
     if (!isPlayerTimed || showPointDistribution) return null
 
@@ -283,6 +289,7 @@ const DistributePointScreen = (props: any) => {
         <View className="w-80 h-[450px]  rounded-lg  ">
           <ScrollView className="mt-4 mb-4 ">
             <View className=" flex flex-row">
+              {/* TODO - make to an TouchableOpacity and move to between board and go next button */}
               <GameButton
                 onPress={() => resetPoints()}
                 buttonStyle={"  w-16 h-7  "}

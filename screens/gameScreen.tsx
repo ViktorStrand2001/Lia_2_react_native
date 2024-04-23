@@ -234,14 +234,11 @@ const GameScreen = (props: any) => {
     savePlayerStats()
   }, [players])
 
-  
-  console.log("---------- GameScreen -----------");
+  console.log("---------- GameScreen -----------")
   console.log("current  index: ", currentPlayerIndex)
   console.log("players: ", players)
-  console.log("rounds: ", rounds);
-  console.log("GameType: ", gameType);
-  
-  
+  console.log("rounds: ", rounds)
+  console.log("GameType: ", gameType)
 
   if (
     isLoadingPlayers ||
