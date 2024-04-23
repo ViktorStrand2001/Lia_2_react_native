@@ -10,6 +10,7 @@ import {
   ArrowRight,
   CheckIcon,
   StarIcon,
+  TurtleIcon,
   User,
   Users,
   XIcon,
@@ -35,17 +36,24 @@ const GameScreen = (props: any) => {
   const [isLoadingPlayers, setIsLoadingPlayers] = useState<boolean>(true)
   const [isLoadingGameType, setIsLoadingGameType] = useState<boolean>(true)
   const [isLoadingRounds, setIsLoadingRounds] = useState<boolean>(true)
+  const [isLoadingCard, setIsLoadingCard] = useState<boolean>(true)
   const isAllTurnsPlayed = players.every((player) => player.turn === 0)
 
   const fetchChallenge = async () => {
-    if (gameType != "") {
-      console.log(" this is game type : ", gameType)
+    try {
+      if (gameType != "") {
+        console.log(" this is game type : ", gameType)
 
-      const challengeCardData = await fetchRandomChallenge(gameType)
-      if (challengeCardData) {
-        setChallengeData(challengeCardData)
-        setTimer(challengeCardData.Time * 60) // change to 1 for faster count
+        const challengeCardData = await fetchRandomChallenge(gameType)
+        if (challengeCardData) {
+          setChallengeData(challengeCardData)
+          setTimer(challengeCardData.Time * 1) // change to 1 for faster count
+        }
       }
+    } catch (error) {
+      console.log("error fetching Challenge card: ", error)
+    } finally {
+      setIsLoadingCard(false)
     }
   }
 
@@ -87,12 +95,18 @@ const GameScreen = (props: any) => {
   )
 
   const fetchQuiz = async () => {
-    if (gameType != "") {
-      const quizDatafetch = await fetchRandomQuiz(gameType)
-      if (quizDatafetch) {
-        setquizData(quizDatafetch)
-        setQuizCardAnswer(quizDatafetch.Answer)
+    try {
+      if (gameType != "") {
+        const quizDatafetch = await fetchRandomQuiz(gameType)
+        if (quizDatafetch) {
+          setquizData(quizDatafetch)
+          setQuizCardAnswer(quizDatafetch.Answer)
+        }
       }
+    } catch (error) {
+      console.log("error fetching quiz card: ", error)
+    } finally {
+      setIsLoadingCard(false)
     }
   }
 
@@ -140,7 +154,7 @@ const GameScreen = (props: any) => {
     setPlayers((prevScoreboard) =>
       prevScoreboard.map((player) =>
         player.id === currentPlayerIndex
-          ? { ...player, timer: player.timer + currentTimer} // currenttimmer +1
+          ? { ...player, timer: player.timer + currentTimer + 1 } // currenttimmer +1
           : player
       )
     )
@@ -227,7 +241,12 @@ const GameScreen = (props: any) => {
   console.log(" players", players)
   console.log(" rounds :", rounds)
 
-  if (isLoadingPlayers || isLoadingGameType || isLoadingRounds) {
+  if (
+    isLoadingPlayers ||
+    isLoadingGameType ||
+    isLoadingRounds ||
+    isLoadingCard
+  ) {
     return (
       <View className="flex-1 justify-center items-center bg-bgBlue">
         <ActivityIndicator size="large" color="black" />
@@ -334,7 +353,16 @@ const GameScreen = (props: any) => {
                           setShowStartButton(true)
                           resetTimer()
                           pauseTimer()
-                          setCurrentPlayerIndex((prevIndex) => prevIndex + 1)
+                          setCurrentPlayerIndex((prevIndex) => {
+                            if (players[currentPlayerIndex]?.turn === 0) {
+                              // Kontrollera om turn är 0
+                              // Om det är så, öka index med 1 men se till att det inte överskrider längden på players-arrayen
+                              return (prevIndex + 1) % players.length
+                            } else {
+                              // Om turn inte är 0, behåll samma index
+                              return prevIndex
+                            }
+                          })
                         }}
                         buttonStyle={"bg-customGreen"}
                         icon={

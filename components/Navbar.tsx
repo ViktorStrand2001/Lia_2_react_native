@@ -98,7 +98,10 @@ const Navbar: React.FC = () => {
               component={DistributePointScreen}
               options={{
                 headerTitle: () => <StarIcon size={60} color={black} />,
+                
               }}
+
+
             />
             <Stack.Screen
               name="Scoreboard"
