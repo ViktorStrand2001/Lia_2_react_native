@@ -26,7 +26,7 @@ const GameButton: React.FC<ButtonProps> = ({
     <TouchableOpacity
       onPress={onPress}
       disabled={disabled}
-      className={`w-48  h-16 rounded-2xl flex flex-row justify-center items-center ${buttonStyle}`}
+      className={`w-48  h-16 rounded-2xl flex flex-row justify-center items-center border ${buttonStyle}`}
     >
       <Text className={`text-white text-3xl ${buttonTextStyle}`}>{text}</Text>
       {icon}

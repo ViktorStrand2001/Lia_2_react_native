@@ -1,14 +1,26 @@
 import { View, ScrollView } from "react-native"
-import React, { useEffect, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import GameTypeOption from "../components/GameTypeComponets/GameTypeOption"
 import AsyncStorage from "@react-native-async-storage/async-storage"
+import { Player } from "../utils/types"
+import { useFocusEffect } from "@react-navigation/native"
 
 const GameTypeScreen = (props: any) => {
   const [gameType, setGameType] = useState<string>("")
+  const [players, setPlayers] = useState<Player[]>([])
 
-  // sending data to playerScreeen
   const navigateToPlayerScreen = () => {
     if (gameType != "") {
+      const updatedScoreboard = players.map((player) => ({
+        ...player,
+        points: 0,
+        score: 0,
+        timer: 0,
+        turn: 1,
+        right: 0,
+        wrong: 0,
+      }))
+      setPlayers(updatedScoreboard)
       props.navigation.navigate("SetPlayer")
     }
   }
@@ -30,11 +42,29 @@ const GameTypeScreen = (props: any) => {
     }
   }, [gameType])
 
+  useFocusEffect(
+    useCallback(() => {
+      const loadPlayers = async () => {
+        try {
+          const storedPlayers = await AsyncStorage.getItem("players")
+          if (storedPlayers !== null) {
+            setPlayers(JSON.parse(storedPlayers))
+          }
+          console.log("Loaded player data:", players)
+        } catch (error) {
+          console.error("Error loading player data:", error)
+        }
+      }
+      loadPlayers()
+    }, [])
+  )
+
   useEffect(() => {
     const saveGamesettings = async () => {
       try {
         await AsyncStorage.setItem("Gametype", JSON.stringify(gameType))
-
+        await AsyncStorage.setItem("players", JSON.stringify(players))
+        await AsyncStorage.removeItem("rounds")
         console.log(" asynstorage ", gameType)
       } catch (error) {
         console.error("Error saving players:", error)
@@ -42,9 +72,12 @@ const GameTypeScreen = (props: any) => {
     }
 
     saveGamesettings()
-  }, [gameType])
+  }, [gameType, players])
 
-  console.log("Gametype :", gameType)
+  console.log("----------- GameTypeScreen ------------");
+  console.log("Gametype: ", gameType)
+  console.log("players: ", players)
+  
 
   return (
     <ScrollView>

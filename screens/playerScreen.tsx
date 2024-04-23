@@ -10,7 +10,6 @@ import {
   CheckIcon,
   Gamepad2Icon,
   PlusCircleIcon,
-  PlusIcon,
   X,
 } from "lucide-react-native"
 import { black, white } from "tailwindcss/colors"
@@ -30,7 +29,6 @@ const PlayerScreen = (props: any) => {
   const navigateToGame = () => {
     if (gameType != "" || rounds != 0) {
       props.navigation.navigate("Game")
-      console.log(gameType)
     }
   }
 
@@ -50,7 +48,6 @@ const PlayerScreen = (props: any) => {
       setPlayers([...players, newPlayer])
       setPlayerName("")
       setShowInput(false)
-      console.log(newPlayer)
     }
   }
 
@@ -90,7 +87,6 @@ const PlayerScreen = (props: any) => {
           if (storedGameType !== null) {
             setGameType(JSON.parse(storedGameType))
           }
-          console.log("Loaded player data:", players)
         } catch (error) {
           console.error("Error loading player data:", error)
         }
@@ -104,7 +100,6 @@ const PlayerScreen = (props: any) => {
       try {
         await AsyncStorage.setItem("players", JSON.stringify(players))
         await AsyncStorage.setItem("rounds", JSON.stringify(rounds))
-        console.log("Saved player data:", players)
       } catch (error) {
         console.error("Error saving player data:", error)
       }
@@ -134,8 +129,12 @@ const PlayerScreen = (props: any) => {
       )
     }
   }
-  console.log("plaers lenght ", players.length)
-  console.log(" gametype: ", gameType)
+
+  console.log("------------- playerScreen -------------");
+  console.log("amount of players: ", players.length)
+  console.log("gametype: ", gameType)
+  console.log("players: ", players)
+  console.log("rounds: ", rounds)
 
   return (
     <View className="flex w-full h-full bg-bgBlue items-center relative">
@@ -269,8 +268,8 @@ const PlayerScreen = (props: any) => {
         ) : (
           <Text className="capitalize">game rounds </Text>
         )}
-        <Center color={"red.400"}>
-          <FormControl isRequired>
+        <Center>
+          <FormControl isRequired >
             <Select
               minWidth="130"
               accessibilityLabel="Rounds"

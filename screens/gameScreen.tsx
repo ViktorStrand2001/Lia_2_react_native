@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react"
-import { View, Text, ActivityIndicator } from "react-native"
+import { View, Text, ActivityIndicator, TouchableOpacity } from "react-native"
 import ChallengeCard from "../components/GameScreenComponents/ChallageCard"
 import GameButton from "../components/GameScreenComponents/GameButton"
 import { Card, Quiz, Player } from "../utils/types"
@@ -42,8 +42,6 @@ const GameScreen = (props: any) => {
   const fetchChallenge = async () => {
     try {
       if (gameType != "") {
-        console.log(" this is game type : ", gameType)
-
         const challengeCardData = await fetchRandomChallenge(gameType)
         if (challengeCardData) {
           setChallengeData(challengeCardData)
@@ -90,7 +88,6 @@ const GameScreen = (props: any) => {
       }
 
       fetchPlayers()
-      console.log("players: ", players)
     }, [])
   )
 
@@ -237,20 +234,14 @@ const GameScreen = (props: any) => {
     savePlayerStats()
   }, [players])
 
-  console.log(" current  index :", currentPlayerIndex)
-  console.log(" players", players)
-
-  // new
-  useEffect(() => {
-    const currentPlayer = players[currentPlayerIndex]
-    if (currentPlayer?.turn === 0) {
-      // If the current player's turn is 0, find the next player whose turn is 1
-      const nextPlayerIndex = players.findIndex((player) => player.turn === 1)
-      if (nextPlayerIndex !== -1) {
-        setCurrentPlayerIndex(nextPlayerIndex)
-      }
-    }
-  }, [players, currentPlayerIndex]) // Run this effect whenever players or currentPlayerIndex changes
+  
+  console.log("---------- GameScreen -----------");
+  console.log("current  index: ", currentPlayerIndex)
+  console.log("players: ", players)
+  console.log("rounds: ", rounds);
+  console.log("GameType: ", gameType);
+  
+  
 
   if (
     isLoadingPlayers ||
@@ -338,7 +329,6 @@ const GameScreen = (props: any) => {
             }}
           />
           <View className="mt-6">
-            {/* Conditionally render Start/Pause button or Next User button based on showStartButton state */}
             {showStartButton ? (
               <>
                 {challengeData?.GameType == "timeup" &&
@@ -364,28 +354,16 @@ const GameScreen = (props: any) => {
                           setShowStartButton(true)
                           resetTimer()
                           pauseTimer()
-                          /* setCurrentPlayerIndex((prevIndex) => {
-                            if (players[currentPlayerIndex]?.turn === 0) {
-                              // Kontrollera om turn är 0
-                              // Om det är så, öka index med 1 men se till att det inte överskrider längden på players-arrayen
-                              return (prevIndex + 1) % players.length
-                            } else {
-                              // Om turn inte är 0, behåll samma index
-                              return prevIndex
-                            }
-                          })*/
                           setCurrentPlayerIndex((prevIndex) => {
-                            const nextIndex = (prevIndex + 1) % players.length // Calculate the index of the next player
+                            const nextIndex = (prevIndex + 1) % players.length
                             const currentPlayer = players[prevIndex]
-
-                            // Check if the current player's turn is 0 and the next player's turn is 1
                             if (
                               currentPlayer.turn === 0 &&
                               players[nextIndex]?.turn === 1
                             ) {
-                              return nextIndex // Move to the next player
+                              return nextIndex
                             } else {
-                              return prevIndex // Otherwise, stay with the current player
+                              return prevIndex
                             }
                           })
                         }}
@@ -483,19 +461,19 @@ const GameScreen = (props: any) => {
           )}
 
           {/* Reset timer button */}
-          <View className="w-16 h-16">
+          <View className="w-full h-16 pt-6">
             {players[currentPlayerIndex]?.turn == 0 && (
-              <View className="flex justify-center items-center">
-                <GameButton
-                  onPress={() => {
-                    resetTimer()
-                    pauseTimer()
-                    resetplayerTime()
-                  }}
-                  text="Reset timer"
-                  buttonTextStyle="text-base text-red-600"
-                />
-              </View>
+              <TouchableOpacity
+                onPress={() => {
+                  resetTimer()
+                  pauseTimer()
+                  resetplayerTime()
+                }}
+              >
+                <View className="w-full flex justify-center items-center">
+                  <Text className="capitalize text-red-600">reset timer</Text>
+                </View>
+              </TouchableOpacity>
             )}
           </View>
         </View>

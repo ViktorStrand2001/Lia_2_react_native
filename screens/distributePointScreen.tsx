@@ -157,7 +157,11 @@ const DistributePointScreen = (props: any) => {
 
     props.navigation.navigate("Game")
   }
-  console.log(" scoreboard ", scoreboard)
+
+  console.log("----------- PointScreen -----------");
+  console.log("players: ", scoreboard)
+  console.log("rounds: ", rounds)
+  console.log("scoreboard: ", scoreboard)
 
   const distributePoint = () => {
     if (!showPointDistribution) return null

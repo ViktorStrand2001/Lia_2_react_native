@@ -17,7 +17,7 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
   }
 
   return (
-    <View className="bg-customGreen w-80 h-[400px] flex flex-col items-center rounded-2xl relative">
+    <View className="bg-customGreen w-80 h-[400px] flex flex-col items-center rounded-2xl relative border">
       <View className="top-2 left-2 flex justify-start absolute">
         <TouchableOpacity onPress={refreshChallenge}>
           <Image

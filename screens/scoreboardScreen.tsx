@@ -15,15 +15,18 @@ import AsyncStorage from "@react-native-async-storage/async-storage"
 const ScoreboardScreen = (props: any) => {
   const [leaderboard, setLeaderboard] = useState<Player[]>([])
   const [gameType, setGameType] = useState<string>("")
+  const [rounds, setRounds] = useState<number>()
 
   useEffect(() => {
     const fetchPlayers = async () => {
       try {
         const storedPlayers = await AsyncStorage.getItem("players")
         const StoredGametype = await AsyncStorage.getItem("Gametype")
-        if (storedPlayers && StoredGametype) {
+        const StoredRounds = await AsyncStorage.getItem("rounds")
+        if (storedPlayers && StoredGametype && StoredRounds) {
           setLeaderboard(JSON.parse(storedPlayers))
           setGameType(JSON.parse(StoredGametype))
+          setRounds(parseInt(StoredRounds))
         }
       } catch (error) {
         console.error("Error fetching players:", error)
@@ -53,17 +56,21 @@ const ScoreboardScreen = (props: any) => {
   //
 
   const navigateToGame = () => {
-    const updatedScoreboard = leaderboard.map((player, index) => ({
-      ...player,
-      points: 0,
-      score: 0,
-      timer: 0,
-      turn: 1,
-      right: 0,
-      wrong: 0,
-    }))
-    setLeaderboard(updatedScoreboard)
-    props.navigation.navigate("GameType")
+    if (rounds !== undefined && rounds <= 0) {
+      const updatedScoreboard = leaderboard.map((player) => ({
+        ...player,
+        points: 0,
+        score: 0,
+        timer: 0,
+        turn: 1,
+        right: 0,
+        wrong: 0,
+      }))
+      setLeaderboard(updatedScoreboard)
+      props.navigation.navigate("GameType")
+    } else {
+      props.navigation.navigate("Game")
+    }
   }
 
   const QuizResult = () => {
@@ -96,7 +103,11 @@ const ScoreboardScreen = (props: any) => {
       </View>
     )
   }
-  console.log(" Gametype", gameType)
+
+  console.log("------------ Scoreboard --------------")
+  console.log("GameType: ", gameType)
+  console.log("players: ", leaderboard)
+  console.log("rounds: ", rounds)
 
   return (
     <View className="bg-bgBlue min-w-screen min-h-screen flex justify-center items-center pb-20">
