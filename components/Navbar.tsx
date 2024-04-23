@@ -98,16 +98,15 @@ const Navbar: React.FC = () => {
               component={DistributePointScreen}
               options={{
                 headerTitle: () => <StarIcon size={60} color={black} />,
-                
+                headerLeft: () => null,
               }}
-
-
             />
             <Stack.Screen
               name="Scoreboard"
               component={ScoreboardScreen}
               options={{
                 headerTitle: () => <TrophyIcon size={60} color={black} />,
+                headerLeft: () => null,
               }}
             />
             <Stack.Screen

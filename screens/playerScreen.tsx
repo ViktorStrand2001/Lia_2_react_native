@@ -59,6 +59,21 @@ const PlayerScreen = (props: any) => {
     setPlayers(updatedPlayers)
   }
 
+  useEffect(() => {
+    const clearStoredPlayers = async () => {
+      try {
+        if (gameType === "Quiz") {
+          await AsyncStorage.removeItem("players")
+          setPlayers([])
+        }
+      } catch (error) {
+        console.log("Player could not be removed: ", error)
+      }
+    }
+
+    clearStoredPlayers()
+  }, [gameType])
+
   useFocusEffect(
     useCallback(() => {
       const loadPlayers = async () => {
@@ -75,7 +90,6 @@ const PlayerScreen = (props: any) => {
           if (storedGameType !== null) {
             setGameType(JSON.parse(storedGameType))
           }
-
           console.log("Loaded player data:", players)
         } catch (error) {
           console.error("Error loading player data:", error)

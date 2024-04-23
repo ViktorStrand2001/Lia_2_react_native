@@ -162,7 +162,7 @@ const GameScreen = (props: any) => {
 
   const resetTimer = useCallback(() => {
     if (challengeData) {
-      setTimer(challengeData.Time * 60)
+      setTimer(challengeData.Time * 1) // change to 1 for faster rounds
     } else {
       setTimer(0)
     }
@@ -239,7 +239,6 @@ const GameScreen = (props: any) => {
 
   console.log(" current  index :", currentPlayerIndex)
   console.log(" players", players)
-  console.log(" rounds :", rounds)
 
   if (
     isLoadingPlayers ||
