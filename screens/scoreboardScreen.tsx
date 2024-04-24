@@ -11,6 +11,7 @@ import {
 } from "lucide-react-native"
 import { white } from "tailwindcss/colors"
 import AsyncStorage from "@react-native-async-storage/async-storage"
+import { TouchableOpacity } from "react-native-gesture-handler"
 
 const ScoreboardScreen = (props: any) => {
   const [leaderboard, setLeaderboard] = useState<Player[]>([])
@@ -110,21 +111,23 @@ const ScoreboardScreen = (props: any) => {
   console.log("rounds: ", rounds)
 
   return (
-    <View className="bg-bgBlue min-w-screen min-h-screen flex justify-center items-center pb-20">
+    <View className="flex-1">
       {gameType == "Quiz" ? (
         <>{QuizResult()}</>
       ) : (
-        <>
-          <Text className="font-bold text-2xl mb-3 capitalize">Scoreboard</Text>
-          <View className="w-80 h-[450px] ">
-            <ScrollView className="mt-4 mb-4 space-y-4">
+        <View className="w-full h-full flex justify-center items-center relative">
+          <Text className="font-bold text-2xl  capitalize py-4">
+            Scoreboard
+          </Text>
+
+            <ScrollView className="space-y-4 w-full">
               {leaderboard.map((player, index) => (
                 <View
                   className="flex justify-center items-center w-full"
                   key={index}
                 >
                   <View
-                    className={` w-72 h-16 flex flex-row justify-center items-center relative ${
+                    className={` w-72 h-16 flex flex-row justify-center z-50 items-center relative border shadow-md ${
                       (index === 0 && "bg-primaryGold") ||
                       (index === 1 && "bg-primarySilver") ||
                       (index === 2 && "bg-primaryBronze") ||
@@ -145,13 +148,14 @@ const ScoreboardScreen = (props: any) => {
                 </View>
               ))}
             </ScrollView>
+          <View className="mb-7 mt-20">
+            <GameButton
+              onPress={() => navigateToGame()}
+              buttonStyle="bg-customGreen"
+              icon={<Gamepad2Icon size={60} color={white} />}
+            />
           </View>
-          <GameButton
-            onPress={() => navigateToGame()}
-            buttonStyle="bg-customGreen mt-6"
-            icon={<Gamepad2Icon size={60} color={white} />}
-          />
-        </>
+        </View>
       )}
     </View>
   )

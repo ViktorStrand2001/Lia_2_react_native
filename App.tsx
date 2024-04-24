@@ -12,30 +12,28 @@ export default function App() {
   const [openLandingPage, setOpenLandingPage] = useState<boolean>(false)
 
   return (
-    <View className="min-w-screen min-h-screen bg-bgBlue overflow-hidden">
+    <View className="w-full h-full bg-bgBlue overflow-hidden">
       {!openLandingPage ? (
-        <View className=" flex justify-center items-center">
-          <View className="h-32 justify-center items-end pt-16">
-            <Logo />
-          </View>
+        <View className=" flex justify-center items-center relative h-full pb-20">
+          <Logo />
           <View className="w-full">
             <Image
               source={require("./assets/images/card-stack_1.png")}
-              className="w-full h-[470px]"
+              className="w-full h-[500px]"
             />
           </View>
-          <View className="w-full h-16 mb- flex items-center justify-center relativ">
-            <Text className="text-center text-lg font-semibold  absolute -top-1">
+          <View className="flex items-center justify-center">
+            <Text className="text-center text-lg font-semibold  ">
               Take on challanges with your
             </Text>
-            <Text className="text-center text-lg font-semibold absolute top-4">
+            <Text className="text-center text-lg font-semibold ">
               friends and see who becomes the
             </Text>
-            <Text className="text-center text-lg font-semibold absolute top-9">
+            <Text className="text-center text-lg font-semibold ">
               ultimate challnger!
             </Text>
           </View>
-          <View className=" mt-4 justify-center items">
+          <View className=" absolute bottom-7 justify-center items">
             <GameButton
               onPress={() => setOpenLandingPage(true)}
               buttonStyle="bg-primarypink"

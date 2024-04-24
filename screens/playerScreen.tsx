@@ -6,12 +6,7 @@ import {
   ScrollView,
 } from "react-native"
 import React, { useCallback, useEffect, useState } from "react"
-import {
-  CheckIcon,
-  Gamepad2Icon,
-  PlusCircleIcon,
-  X,
-} from "lucide-react-native"
+import { CheckIcon, Gamepad2Icon, PlusCircleIcon, X } from "lucide-react-native"
 import { black, white } from "tailwindcss/colors"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { Player } from "../utils/types"
@@ -130,7 +125,7 @@ const PlayerScreen = (props: any) => {
     }
   }
 
-  console.log("------------- playerScreen -------------");
+  console.log("------------- playerScreen -------------")
   console.log("amount of players: ", players.length)
   console.log("gametype: ", gameType)
   console.log("players: ", players)
@@ -160,6 +155,7 @@ const PlayerScreen = (props: any) => {
               <TextInput
                 autoFocus
                 placeholder="Enter Names"
+                autoCorrect={true}
                 value={playerName}
                 onChangeText={(text) => setPlayerName(text)}
                 onSubmitEditing={() => {
@@ -213,29 +209,27 @@ const PlayerScreen = (props: any) => {
           </View>
 
           <ScrollView
+            className=" flex-1 w-screen space-y-3 shadow-md"
             contentContainerStyle={{ flexGrow: 1, alignItems: "center" }}
-            className="w-screen space-y-3 "
           >
             {showInput && (
-              <View>
-                <TextInput
-                  autoFocus
-                  placeholder="Enter Names"
-                  value={playerName}
-                  onChangeText={(text) => setPlayerName(text)}
-                  onSubmitEditing={() => {
+              <TextInput
+                autoFocus
+                placeholder="Enter Names"
+                value={playerName}
+                onChangeText={(text) => setPlayerName(text)}
+                onSubmitEditing={() => {
+                  addPlayer()
+                }}
+                onBlur={() => {
+                  if (playerName.trim() === "") {
+                    setShowInput(false)
+                  } else {
                     addPlayer()
-                  }}
-                  onBlur={() => {
-                    if (playerName.trim() === "") {
-                      setShowInput(false)
-                    } else {
-                      addPlayer()
-                    }
-                  }}
-                  className={`w-52 h-10 border pl-4   justify-center rounded-lg shadow shadow-black bg-white`}
-                />
-              </View>
+                  }
+                }}
+                className={`w-72 h-16 border flex pl-4 pb-3 text-lg rounded-lg  bg-white`}
+              />
             )}
             {players
               .slice(0)
@@ -243,19 +237,18 @@ const PlayerScreen = (props: any) => {
               .map((player, index) => (
                 <View
                   key={index}
-                  className="w-52 h-10 border justify-center rounded-lg shadow-md shadow-black bg-white relative"
+                  className="w-72 h-16 border justify-center rounded-lg bg-white relative"
                 >
-                  <Text className="pl-4">{player.name}</Text>
-                  <View className=" justify-center item-center bg-lime-400 absolute ">
-                    <TouchableOpacity
-                      onPress={() => removePlayer(player.id)}
-                      className=" ml-44 absolute"
-                    >
-                      <View>
-                        <X size={30} className="text-red-700" />
-                      </View>
-                    </TouchableOpacity>
-                  </View>
+                  <Text className="pl-3 text-lg">{player.name}</Text>
+
+                  <TouchableOpacity
+                    onPress={() => removePlayer(player.id)}
+                    className=" absolute right-3"
+                  >
+                    <View>
+                      <X size={35} className="text-red-700" />
+                    </View>
+                  </TouchableOpacity>
                 </View>
               ))}
           </ScrollView>
@@ -264,31 +257,60 @@ const PlayerScreen = (props: any) => {
 
       <View className="flex flex-row justify-center items-center absolute bottom-28">
         {gameType === "Quiz" ? (
-          <Text className="capitalize">amount of questions </Text>
+          <>
+            <Text className="capitalize text-lg pr-2">
+              amount of questions{" "}
+            </Text>
+            <Center>
+              <FormControl isRequired>
+                <Select
+                  minWidth="165"
+                  accessibilityLabel="Rounds"
+                  placeholder="amount"
+                  _selectedItem={{
+                    bg: "black",
+                    endIcon: <CheckIcon size={5} />,
+                  }}
+                  mt="1"
+                  borderColor={"black"}
+                  placeholderTextColor="gray.500"
+                  fontSize={18}
+                  onValueChange={(value) => setRounds(parseInt(value))}
+                >
+                  <Select.Item label="5 Questions" value="5" />
+                  <Select.Item label="10 Questions" value="10" />
+                </Select>
+              </FormControl>
+            </Center>
+          </>
         ) : (
-          <Text className="capitalize">game rounds </Text>
+          <>
+            <Text className="capitalize text-lg pr-2">game rounds</Text>
+            <Center>
+              <FormControl isRequired>
+                <Select
+                  minWidth="165"
+                  accessibilityLabel="Rounds"
+                  placeholder="amount"
+                  _selectedItem={{
+                    bg: "black",
+                    endIcon: <CheckIcon size={5} />,
+                  }}
+                  mt="1"
+                  borderColor={"black"}
+                  placeholderTextColor="gray.500"
+                  fontSize={18}
+                  onValueChange={(value) => setRounds(parseInt(value))}
+                >
+                  <Select.Item label="2 challenges" value="2" />
+                  <Select.Item label="5 challenges" value="5" />
+                  <Select.Item label="10 challenges" value="10" />
+                  <Select.Item label="15 challenges" value="15" />
+                </Select>
+              </FormControl>
+            </Center>
+          </>
         )}
-        <Center>
-          <FormControl isRequired >
-            <Select
-              minWidth="130"
-              accessibilityLabel="Rounds"
-              placeholder="amount"
-              _selectedItem={{
-                bg: "black",
-                endIcon: <CheckIcon size={5} />,
-              }}
-              mt="1"
-              borderColor={"black"}
-              placeholderTextColor="gray.500"
-              fontSize={18}
-              onValueChange={(value) => setRounds(parseInt(value))}
-            >
-              <Select.Item label="5" value="5" />
-              <Select.Item label="10" value="10" />
-            </Select>
-          </FormControl>
-        </Center>
       </View>
 
       <View className="h-32 justify-center items absolute bottom-0">

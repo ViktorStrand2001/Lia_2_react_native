@@ -47,7 +47,8 @@ const GameTypeScreen = (props: any) => {
   Not working as it should?
   */
   const navigateToPlayerScreen = () => {
-    const updatedScoreboard = players.map((player) => ({
+    // Reset player stats
+    const updatedPlayers = players.map((player) => ({
       ...player,
       points: 0,
       score: 0,
@@ -56,10 +57,19 @@ const GameTypeScreen = (props: any) => {
       right: 0,
       wrong: 0,
     }))
-    setPlayers(updatedScoreboard)
-    if (gameType != "") {
-      props.navigation.navigate("SetPlayer")
-    }
+
+    // Update the players array with the reset stats
+    setPlayers(updatedPlayers)
+
+    // Log the updated player stats
+
+    // Navigate to player screen after a small delay (for demonstration purposes)
+    setTimeout(() => {
+      if (gameType !== "") {
+        console.log("Navigating to player screen...")
+        props.navigation.navigate("SetPlayer")
+      }
+    }, 300) // Adjust the delay as needed
   }
 
   useEffect(() => {

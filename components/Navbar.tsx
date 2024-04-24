@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { createStackNavigator } from "@react-navigation/stack"
-import { NavigationContainer } from "@react-navigation/native"
+import { NavigationContainer, DefaultTheme } from "@react-navigation/native"
 import {
   Gamepad2Icon,
   SettingsIcon,
@@ -46,15 +46,25 @@ const Navbar: React.FC = () => {
     }
   }
 
+
+  const navTheme = DefaultTheme
+  navTheme.colors.background = "#CAEFFF"
+
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={navTheme}>
       <TouchableWithoutFeedback onPress={closeMenu}>
-        <View style={{ flex: 1 }}>
+        <View className="flex-1 mt-8">
           <Stack.Navigator
             initialRouteName="GameType"
             screenOptions={{
               headerStyle: {
+                elevation: 0,
+                shadowOpacity: 0,
+                borderBottomWidth: 0,
                 backgroundColor: "#CAEFFF",
+              },
+              headerLeftContainerStyle: {
+                marginBottom: 40,
               },
               headerTintColor: "#000",
               headerTitleStyle: {
@@ -62,9 +72,9 @@ const Navbar: React.FC = () => {
               },
               headerTitleAlign: "center",
               headerRight: () => (
-                <TouchableOpacity onPress={toggleMenu}>
+                <TouchableOpacity onPress={toggleMenu} className="mb-10">
                   <SettingsIcon
-                    size={30}
+                    size={35}
                     color="black"
                     style={{ marginRight: 15 }}
                   />
@@ -76,36 +86,45 @@ const Navbar: React.FC = () => {
               name="GameType"
               component={GameTypeScreen}
               options={{
-                headerTitle: () => <Gamepad2Icon size={60} color={black} />,
+                headerTitle: () => (
+                  <Gamepad2Icon size={80} color={black} className="mb-10" />
+                ),
               }}
             />
             <Stack.Screen
               name="SetPlayer"
               component={PlayerScreen}
               options={{
-                headerTitle: () => <Users2Icon size={60} color={black} />,
+                headerTitle: () => (
+                  <Users2Icon size={80} color={black} className="mb-10" />
+                ),
               }}
             />
             <Stack.Screen
               name="Game"
               component={GameScreen}
               options={{
-                headerTitle: () => <Gamepad2Icon size={60} color={black} />,
+                headerTitle: () => (
+                  <Gamepad2Icon size={80} color={black} className="mb-10" />
+                ),
               }}
             />
             <Stack.Screen
               name="Points"
               component={DistributePointScreen}
               options={{
-                headerTitle: () => <StarIcon size={60} color={black} />,
-                
+                headerTitle: () => (
+                  <StarIcon size={80} color={black} className="mb-10" />
+                ),
               }}
             />
             <Stack.Screen
               name="Scoreboard"
               component={ScoreboardScreen}
               options={{
-                headerTitle: () => <TrophyIcon size={60} color={black} />,
+                headerTitle: () => (
+                  <TrophyIcon size={80} color={black} className="mb-10" />
+                ),
                 headerLeft: () => null,
               }}
             />
@@ -113,7 +132,9 @@ const Navbar: React.FC = () => {
               name="customCards"
               component={CreateCardScreen}
               options={{
-                headerTitle: () => <Gamepad2Icon size={60} color={black} />,
+                headerTitle: () => (
+                  <Gamepad2Icon size={80} color={black} className="mb-10" />
+                ),
               }}
             />
 
@@ -121,7 +142,9 @@ const Navbar: React.FC = () => {
               name="customQuiz"
               component={CreateQuizCardScreen}
               options={{
-                headerTitle: () => <Gamepad2Icon size={60} color={black} />,
+                headerTitle: () => (
+                  <Gamepad2Icon size={80} color={black} className="mb-10" />
+                ),
               }}
             />
           </Stack.Navigator>

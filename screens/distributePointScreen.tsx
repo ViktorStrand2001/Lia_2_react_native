@@ -46,8 +46,9 @@ const DistributePointScreen = (props: any) => {
       const updatedRounds = parseInt(storedRounds) - 1
       await AsyncStorage.setItem("rounds", updatedRounds.toString())
     }
-
-    props.navigation.navigate("Scoreboard")
+    setTimeout(() => {
+      props.navigation.navigate("Scoreboard")
+    }, 500)
   }
 
   useEffect(() => {
@@ -104,7 +105,6 @@ const DistributePointScreen = (props: any) => {
 
       // Update the scoreboard
       setScoreboard(updatedScoreboard)
-      console.log(" updated 2", updatedScoreboard)
 
       // Reset points for the next round
       setAvailablePoints([...Array(players.length).keys()].map((i) => i + 1))
@@ -162,7 +162,9 @@ const DistributePointScreen = (props: any) => {
 
     setScoreboard(updatedScoreboard)
 
-    props.navigation.navigate("Game")
+    setTimeout(() => {
+      props.navigation.navigate("Game")
+    }, 500)
   }
 
   console.log("----------- PointScreen -----------")
@@ -217,11 +219,11 @@ const DistributePointScreen = (props: any) => {
 
     return (
       <>
-        <View className="w-full flex justify-center items-center">
+        <View className="flex justify-center items-center">
           <View className="w-72 flex flex-row justify-evenly space-x-10">
-            <User2Icon color={black} />
-            <TimerIcon color={black} />
-            <StarIcon color={black} />
+            <User2Icon color={black} size={35} />
+            <TimerIcon color={black} size={35} />
+            <StarIcon color={black} size={35} />
           </View>
         </View>
         <View className="w-80 h-[450px]">
@@ -232,7 +234,7 @@ const DistributePointScreen = (props: any) => {
                 key={index}
               >
                 <View
-                  className={`w-72 h-16 flex flex-row items-center relative shadow ${
+                  className={`w-72 h-16 border pl-4 justify-center rounded-lg shadow-md bg-white text-xl ${
                     index % 2 === 0 ? "bg-primarypink" : "bg-primaryBlue"
                   }`}
                 >
@@ -283,19 +285,19 @@ const DistributePointScreen = (props: any) => {
   }, [scoreboard])
 
   return (
-    <View className="bg-bgBlue min-w-screen min-h-screen flex justify-center items-center pb-20">
+    <View className=" flex-1 flex justify-center items-center pb-20">
       {distributePoint()}
       {autoDistributePoints()}
       {!isPlayerTimed && (
         <View className="w-80 h-[450px]  rounded-lg  ">
-          <ScrollView className="mt-4 mb-4 ">
-            <View className=" flex flex-row">
-              {/* TODO - make to an TouchableOpacity and move to between board and go next button */}
+          <View className=" flex justify-center items-center w-full ">
+            {/* TODO - make to an TouchableOpacity and move to between board and go next button */}
 
-              <Text className="font-bold text-2xl mb-3 capitalize">
-                distribute points
-              </Text>
-            </View>
+            <Text className="font-bold text-2xl mb-3 capitalize">
+              distribute points!
+            </Text>
+          </View>
+          <ScrollView className="mt-4 mb-4 ">
             {scoreboard.map((player, index) => (
               <TouchableOpacity
                 key={index}
@@ -333,7 +335,7 @@ const DistributePointScreen = (props: any) => {
         </View>
       )}
 
-      <View>
+      {!isPlayerTimed && (
         <TouchableOpacity
           onPress={() => {
             resetPoints()
@@ -342,34 +344,36 @@ const DistributePointScreen = (props: any) => {
           <View className="w-full flex justify-center items-center ">
             <Image
               source={require("../assets/icons/refresh.png")}
-              className=" w-8 h-8 "
+              className=" w-10 h-8 "
             />
           </View>
         </TouchableOpacity>
-      </View>
-
-      {rounds == 0 ? (
-        <GameButton
-          onPress={() => {
-            navigateToScoreboard()
-          }}
-          buttonStyle={` mt-6 ${
-            isPointsSet && !isPlayerTimed ? "bg-gray-300" : "bg-customGreen"
-          }`}
-          disabled={isPointsSet && !isPlayerTimed}
-          image={require("../assets/icons/Leaderboard.png")}
-          imageStyle="w-20 h-20"
-        />
-      ) : (
-        <GameButton
-          onPress={() => navigateToGame()}
-          buttonStyle={` mt-6 ${
-            isPointsSet && !isPlayerTimed ? "bg-gray-300" : "bg-customGreen"
-          }`}
-          disabled={isPointsSet && !isPlayerTimed}
-          icon={<Gamepad2Icon size={60} color={white} />}
-        />
       )}
+
+      <View className="absolute bottom-7">
+        {rounds == 0 ? (
+          <GameButton
+            onPress={() => {
+              navigateToScoreboard()
+            }}
+            buttonStyle={` mt-6 ${
+              isPointsSet && !isPlayerTimed ? "bg-gray-300" : "bg-customGreen"
+            }`}
+            disabled={isPointsSet && !isPlayerTimed}
+            image={require("../assets/icons/Leaderboard.png")}
+            imageStyle="w-20 h-20"
+          />
+        ) : (
+          <GameButton
+            onPress={() => navigateToGame()}
+            buttonStyle={` mt-6 ${
+              isPointsSet && !isPlayerTimed ? "bg-gray-300" : "bg-customGreen"
+            }`}
+            disabled={isPointsSet && !isPlayerTimed}
+            icon={<Gamepad2Icon size={60} color={white} />}
+          />
+        )}
+      </View>
     </View>
   )
 }
