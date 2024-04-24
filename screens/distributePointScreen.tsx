@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Animated,
+  Image,
 } from "react-native"
 import GameButton from "../components/GameScreenComponents/GameButton"
 import { Player } from "../utils/types"
@@ -290,12 +291,7 @@ const DistributePointScreen = (props: any) => {
           <ScrollView className="mt-4 mb-4 ">
             <View className=" flex flex-row">
               {/* TODO - make to an TouchableOpacity and move to between board and go next button */}
-              <GameButton
-                onPress={() => resetPoints()}
-                buttonStyle={"  w-16 h-7  "}
-                image={require("../assets/icons/refresh.png")}
-                imageStyle=" w-8 h-8"
-              />
+
               <Text className="font-bold text-2xl mb-3 capitalize">
                 distribute points
               </Text>
@@ -336,6 +332,21 @@ const DistributePointScreen = (props: any) => {
           </ScrollView>
         </View>
       )}
+
+      <View>
+        <TouchableOpacity
+          onPress={() => {
+            resetPoints()
+          }}
+        >
+          <View className="w-full flex justify-center items-center ">
+            <Image
+              source={require("../assets/icons/refresh.png")}
+              className=" w-8 h-8 "
+            />
+          </View>
+        </TouchableOpacity>
+      </View>
 
       {rounds == 0 ? (
         <GameButton
