@@ -24,6 +24,7 @@ import CreateCardScreen from "../screens/createCardScreen"
 import ScoreboardScreen from "../screens/scoreboardScreen"
 import CreateQuizCardScreen from "../screens/createQuizCardScreen"
 import DistributePointScreen from "../screens/distributePointScreen"
+import CreateTeamBattleCardScreen from "../screens/createTeamBattleCard"
 
 const Navbar: React.FC = () => {
   const Stack = createStackNavigator()
@@ -131,6 +132,15 @@ const Navbar: React.FC = () => {
             <Stack.Screen
               name="customCards"
               component={CreateCardScreen}
+              options={{
+                headerTitle: () => (
+                  <Gamepad2Icon size={80} color={black} className="mb-10" />
+                ),
+              }}
+            />
+            <Stack.Screen
+              name="customGroupCard"
+              component={CreateTeamBattleCardScreen}
               options={{
                 headerTitle: () => (
                   <Gamepad2Icon size={80} color={black} className="mb-10" />

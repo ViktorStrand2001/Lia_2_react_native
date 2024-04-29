@@ -10,7 +10,7 @@ import { FIRESTORE_DB } from "../firebaseConfig"
 import { addDoc, collection } from "firebase/firestore"
 import { Select } from "native-base"
 
-const CreateCardScreen = () => {
+const CreateTeamBattleCardScreen = () => {
   const [formData, setFormData] = useState({
     Gamemode: "",
     Title: "",
@@ -22,7 +22,7 @@ const CreateCardScreen = () => {
 
   const handleSubmit = async () => {
     try {
-      const cardRef = collection(FIRESTORE_DB, "Free-for-all")
+      const cardRef = collection(FIRESTORE_DB, "Group-Battles")
       await addDoc(cardRef, formData)
       console.log("Card added successfully!")
       console.log(addDoc)
@@ -42,7 +42,7 @@ const CreateCardScreen = () => {
 
   return (
     <View className="w-full h-full flex justify-center items-center mt-4">
-      <View className="w-full px-6 h-full">
+      <ScrollView className="w-full px-6 h-screen">
         <Text className="text-2xl font-bold mb-5">
           Make a Free for all Card!
         </Text>
@@ -113,9 +113,9 @@ const CreateCardScreen = () => {
             <Text className="text-white">Create Post</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </ScrollView>
     </View>
   )
 }
 
-export default CreateCardScreen
+export default CreateTeamBattleCardScreen

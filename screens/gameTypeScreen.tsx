@@ -12,6 +12,9 @@ const GameTypeScreen = (props: any) => {
   const navigateToCustomCardScreen = () => {
     props.navigation.navigate("customCards")
   }
+  const navigateToCustomGroupCardScreen = () => {
+    props.navigation.navigate("customGroupCard")
+  }
 
   const navigateToCustomQuizCardScreen = () => {
     props.navigation.navigate("customQuiz")
@@ -131,13 +134,21 @@ const GameTypeScreen = (props: any) => {
           <View className="h-0.5 w-80 bg-black rounded-lg" />
           <View>
             <GameTypeOption
-              gameType="Custom Card"
+              gameType="Custom Free for all Card"
               onPress={() => {
                 navigateToCustomCardScreen()
               }}
             />
           </View>
-
+          <View className="h-0.5 w-80 bg-black rounded-lg" />
+          <View>
+            <GameTypeOption
+              gameType="Custom Group Card"
+              onPress={() => {
+                navigateToCustomGroupCardScreen()
+              }}
+            />
+          </View>
           <View className="h-0.5 w-80 bg-black rounded-lg" />
           <View>
             <GameTypeOption
