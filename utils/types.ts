@@ -4,7 +4,7 @@ export interface Card {
   Rules: string
   YouWillNeed: string
   Time: number
-  GameType: string
+  Gamemode: string
 }
 
 export interface Quiz {

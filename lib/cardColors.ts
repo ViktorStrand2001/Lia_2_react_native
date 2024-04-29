@@ -1,14 +1,15 @@
+/* TODO - orange and yellow dont work? */
 export const cardColors = [
   {
-    color: "customGreen",
+    color: "bg-customGreen",
   },
   {
-    color: "primaryBlue",
+    color: "bg-primaryBlue",
   },
   {
-    color: "orange-500",
+    color: "bg-orange-400",
   },
   {
-    color: "yellow-300",
+    color: "bg-yellow-500",
   },
 ]

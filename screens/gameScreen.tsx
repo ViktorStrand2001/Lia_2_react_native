@@ -17,6 +17,11 @@ import {
 } from "lucide-react-native"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { useFocusEffect } from "@react-navigation/native"
+import { cardColors } from "../lib/cardColors"
+import { getTotalNumberOfCards } from "../api/challengerService"
+
+const randomColor = () =>
+  cardColors[Math.floor(Math.random() * cardColors.length)]
 
 const GameScreen = (props: any) => {
   const [timer, setTimer] = useState<number>(Number)
@@ -38,22 +43,47 @@ const GameScreen = (props: any) => {
   const [isLoadingRounds, setIsLoadingRounds] = useState<boolean>(true)
   const [isLoadingCard, setIsLoadingCard] = useState<boolean>(true)
   const isAllTurnsPlayed = players.every((player) => player.turn === 0)
+  const [chellengeColor, setChallengeColor] = useState<any>()
+  const [fetchedCards, setFetchedCards] = useState<string[]>([])
 
-  const fetchChallenge = async () => {
-    try {
-      if (gameType != "") {
-        const challengeCardData = await fetchRandomChallenge(gameType)
+const fetchChallenge = async () => {
+  try {
+    if (gameType !== "") {
+      let challengeCardData = await fetchRandomChallenge(gameType)
+      const totalNumberOfCards = await getTotalNumberOfCards(gameType)
+      if (fetchedCards.length >= totalNumberOfCards) {
+        setFetchedCards([])
+        console.log("reset cards", fetchedCards)
+      }
+      if (challengeCardData) {
+        while (fetchedCards.includes(challengeCardData.Title)) {
+          // Fetch a new card until it's not already fetched
+          challengeCardData = await fetchRandomChallenge(gameType)
+          if (!challengeCardData) {
+            // Handle the case where fetchRandomChallenge returns null
+            break
+          }
+        }
         if (challengeCardData) {
           setChallengeData(challengeCardData)
-          setTimer(challengeCardData.Time * 1) // change to 1 for faster count
+          setTimer(challengeCardData.Time * 1)
+          setFetchedCards([...fetchedCards, challengeCardData.Title])
+          console.log("playerd cards: ", fetchedCards)
         }
       }
-    } catch (error) {
-      console.log("error fetching Challenge card: ", error)
-    } finally {
-      setIsLoadingCard(false)
     }
+  } catch (error) {
+    console.log("error fetching Challenge card: ", error)
+  } finally {
+    setIsLoadingCard(false)
   }
+}
+
+
+
+
+
+
 
   useFocusEffect(
     useCallback(() => {
@@ -113,7 +143,7 @@ const GameScreen = (props: any) => {
       interval = setInterval(() => {
         setTimer((prevTimer) => {
           setCurrentTimer(prevTimer)
-          if (challengeData && challengeData.GameType === "timedown") {
+          if (challengeData && challengeData.Gamemode === "Countdown") {
             if (prevTimer <= 0) {
               clearInterval(interval)
               setIsRunning(false)
@@ -234,6 +264,11 @@ const GameScreen = (props: any) => {
     savePlayerStats()
   }, [players])
 
+  useEffect(() => {
+    const color = randomColor().color
+    setChallengeColor(color)
+  }, [])
+
   console.log("---------- GameScreen -----------")
   console.log("current  index: ", currentPlayerIndex)
   console.log("players: ", players)
@@ -268,8 +303,10 @@ const GameScreen = (props: any) => {
 
           <QuizCard
             quizData={quizData}
+            bgColor={chellengeColor}
             refreshQuiz={() => {
               fetchQuiz()
+              setChallengeColor(randomColor().color)
             }}
           />
           {currentround <= rounds ? (
@@ -319,16 +356,18 @@ const GameScreen = (props: any) => {
           </Text>
           <ChallengeCard
             documentData={challengeData}
+            bgcolor={chellengeColor}
             refreshChallenge={() => {
               fetchChallenge()
               resetTimer()
               pauseTimer()
+              setChallengeColor(randomColor().color)
             }}
           />
           <View className="mt-6">
             {showStartButton ? (
               <>
-                {challengeData?.GameType == "timeup" &&
+                {challengeData?.Gamemode == "Timer" &&
                 players[currentPlayerIndex]?.turn <= 0 ? (
                   <>
                     {isAllTurnsPlayed ? (
@@ -386,7 +425,7 @@ const GameScreen = (props: any) => {
               </>
             ) : (
               <>
-                {challengeData?.GameType == "timeup"
+                {challengeData?.Gamemode == "Timer"
                   ? timer >= 0 && (
                       <GameButton
                         onPress={() => {
@@ -412,7 +451,7 @@ const GameScreen = (props: any) => {
           </View>
 
           {/* Conditionally render Next User button when timer reaches 0 */}
-          {timer <= 0 && challengeData?.GameType == "timedown" && (
+          {timer <= 0 && challengeData?.Gamemode == "Countdown" && (
             <>
               {isAllTurnsPlayed ? (
                 <>

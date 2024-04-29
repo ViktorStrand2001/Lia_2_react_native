@@ -2,29 +2,31 @@ import React from "react"
 import { Text, View, Image } from "react-native"
 import { TouchableOpacity } from "react-native-gesture-handler"
 import { Card } from "../../utils/types"
-import { cardColors } from "../../lib/cardColors"
 
 interface ChallengeCardProps {
   documentData: Card | null
   refreshChallenge: () => void
+  bgcolor: string
 }
 
 const ChallengeCard: React.FC<ChallengeCardProps> = ({
   documentData,
   refreshChallenge,
+  bgcolor
 }) => {
-
-  const bgcolor = cardColors[Math.floor(Math.random() * cardColors.length)];
-
-  console.log(bgcolor.color);
   
 
-if (!documentData) {
+
+  if (!documentData) {
     return null
   }
 
+
+
   return (
-    <View className={`bg-${bgcolor.color} w-80 h-[400px] flex flex-col items-center rounded-2xl relative border`}>
+    <View
+      className={`${bgcolor} w-80 min-h-[500px] pb-4 flex flex-col items-center rounded-2xl relative border`}
+    >
       <View className="top-2 left-2 flex justify-start absolute">
         <TouchableOpacity onPress={refreshChallenge}>
           <Image
@@ -40,13 +42,13 @@ if (!documentData) {
           </Text>
         </View>
         <View className="px-3">
-          <Text className="font-bold mt-3">Instructions: </Text>
+          <Text className="font-bold mt-5">Instructions: </Text>
           <Text>{documentData.Instructions}</Text>
 
-          <Text className="font-bold mt-3">You will need: </Text>
+          <Text className="font-bold mt-5">You will need: </Text>
           <Text>{documentData.YouWillNeed}</Text>
 
-          <Text className="font-bold mt-3">Rules: </Text>
+          <Text className="font-bold mt-5">Rules: </Text>
           <Text>{documentData.Rules}</Text>
         </View>
       </View>
