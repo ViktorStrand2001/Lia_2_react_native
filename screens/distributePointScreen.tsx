@@ -162,9 +162,7 @@ const DistributePointScreen = (props: any) => {
 
     setScoreboard(updatedScoreboard)
 
-    setTimeout(() => {
-      props.navigation.navigate("Game")
-    }, 500)
+    props.navigation.navigate("Game")
   }
 
   console.log("----------- PointScreen -----------")
