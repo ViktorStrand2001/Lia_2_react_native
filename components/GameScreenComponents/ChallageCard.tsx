@@ -2,6 +2,7 @@ import React from "react"
 import { Text, View, Image } from "react-native"
 import { TouchableOpacity } from "react-native-gesture-handler"
 import { Card } from "../../utils/types"
+import { cardColors } from "../../lib/cardColors"
 
 interface ChallengeCardProps {
   documentData: Card | null
@@ -12,12 +13,18 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
   documentData,
   refreshChallenge,
 }) => {
-  if (!documentData) {
+
+  const bgcolor = cardColors[Math.floor(Math.random() * cardColors.length)];
+
+  console.log(bgcolor.color);
+  
+
+if (!documentData) {
     return null
   }
 
   return (
-    <View className="bg-customGreen w-80 h-[400px] flex flex-col items-center rounded-2xl relative border">
+    <View className={`bg-${bgcolor.color} w-80 h-[400px] flex flex-col items-center rounded-2xl relative border`}>
       <View className="top-2 left-2 flex justify-start absolute">
         <TouchableOpacity onPress={refreshChallenge}>
           <Image

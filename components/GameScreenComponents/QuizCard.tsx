@@ -2,6 +2,7 @@ import React from "react"
 import { Text, View, Image } from "react-native"
 import { TouchableOpacity } from "react-native-gesture-handler"
 import { Quiz } from "../../utils/types"
+import { cardColors } from "../../lib/cardColors"
 
 interface QuizCardProps {
   quizData: Quiz | null
@@ -9,12 +10,15 @@ interface QuizCardProps {
 }
 
 const QuizCard: React.FC<QuizCardProps> = ({ quizData, refreshQuiz }) => {
+  
+  const colors = cardColors[Math.floor(Math.random() * cardColors.length)]
+  
   if (!quizData) {
     return null
   }
 
   return (
-    <View className="bg-customGreen w-80 h-[400px] flex flex-col items-center rounded-2xl relative border">
+    <View className={`bg-${colors.color} w-80 h-[400px] flex flex-col items-center rounded-2xl relative border`}>
       <View className="top-2 left-2 flex justify-start absolute">
         <TouchableOpacity onPress={refreshQuiz}>
           <Image
