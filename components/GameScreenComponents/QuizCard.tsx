@@ -1,6 +1,6 @@
 import React from "react"
-import { Text, View, Image } from "react-native"
-import { TouchableOpacity } from "react-native-gesture-handler"
+import { Text, View, Image, TouchableOpacity } from "react-native"
+
 import { Quiz } from "../../utils/types"
 import { cardColors } from "../../lib/cardColors"
 
@@ -34,7 +34,9 @@ const QuizCard: React.FC<QuizCardProps> = ({ quizData, refreshQuiz }) => {
           </Text>
         </View>
         <View className="px-3">
-          <Text className="text-base text-center mt-7 ">{quizData.Context}</Text>
+          <Text className="text-base text-center mt-7 ">
+            {quizData.Context}
+          </Text>
         </View>
       </View>
     </View>

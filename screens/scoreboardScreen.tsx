@@ -1,4 +1,4 @@
-import { View, Text, ScrollView } from "react-native"
+import { View, Text, ScrollView,  } from "react-native"
 import React, { useEffect, useState } from "react"
 import GameButton from "../components/GameScreenComponents/GameButton"
 import { Player } from "../utils/types"
@@ -11,7 +11,6 @@ import {
 } from "lucide-react-native"
 import { white } from "tailwindcss/colors"
 import AsyncStorage from "@react-native-async-storage/async-storage"
-import { TouchableOpacity } from "react-native-gesture-handler"
 
 const ScoreboardScreen = (props: any) => {
   const [leaderboard, setLeaderboard] = useState<Player[]>([])
@@ -120,34 +119,34 @@ const ScoreboardScreen = (props: any) => {
             Scoreboard
           </Text>
 
-            <ScrollView className="space-y-4 w-full">
-              {leaderboard.map((player, index) => (
+          <ScrollView className="space-y-4 w-full">
+            {leaderboard.map((player, index) => (
+              <View
+                className="flex justify-center items-center w-full"
+                key={index}
+              >
                 <View
-                  className="flex justify-center items-center w-full"
-                  key={index}
+                  className={` w-72 h-16 flex flex-row justify-center z-50 items-center relative border shadow-md ${
+                    (index === 0 && "bg-primaryGold") ||
+                    (index === 1 && "bg-primarySilver") ||
+                    (index === 2 && "bg-primaryBronze") ||
+                    (index % 2 === 0 ? "bg-primarypink" : "bg-primaryBlue")
+                  }`}
                 >
-                  <View
-                    className={` w-72 h-16 flex flex-row justify-center z-50 items-center relative border shadow-md ${
-                      (index === 0 && "bg-primaryGold") ||
-                      (index === 1 && "bg-primarySilver") ||
-                      (index === 2 && "bg-primaryBronze") ||
-                      (index % 2 === 0 ? "bg-primarypink" : "bg-primaryBlue")
-                    }`}
-                  >
-                    <Text className="italic text-lg">{player.name}</Text>
-                    <View className="absolute right-7">
-                      <Text
-                        className={`text-lg  ${
-                          player.score == 0 ? "hidden" : "block"
-                        }`}
-                      >
-                        {player.score}
-                      </Text>
-                    </View>
+                  <Text className="italic text-lg">{player.name}</Text>
+                  <View className="absolute right-7">
+                    <Text
+                      className={`text-lg  ${
+                        player.score == 0 ? "hidden" : "block"
+                      }`}
+                    >
+                      {player.score}
+                    </Text>
                   </View>
                 </View>
-              ))}
-            </ScrollView>
+              </View>
+            ))}
+          </ScrollView>
           <View className="mb-7 mt-20">
             <GameButton
               onPress={() => navigateToGame()}
