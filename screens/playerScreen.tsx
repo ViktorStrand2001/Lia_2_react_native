@@ -258,15 +258,12 @@ const PlayerScreen = (props: any) => {
       <View className="flex flex-row justify-center items-center absolute bottom-28">
         {gameType === "Quiz" ? (
           <>
-            <Text className="capitalize text-lg pr-2">
-              amount of questions{" "}
-            </Text>
             <Center>
               <FormControl isRequired>
                 <Select
-                  minWidth="165"
+                  minWidth="170"
                   accessibilityLabel="Rounds"
-                  placeholder="amount"
+                  placeholder="Questions"
                   _selectedItem={{
                     bg: "black",
                     endIcon: <CheckIcon size={5} />,
@@ -285,13 +282,12 @@ const PlayerScreen = (props: any) => {
           </>
         ) : (
           <>
-            <Text className="capitalize text-lg pr-2">game rounds</Text>
             <Center>
               <FormControl isRequired>
                 <Select
                   minWidth="165"
                   accessibilityLabel="Rounds"
-                  placeholder="amount"
+                  placeholder="Rounds"
                   _selectedItem={{
                     bg: "black",
                     endIcon: <CheckIcon size={5} />,

@@ -6,8 +6,8 @@ import { useNavigation } from "@react-navigation/native"
 import React from "react"
 
 type RootStackParamList = {
-  SetPlayer: undefined
-  GameType: undefined
+  Players: undefined
+  Gamemode: undefined
   Scoreboard: undefined
   // Add other screen names here
 }
@@ -38,32 +38,32 @@ const CustomSideNavbar: React.FC<onPress> = ({ onPress }) => {
           }}
         >
           <TrophyIcon size={40} className="text-black" />
-          <Text className="text-black flex justify-center items-center text-lg">
-            Scoreboard
+          <Text className="text-black flex justify-center items-center text-lg capitalize">
+            scoreboard
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
           className="flex flex-row items-center justify-center space-x-2"
           onPress={() => {
             onPress()
-            navigateToScreen("GameType")
+            navigateToScreen("Gamemode")
           }}
         >
           <Gamepad2Icon size={40} className="text-black" />
-          <Text className="text-black flex justify-center items-center text-lg">
-            Game Type
+          <Text className="text-black flex justify-center items-center text-lg capitalize">
+            game
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
           className="flex flex-row items-center justify-center space-x-2"
           onPress={() => {
             onPress()
-            navigateToScreen("SetPlayer")
+            navigateToScreen("Players")
           }}
         >
           <UsersRoundIcon size={40} className="text-black" />
-          <Text className="text-black flex justify-center items-center text-lg">
-            Players
+          <Text className="text-black flex justify-center items-center text-lg capitalize">
+            players
           </Text>
         </TouchableOpacity>
       </View>

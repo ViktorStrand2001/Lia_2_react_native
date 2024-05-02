@@ -46,44 +46,38 @@ const GameScreen = (props: any) => {
   const [chellengeColor, setChallengeColor] = useState<any>()
   const [fetchedCards, setFetchedCards] = useState<string[]>([])
 
-const fetchChallenge = async () => {
-  try {
-    if (gameType !== "") {
-      let challengeCardData = await fetchRandomChallenge(gameType)
-      const totalNumberOfCards = await getTotalNumberOfCards(gameType)
-      if (fetchedCards.length >= totalNumberOfCards) {
-        setFetchedCards([])
-        console.log("reset cards", fetchedCards)
-      }
-      if (challengeCardData) {
-        while (fetchedCards.includes(challengeCardData.Title)) {
-          // Fetch a new card until it's not already fetched
-          challengeCardData = await fetchRandomChallenge(gameType)
-          if (!challengeCardData) {
-            // Handle the case where fetchRandomChallenge returns null
-            break
-          }
+  const fetchChallenge = async () => {
+    try {
+      if (gameType !== "") {
+        let challengeCardData = await fetchRandomChallenge(gameType)
+        const totalNumberOfCards = await getTotalNumberOfCards(gameType)
+        if (fetchedCards.length >= totalNumberOfCards) {
+          setFetchedCards([])
+          console.log("reset cards", fetchedCards)
         }
         if (challengeCardData) {
-          setChallengeData(challengeCardData)
-          setTimer(challengeCardData.Time * 1)
-          setFetchedCards([...fetchedCards, challengeCardData.Title])
-          console.log("playerd cards: ", fetchedCards)
+          while (fetchedCards.includes(challengeCardData.Title)) {
+            // Fetch a new card until it's not already fetched
+            challengeCardData = await fetchRandomChallenge(gameType)
+            if (!challengeCardData) {
+              // Handle the case where fetchRandomChallenge returns null
+              break
+            }
+          }
+          if (challengeCardData) {
+            setChallengeData(challengeCardData)
+            setTimer(challengeCardData.Time * 1)
+            setFetchedCards([...fetchedCards, challengeCardData.Title])
+            console.log("playerd cards: ", fetchedCards)
+          }
         }
       }
+    } catch (error) {
+      console.log("error fetching Challenge card: ", error)
+    } finally {
+      setIsLoadingCard(false)
     }
-  } catch (error) {
-    console.log("error fetching Challenge card: ", error)
-  } finally {
-    setIsLoadingCard(false)
   }
-}
-
-
-
-
-
-
 
   useFocusEffect(
     useCallback(() => {
@@ -214,6 +208,7 @@ const fetchChallenge = async () => {
     )}`
   }
 
+  /* TODO - fix so when player answer a card rounds get -1 */
   const handleAnswerSelection = useCallback(
     (selectedAnswer: boolean) => {
       if (quizData) {
@@ -236,19 +231,17 @@ const fetchChallenge = async () => {
                 : player
             )
           )
-
           setQuizAnswer("Incorrect")
-
           setDisabled(true)
         }
       }
-      setTimeout(() => {
+
         setQuizAnswer("")
         fetchQuiz()
-      }, 1000)
+
       setTimeout(() => {
         setDisabled(false)
-      }, 2000)
+      }, 500)
     },
     [quizData]
   )
@@ -294,8 +287,8 @@ const fetchChallenge = async () => {
       {gameType == "Quiz" ? (
         <View className="flex justify-center items-center w-screen h-full">
           {currentround <= rounds ? (
-            <Text className=" text-base mb-2 font-semibold">
-              Question {currentround}/{rounds}
+            <Text className=" text-2xl mb-2 font-semibold">
+              {currentround}/{rounds}
             </Text>
           ) : (
             <Text className=" text-base mb-2 font-semibold">Finished</Text>

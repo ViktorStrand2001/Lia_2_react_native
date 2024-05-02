@@ -1,4 +1,4 @@
-import { View, Text, ScrollView,  } from "react-native"
+import { View, Text, ScrollView } from "react-native"
 import React, { useEffect, useState } from "react"
 import GameButton from "../components/GameScreenComponents/GameButton"
 import { Player } from "../utils/types"
@@ -56,7 +56,23 @@ const ScoreboardScreen = (props: any) => {
   //
 
   const navigateToGame = () => {
-    if (rounds !== undefined && rounds <= 0) {
+    if (gameType !== "Quiz") {
+      if (rounds !== undefined && rounds <= 0) {
+        const updatedScoreboard = leaderboard.map((player) => ({
+          ...player,
+          points: 0,
+          score: 0,
+          timer: 0,
+          turn: 1,
+          right: 0,
+          wrong: 0,
+        }))
+        setLeaderboard(updatedScoreboard)
+        props.navigation.navigate("Gamemode")
+      } else {
+        props.navigation.navigate("Game")
+      }
+    } else {
       const updatedScoreboard = leaderboard.map((player) => ({
         ...player,
         points: 0,
@@ -67,9 +83,7 @@ const ScoreboardScreen = (props: any) => {
         wrong: 0,
       }))
       setLeaderboard(updatedScoreboard)
-      props.navigation.navigate("GameType")
-    } else {
-      props.navigation.navigate("Game")
+      props.navigation.navigate("Gamemode")
     }
   }
 

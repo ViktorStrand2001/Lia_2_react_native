@@ -56,7 +56,7 @@ const Navbar: React.FC = () => {
       <TouchableWithoutFeedback onPress={closeMenu}>
         <View className="flex-1 mt-8">
           <Stack.Navigator
-            initialRouteName="GameType"
+            initialRouteName="Gamemode"
             screenOptions={{
               headerStyle: {
                 elevation: 0,
@@ -84,7 +84,7 @@ const Navbar: React.FC = () => {
             }}
           >
             <Stack.Screen
-              name="GameType"
+              name="Gamemode"
               component={GameTypeScreen}
               options={{
                 headerTitle: () => (
@@ -93,7 +93,7 @@ const Navbar: React.FC = () => {
               }}
             />
             <Stack.Screen
-              name="SetPlayer"
+              name="Players"
               component={PlayerScreen}
               options={{
                 headerTitle: () => (
